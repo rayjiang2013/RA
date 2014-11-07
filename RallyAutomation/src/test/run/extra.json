@@ -1,0 +1,33 @@
+{
+  "tcstep": [
+    {
+      "TestCase": "TC863",
+      "StepIndex": "1",
+      "Input": "Boot computer",
+      "ExpectedResult": "Show desktop"
+    },
+    {
+      "TestCase": "TC863",
+      "StepIndex": "2",
+      "Input": "Open Browser",
+      "ExpectedResult": "Show homepage"
+    },
+    {
+      "TestCase": "TC863",
+      "StepIndex": "3",
+      "Input": "Type in rally url and enter",
+      "ExpectedResult": "Show rally dashboard page"
+    }
+  ],
+  "tc": {
+    "FormattedID": "TC863",
+    "Name": "Sixth Test Case (automatically created with rally api) - updated",
+    "Description": "Test",
+    "Expedite": "false",
+    "Objective": "Test",
+    "Type": "Acceptance",
+    "Method": "Automated"
+  },
+  "tcoption": "1",
+  "tf": ""
+}
