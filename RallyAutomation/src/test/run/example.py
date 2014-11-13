@@ -10,7 +10,11 @@ from pprint import pprint
 import json
 from test.run.testCase import *
 from test.run.testCaseStep import *
+from test.run.testFolder import *
+from test.run.testSet import *
+from testObject import *
 
+'''
 #Fetch test cases 
 def fetch_tc(rally,num,tcid):
     #Fetch all the test cases 
@@ -94,12 +98,14 @@ def update_tc(rally,data):
 def create_tc_step(tc,data):
     testcasestep_fields={}
     for i in range(len(data['tcstep'])):
-        '''testcasestep_fields = {
+
+        testcasestep_fields = {
             "TestCase"          : tc.ref,
             "StepIndex"         : i,
             "Input"             : data['tcstep'][i]['Input'],
             "ExpectedResult"    : data['tcstep'][i]['ExpectedResult']
-        }'''
+        }
+
         testcasestep_fields = data['tcstep'][i]
         testcasestep_fields['TestCase']=tc.ref
         testcasestep = rally.put('TestCaseStep', testcasestep_fields)
@@ -114,6 +120,8 @@ def del_tc(data):
         sys.exit(1)
     if delete_success == True:
         print "Test case deleted, FormattedID: %s" % data['tc']['FormattedID']
+'''
+
     
 if __name__ == '__main__':
     #Setup
@@ -146,15 +154,26 @@ if __name__ == '__main__':
     #tc=update_tc(rally,data)
     #create_tc_step(tc,data)
     #del_tc(data)
-    tc=testCase(rally,data)
-    tc.getTCByID()
+    #tc=testCase(rally,data)
+    #tc.getTCByID()
     #tc.createTC()
     #tc.updateTC()
     #tc.delTC()
     #ts=testCaseStep(rally,data)
     #ts.getTCStepByID()
     #ts.createTCStep()
-    
+    #tf=testFolder(rally,data)
+    #tf.getTFByID()
+    #tf.delTF()
+    #tf.addTC()
+    #ts=testSet(rally,data)    
+    #ts.runTS()
+    to=testObject(rally,data)
+    verd=to.runTO()
+    test_results=to.runTS(verd)    
+    report=to.genReport(test_results)
+    to.sendNotification(report)
+
 #"Checkbox for add and clear meter mods on connect(US9634)"
             #print lst
             #tcname=tc.Name

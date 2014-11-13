@@ -1,33 +1,66 @@
 {
-  "tcstep": [
-    {
-      "TestCase": "TC863",
-      "StepIndex": "1",
-      "Input": "Boot computer",
-      "ExpectedResult": "Show desktop"
+    "email": {
+        "EMAIL_FROM": "lei.jiang@spirent.com",
+        "EMAIL_RECEIVER": [
+            "lei.jiang@spirent.com",
+            "iamabigstone@gmail.com"
+        ],
+        "EMAIL_SMTP": "smtp.spirent.com",
+        "EMAIL_SMTP_PORT": 25,
+        "EMAIL_SUBJECT": "Test Report",
+        "TEXT_SUBTYPE": "plain"
     },
-    {
-      "TestCase": "TC863",
-      "StepIndex": "2",
-      "Input": "Open Browser",
-      "ExpectedResult": "Show homepage"
+    "tc": {
+        "Description": "Test",
+        "Expedite": "false",
+        "FormattedID": "TC766",
+        "LastBuild": "",
+        "Method": "Automated",
+        "Name": "Sixth Test Case (automatically created with rally api) - updated",
+        "Objective": "Test",
+        "TestFolder": "",
+        "Type": "Acceptance"
     },
-    {
-      "TestCase": "TC863",
-      "StepIndex": "3",
-      "Input": "Type in rally url and enter",
-      "ExpectedResult": "Show rally dashboard page"
+    "tcoption": "1",
+    "tcresult": {
+        "Build": "",
+        "Date": "",
+        "TestCase": "",
+        "TestSet": "",
+        "Tester": "",
+        "Verdict": ""
+    },
+    "tcstep": [
+        {
+            "ExpectedResult": "Show desktop",
+            "Input": "Boot computer",
+            "StepIndex": "1",
+            "TestCase": "TC863"
+        },
+        {
+            "ExpectedResult": "Show homepage",
+            "Input": "Open Browser",
+            "StepIndex": "2",
+            "TestCase": "TC863"
+        },
+        {
+            "ExpectedResult": "Show rally dashboard page",
+            "Input": "Type in rally url and enter",
+            "StepIndex": "3",
+            "TestCase": "TC863"
+        }
+    ],
+    "tf": {
+        "FormattedID": "TF69",
+        "Name": "Test Plan B - updated",
+        "TestCases": ""
+    },
+    "ts": {
+        "Build": "1234",
+        "FormattedID": "TS2",
+        "ScheduleState": "In-Progress"
+    },
+    "user": {
+        "UserName": "lei.jiang@spirent.com"
     }
-  ],
-  "tc": {
-    "FormattedID": "TC863",
-    "Name": "Sixth Test Case (automatically created with rally api) - updated",
-    "Description": "Test",
-    "Expedite": "false",
-    "Objective": "Test",
-    "Type": "Acceptance",
-    "Method": "Automated"
-  },
-  "tcoption": "1",
-  "tf": ""
 }
