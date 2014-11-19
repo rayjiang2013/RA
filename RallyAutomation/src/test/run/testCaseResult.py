@@ -4,7 +4,12 @@ Created on Nov 12, 2014
 @author: ljiang
 '''
 import sys
-from pprint import pprint
+#from pprint import pprint
+
+import logging
+from logging import config
+
+logger = logging.getLogger(__name__)
 
 class testCaseResult:
     '''

@@ -1,1 +1,4 @@
 config.cfg
+.DS_Store
+*.pyc
+*.log

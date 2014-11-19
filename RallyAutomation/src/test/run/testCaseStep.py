@@ -8,6 +8,11 @@ import sys
 from pprint import pprint
 from testCase import *
 
+import logging
+from logging import config
+
+logger = logging.getLogger(__name__)
+
 class testCaseStep:
     '''
     This is the class module for test case    

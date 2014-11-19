@@ -2,8 +2,7 @@
     "email": {
         "EMAIL_FROM": "lei.jiang@spirent.com",
         "EMAIL_RECEIVER": [
-            "lei.jiang@spirent.com",
-            "iamabigstone@gmail.com"
+            "lei.jiang@spirent.com"
         ],
         "EMAIL_SMTP": "smtp.spirent.com",
         "EMAIL_SMTP_PORT": 25,
@@ -56,8 +55,8 @@
         "TestCases": ""
     },
     "ts": {
-        "Build": "1234",
-        "FormattedID": "TS2",
+        "Build": "6666",
+        "FormattedID": "TS7",
         "ScheduleState": "In-Progress"
     },
     "user": {

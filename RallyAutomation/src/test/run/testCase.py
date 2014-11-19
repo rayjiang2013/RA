@@ -6,6 +6,11 @@ Created on Nov 5, 2014
 import sys
 from pprint import pprint
 
+import logging
+from logging import config
+
+logger = logging.getLogger(__name__)
+
 class testCase:
     '''
     This is the class module for test case    
@@ -29,11 +34,14 @@ class testCase:
                         dic[key]=getattr(tc,key)
                     print key,getattr(tc,key)
                 break        
-            print "Test case obtained, ObjectID: %s  FormattedID: %s  Content: " % (tc.oid,tc.FormattedID)
-            pprint(dic)
+            #print "Test case obtained, ObjectID: %s  FormattedID: %s  Content: " % (tc.oid,tc.FormattedID)
+            #pprint(dic)
+            logger.info("Test case obtained, ObjectID: %s  FormattedID: %s  Content: %s" % (tc.oid,tc.FormattedID,dic))
             return tc
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #sys.exit(1)
+            logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
          
     

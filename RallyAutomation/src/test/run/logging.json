@@ -1,0 +1,135 @@
+{
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "level": "ERROR",
+            "stream": "ext://sys.stdout"
+        },
+        "debug_file_handler": {
+            "backupCount": 20,
+            "class": "logging.handlers.RotatingFileHandler",
+            "encoding": "utf8",
+            "filename": "debug.log",
+            "formatter": "simple",
+            "level": "DEBUG",
+            "maxBytes": 10485760
+        },
+        "error_file_handler": {
+            "backupCount": 20,
+            "class": "logging.handlers.RotatingFileHandler",
+            "encoding": "utf8",
+            "filename": "errors.log",
+            "formatter": "simple",
+            "level": "ERROR",
+            "maxBytes": 10485760
+        },
+        "info_file_handler": {
+            "backupCount": 20,
+            "class": "logging.handlers.RotatingFileHandler",
+            "encoding": "utf8",
+            "filename": "info.log",
+            "formatter": "simple",
+            "level": "INFO",
+            "maxBytes": 10485760
+        }
+    },
+    "loggers": {
+        "example": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testCase": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testCaseResult": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testCaseStep": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testFolder": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testObject": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "testSet": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "user": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        }
+    },
+    "root": {
+        "handlers": [
+            "console",
+            "info_file_handler",
+            "debug_file_handler",
+            "error_file_handler"
+        ],
+        "level": "DEBUG"
+    },
+    "version": 1
+}

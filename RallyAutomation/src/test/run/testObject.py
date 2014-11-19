@@ -17,7 +17,13 @@ from testCase import *
 import datetime
 from user import *
 from testCaseResult import *
+import logging
+import json
+from logging import config
+from sys import exc_info
 
+
+logger = logging.getLogger(__name__)
 
 class testObject(object):
     '''
@@ -31,6 +37,8 @@ class testObject(object):
         '''
         self.data=data
         self.rally=rally
+        #self.logger=logger
+        logger.debug("testObject is initiated successfully")
         
     #Main executor & verification      
     def runTO(self):
@@ -38,15 +46,20 @@ class testObject(object):
         Excute and verification
         '''
         #Update ScheduleState of Test Set 
+        '''
         dic={}
         dic['ts']=self.data['ts'].copy()
         dic['ts'].pop('Build',None)
         dic['ts']['ScheduleState']="In-Progress"
         ts_obj=testSet(self.rally,dic)
         ts_obj.updateTS()
-        
-        
-        verdict=[1,1,1,1]
+        logger.info("ScheduleState is successfully updated")
+        '''
+        ts_obj=testSet(self.rally,self.data)
+        ts_obj.updateSS(0) 
+                
+        verdict=[0,1,1,0]
+        logger.info("The test set is successfully run")
         return verdict
     
     #Run the test set
@@ -77,7 +90,7 @@ class testObject(object):
                 #sys.stderr.write('ERROR: %s \n' % details)
                 #sys.exit(1)
             #print "Test Case %s updated; Test result oid %s is created" % (tc.FormattedID,tr.oid)
-        
+        '''
         #Update ScheduleState of Test Set 
         dic={}
         dic['ts']=self.data['ts'].copy()
@@ -88,6 +101,11 @@ class testObject(object):
             dic['ts']['ScheduleState']="Completed"
         ts_obj_2=testSet(self.rally,dic)
         ts_obj_2.updateTS()
+        '''
+        if num_pass == len(tc_verds):
+            ts_obj.updateSS(1) 
+        else:
+            ts_obj.updateSS(2)            
         
         return trs
         
@@ -99,9 +117,12 @@ class testObject(object):
                 for tr in trs:
                     f.write("Test Report for Test Set %s:\nTest Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestSet.FormattedID,tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
-        print "Report %s is successfully generated" % filename        
+        #print "Report %s is successfully generated" % filename   
+        #print "--------------------------------------------------------------------"     
+        logger.info('Report %s is successfully generated' % filename)
         return filename
             
     
@@ -137,10 +158,12 @@ class testObject(object):
             smtpObj.sendmail(msg["From"], msg["To"], msg.as_string())
             #close connection and session.
             smtpObj.quit()
-            print "The report is successfully sent"
+            #print "The report is successfully sent"
+            #print "--------------------------------------------------------------------"
+            logger.info("The report is successfully sent")
         except SMTPException as error:
-            print "Error: unable to send email :  {err}".format(err=error)
-        
+            #print "Error: unable to send email :  {err}".format(err=error)
+            logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
         '''
         SERVER = "smtp.gmail.com"
         FROM = "spirenttestsunnyvale@gmail.com"
@@ -163,4 +186,25 @@ class testObject(object):
         server.sendmail(FROM, TO, message)
         server.quit()      
         '''
-     
+    '''
+    #To log   
+    def log(self,log_config):
+
+        with open(log_config, 'rt') as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
+        logger.propagate = False
+        #root.disabled=True
+        #handler = logging.FileHandler('rally-automation-framework-%s.log' % datetime.datetime.now())
+        
+        
+        #logger.addHandler(handler)
+
+        logger.info('Hello baby')
+        logger.debug('This is debugging message')
+        logger.error('This is an error')
+        
+        #root.info('Hello baby')
+        #root.debug('This is debugging message')
+        #root.error('This is an error')
+    '''

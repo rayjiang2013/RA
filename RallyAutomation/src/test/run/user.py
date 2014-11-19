@@ -6,6 +6,11 @@ Created on Nov 11, 2014
 import sys
 from pprint import pprint
 
+import logging
+from logging import config
+
+logger = logging.getLogger(__name__)
+
 class user:
     '''
     This is the class module for test case    
@@ -27,10 +32,11 @@ class user:
                 for key in dir(usr):
                     if not key.endswith("__"):
                         dic[key]=getattr(usr,key)
-                    print key,getattr(usr,key)
+                    #print key,getattr(usr,key)
                 break        
             print "User obtained, Name: %s, Content: " % usr.UserName
             pprint(dic)
+            print "--------------------------------------------------------------------"
             return usr
         except Exception, details:
             sys.stderr.write('ERROR: %s \n' % details)

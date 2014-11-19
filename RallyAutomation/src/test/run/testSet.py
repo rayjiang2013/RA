@@ -7,8 +7,13 @@ import sys
 from pprint import pprint
 from testCase import *
 from testObject import *
-import datetime
+#import datetime
 from user import *
+
+import logging
+from logging import config
+
+logger = logging.getLogger(__name__)
 
 class testSet(object):
     '''
@@ -32,10 +37,11 @@ class testSet(object):
                 for key in dir(ts):
                     if not key.endswith("__"):
                         dic[key]=getattr(ts,key)
-                    print key,getattr(ts,key)
+                    #print key,getattr(ts,key)
                 break        
-            print "Test case obtained, ObjectID: %s  FormattedID: %s  Content: " % (ts.oid,ts.FormattedID)
-            pprint(dic)
+            print "Test set obtained, ObjectID: %s  FormattedID: %s " % (ts.oid,ts.FormattedID)
+            print "--------------------------------------------------------------------"
+            #pprint(dic)
             return ts
         except Exception, details:
             sys.stderr.write('ERROR: %s \n' % details)
@@ -52,7 +58,8 @@ class testSet(object):
             for tc in response:
                 lst.append(tc)
                 print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
-            pprint(lst)
+            #pprint(lst)
+            print "--------------------------------------------------------------------"
             return lst
         except Exception, details:
             sys.stderr.write('ERROR: %s \n' % details)
@@ -67,9 +74,30 @@ class testSet(object):
         except Exception, details:
             sys.stderr.write('ERROR: %s \n' % details)
             sys.exit(1)
-        print "Test Folder %s updated" % ts.FormattedID
+        print "Test Set %s updated" % ts.FormattedID
+        print "--------------------------------------------------------------------"
         return ts    
     
+    #Update ScheduleState of Test Set 
+    def updateSS(self,state):
+        try:
+            dic={}
+            dic['ts']=self.data['ts'].copy()
+            dic['ts'].pop('Build',None)
+            if state == 0:
+                dic['ts']['ScheduleState']="In-Progress"
+            if state == 1:        
+                dic['ts']['ScheduleState']="Accepted"
+            if state == 2:
+                dic['ts']['ScheduleState']="Completed"
+            ts_obj=testSet(self.rally,dic)
+            ts_obj.updateTS()
+            logger.info("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
+        except Exception,details:
+            logger.error('ERROR: %s \n' % details, exc_info=True)
+            sys.exit(1)
+    
+
     '''
     #Run the test set
     def runTS(self): 
