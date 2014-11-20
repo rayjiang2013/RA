@@ -5,13 +5,13 @@ Created on Nov 5, 2014
 '''
 
 import sys
-from pprint import pprint
-from testCase import *
-
+#from pprint import pprint
+#from testCase import *
+from testCase import testCase
 import logging
-from logging import config
+#from logging import config
 
-logger = logging.getLogger(__name__)
+
 
 class testCaseStep:
     '''
@@ -23,6 +23,8 @@ class testCaseStep:
         '''
         self.data=data
         self.rally=rally
+        self.logger = logging.getLogger(__name__)
+        self.logger.propagate=False
     
     #Show a TestCase identified by the FormattedID value
     def getTCStepByID(self):
@@ -41,11 +43,13 @@ class testCaseStep:
                     if not key.endswith("__"):
                         dic[key]=getattr(ts,key)   
                 lst.append(dic)
-            pprint(lst)                    
-            print "Test case step obtained, FormattedID: %s" % (str(self.data['tc']['FormattedID']))
+            #pprint(lst)                    
+            #print "Test case step obtained, FormattedID: %s, Content: %s" % (str(self.data['tc']['FormattedID']))
+            self.logger.debug("Test case step obtained, FormattedID: %s, Content: %s" % (str(self.data['tc']['FormattedID']),lst))
             return ts
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
          
     
@@ -60,9 +64,11 @@ class testCaseStep:
                 testcasestep_fields = self.data['tcstep'][i]
                 testcasestep_fields['TestCase']=tc.ref
                 testcasestep = self.rally.put('TestCaseStep', testcasestep_fields)
-                print "===> Created  TestCaseStep: %s   OID: %s" % (testcasestep.StepIndex, testcasestep.oid)    
+                #print "===> Created  TestCaseStep: %s   OID: %s" % (testcasestep.StepIndex, testcasestep.oid)    
+                self.logger.debug("===> Created  TestCaseStep: %s   OID: %s" % (testcasestep.StepIndex, testcasestep.oid))
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)    
 '''       
     #Update test case step

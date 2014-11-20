@@ -10,20 +10,24 @@ from smtplib import *
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEImage import MIMEImage
-import sys
-from pprint import pprint
-from testSet import *
-from testCase import *
+#import sys
+#from pprint import pprint
+#from testSet import *
+from testSet import testSet
+#from testCase import *
+#import testCase
 import datetime
-from user import *
-from testCaseResult import *
+#from user import *
+from user import user
+#from testCaseResult import *
+from testCaseResult import testCaseResult
 import logging
-import json
-from logging import config
-from sys import exc_info
+#import json
+#from logging import config
+#from rallyLogger import *
 
 
-logger = logging.getLogger(__name__)
+
 
 class testObject(object):
     '''
@@ -37,8 +41,32 @@ class testObject(object):
         '''
         self.data=data
         self.rally=rally
-        #self.logger=logger
-        logger.debug("testObject is initiated successfully")
+        #setup("logging.json")
+        #logger.debug("testObject is initiated successfully")
+        self.logger = logging.getLogger(__name__)
+        self.logger.propagate=False
+    '''
+    #Update ScheduleState of Test Set 
+    def updateSS(self,state):
+        try:
+            dic={}
+            dic['ts']=self.data['ts'].copy()
+            dic['ts'].pop('Build',None)
+            if state == 0:
+                dic['ts']['ScheduleState']="In-Progress"
+            if state == 1:        
+                dic['ts']['ScheduleState']="Accepted"
+            if state == 2:
+                dic['ts']['ScheduleState']="Completed"
+            ts_obj=testSet(self.rally,dic)
+            ts_obj.updateTS()
+            #self.data=dic.copy()
+            #self.updateTS()
+            logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
+        except Exception,details:
+            logger.error('ERROR: %s \n' % details, exc_info=True)
+            sys.exit(1)
+    '''
         
     #Main executor & verification      
     def runTO(self):
@@ -55,58 +83,64 @@ class testObject(object):
         ts_obj.updateTS()
         logger.info("ScheduleState is successfully updated")
         '''
-        ts_obj=testSet(self.rally,self.data)
-        ts_obj.updateSS(0) 
-                
-        verdict=[0,1,1,0]
-        logger.info("The test set is successfully run")
+        try:
+            ts_obj=testSet(self.rally,self.data)
+            ts_obj.updateSS(0) 
+                    
+            verdict=[0,1,1,0]
+            self.logger.info("The test run is successfully run")
+        except Exception,details:
+            self.logger.error("Error: %s\n" % details,exc_info=True)
         return verdict
     
     #Run the test set
     def runTS(self,tc_verds): 
-        ts_obj=testSet(self.rally,self.data)
-        ts=ts_obj.getTSByID()
-        tcs=ts_obj.allTCofTS(ts)
-        #to_obj=testObject(self.rally,self.data)
-        #tc_verds=to_obj.runTO() #run the actual tests for AVNext
-        ur_obj=user(self.rally,self.data)   
-        ur=ur_obj.getUser()
-
-        trs=[]
-        num_pass=0     
-        for tc,verd in zip(tcs,tc_verds):
+        try:
+            ts_obj=testSet(self.rally,self.data)
+            ts=ts_obj.getTSByID()
+            tcs=ts_obj.allTCofTS(ts)
+            #to_obj=testObject(self.rally,self.data)
+            #tc_verds=to_obj.runTO() #run the actual tests for AVNext
+            ur_obj=user(self.rally,self.data)   
+            ur=ur_obj.getUser()
+    
+            trs=[]
+            num_pass=0     
+            for tc,verd in zip(tcs,tc_verds):
+                dic={}
+                if verd == 0:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}      
+                if verd == 1:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}
+                    num_pass=num_pass+1
+                #try:
+                tcr=testCaseResult(self.rally,dic)                
+                #tr=self.rally.put('TestCaseResult', dic)
+                tr=tcr.createTCResult() 
+                trs.append(tr)          
+                #except Exception, details:
+                    #sys.stderr.write('ERROR: %s \n' % details)
+                    #sys.exit(1)
+                #print "Test Case %s updated; Test result oid %s is created" % (tc.FormattedID,tr.oid)
+            '''
+            #Update ScheduleState of Test Set 
             dic={}
-            if verd == 0:
-                dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}      
-            if verd == 1:
-                dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}
-                num_pass=num_pass+1
-            #try:
-            tcr=testCaseResult(self.rally,dic)                
-            #tr=self.rally.put('TestCaseResult', dic)
-            tr=tcr.createTCResult() 
-            trs.append(tr)          
-            #except Exception, details:
-                #sys.stderr.write('ERROR: %s \n' % details)
-                #sys.exit(1)
-            #print "Test Case %s updated; Test result oid %s is created" % (tc.FormattedID,tr.oid)
-        '''
-        #Update ScheduleState of Test Set 
-        dic={}
-        dic['ts']=self.data['ts'].copy()
-        dic['ts'].pop('Build',None)        
-        if num_pass == len(tc_verds):        
-            dic['ts']['ScheduleState']="Accepted"
-        else:
-            dic['ts']['ScheduleState']="Completed"
-        ts_obj_2=testSet(self.rally,dic)
-        ts_obj_2.updateTS()
-        '''
-        if num_pass == len(tc_verds):
-            ts_obj.updateSS(1) 
-        else:
-            ts_obj.updateSS(2)            
-        
+            dic['ts']=self.data['ts'].copy()
+            dic['ts'].pop('Build',None)        
+            if num_pass == len(tc_verds):        
+                dic['ts']['ScheduleState']="Accepted"
+            else:
+                dic['ts']['ScheduleState']="Completed"
+            ts_obj_2=testSet(self.rally,dic)
+            ts_obj_2.updateTS()
+            '''
+            if num_pass == len(tc_verds):
+                ts_obj.updateSS(1) 
+            else:
+                ts_obj.updateSS(2)       
+            self.logger.info("The test set %s is successfully run on Rally" % ts.FormattedID)     
+        except Exception,details:
+            self.logger.error("Error: %s\n" % details,exc_info=True)
         return trs
         
     #Generate report
@@ -116,13 +150,13 @@ class testObject(object):
             with open(filename,"ab+") as f:
                 for tr in trs:
                     f.write("Test Report for Test Set %s:\nTest Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestSet.FormattedID,tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
+            self.logger.info('Report %s is successfully generated' % filename)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            logger.error('ERROR: %s \n' % details, exc_info=True)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
         #print "Report %s is successfully generated" % filename   
         #print "--------------------------------------------------------------------"     
-        logger.info('Report %s is successfully generated' % filename)
         return filename
             
     
@@ -130,20 +164,19 @@ class testObject(object):
     #2. http://www.tutorialspoint.com/python/python_sending_email.htm
     
     def sendNotification(self,fname):
-        #Create the email.
-        msg = MIMEMultipart()
-        msg["Subject"] = str(self.data['email']['EMAIL_SUBJECT']) #EMAIL_SUBJECT 
-        msg["From"] =  str(self.data['email']['EMAIL_FROM']) #EMAIL_FROM   
-        msg["To"] =  str(",".join(self.data['email']['EMAIL_RECEIVER'])) #",".join(EMAIL_RECEIVER)   
-        #body = MIMEMultipart('alternative')
-        #body.attach(MIMEText("test", TEXT_SUBTYPE))
-        #Attach the message
-        #msg.attach(body)
-        #Attach a text file
-        msg.attach(MIMEText(file(fname).read()))  
-        
-        
         try:
+            #Create the email.
+            msg = MIMEMultipart()
+            msg["Subject"] = str(self.data['email']['EMAIL_SUBJECT']) #EMAIL_SUBJECT 
+            msg["From"] =  str(self.data['email']['EMAIL_FROM']) #EMAIL_FROM   
+            msg["To"] =  str(",".join(self.data['email']['EMAIL_RECEIVER'])) #",".join(EMAIL_RECEIVER)   
+            #body = MIMEMultipart('alternative')
+            #body.attach(MIMEText("test", TEXT_SUBTYPE))
+            #Attach the message
+            #msg.attach(body)
+            #Attach a text file
+            msg.attach(MIMEText(file(fname).read()))  
+        
             #smtpObj = SMTP(GMAIL_SMTP, GMAIL_SMTP_PORT)
             smtpObj = SMTP(str(self.data['email']['EMAIL_SMTP']), self.data['email']['EMAIL_SMTP_PORT'])
             #Identify yourself to GMAIL ESMTP server.
@@ -160,10 +193,10 @@ class testObject(object):
             smtpObj.quit()
             #print "The report is successfully sent"
             #print "--------------------------------------------------------------------"
-            logger.info("The report is successfully sent")
+            self.logger.info("The report is successfully sent")
         except SMTPException as error:
             #print "Error: unable to send email :  {err}".format(err=error)
-            logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
+            self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
         '''
         SERVER = "smtp.gmail.com"
         FROM = "spirenttestsunnyvale@gmail.com"

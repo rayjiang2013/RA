@@ -4,12 +4,11 @@ Created on Nov 11, 2014
 @author: ljiang
 '''
 import sys
-from pprint import pprint
+#from pprint import pprint
 
 import logging
-from logging import config
+#from logging import config
 
-logger = logging.getLogger(__name__)
 
 class user:
     '''
@@ -21,6 +20,8 @@ class user:
         '''
         self.data=data
         self.rally=rally
+        self.logger = logging.getLogger(__name__)
+        self.logger.propagate=False
     
     #Show a TestCase identified by the FormattedID value
     def getUser(self):
@@ -34,10 +35,12 @@ class user:
                         dic[key]=getattr(usr,key)
                     #print key,getattr(usr,key)
                 break        
-            print "User obtained, Name: %s, Content: " % usr.UserName
-            pprint(dic)
-            print "--------------------------------------------------------------------"
+            self.logger.debug("User obtained, Name: %s, Content: %s" % (usr.UserName,dic))
+            #print "User obtained, Name: %s, Content: " % usr.UserName
+            #pprint(dic)
+            #print "--------------------------------------------------------------------"
             return usr
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)

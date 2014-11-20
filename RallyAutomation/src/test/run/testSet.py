@@ -4,16 +4,17 @@ Created on Nov 10, 2014
 @author: ljiang
 '''
 import sys
-from pprint import pprint
-from testCase import *
-from testObject import *
+#from pprint import pprint
+#from testCase import *
+#from testObject import *
 #import datetime
-from user import *
+#from user import *
+#import user
 
 import logging
-from logging import config
+#from rallyLogger import *
 
-logger = logging.getLogger(__name__)
+
 
 class testSet(object):
     '''
@@ -25,11 +26,15 @@ class testSet(object):
         '''
         self.data=data
         self.rally=rally
+        #rallyLogger.setup("logging.json")
+        self.logger = logging.getLogger(__name__)
+        self.logger.propagate = False
     
            
     #Show a TestSet identified by the FormattedID value
     def getTSByID(self):
         try:
+            
             query_criteria = 'FormattedID = "%s"' % str(self.data['ts']['FormattedID'])
             response = self.rally.get('TestSet', fetch=True, query=query_criteria)
             dic={}
@@ -39,12 +44,14 @@ class testSet(object):
                         dic[key]=getattr(ts,key)
                     #print key,getattr(ts,key)
                 break        
-            print "Test set obtained, ObjectID: %s  FormattedID: %s " % (ts.oid,ts.FormattedID)
-            print "--------------------------------------------------------------------"
+            #print "Test set obtained, ObjectID: %s  FormattedID: %s " % (ts.oid,ts.FormattedID)
+            #print "--------------------------------------------------------------------"
             #pprint(dic)
+            self.logger.debug("Test set obtained, ObjectID: %s, FormattedID: %s, Content: %s" % (ts.oid,ts.FormattedID,dic))
             return ts
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
 
     #Fetch all the test cases of specific test set
@@ -57,12 +64,15 @@ class testSet(object):
             response = self.rally.get('TestCase', fetch=True, query=query_criteria)
             for tc in response:
                 lst.append(tc)
-                print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
+                #print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
+                self.logger.debug("Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID))
+            #self.logger.debug("The content of all test cases of test set %s is: %s" % (ts.FormattedID,lst))
             #pprint(lst)
-            print "--------------------------------------------------------------------"
+            #print "--------------------------------------------------------------------"
             return lst
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
 
     
@@ -70,12 +80,14 @@ class testSet(object):
     def updateTS(self):
         ts_data = self.data['ts']
         try: 
-            ts = self.rally.post('TestSet', ts_data)          
+            ts = self.rally.post('TestSet', ts_data)  
+            self.logger.debug("Test Set %s is updated" % ts.FormattedID)        
         except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details)
             sys.exit(1)
-        print "Test Set %s updated" % ts.FormattedID
-        print "--------------------------------------------------------------------"
+        #print "Test Set %s updated" % ts.FormattedID
+        #print "--------------------------------------------------------------------"
         return ts    
     
     #Update ScheduleState of Test Set 
@@ -90,11 +102,13 @@ class testSet(object):
                 dic['ts']['ScheduleState']="Accepted"
             if state == 2:
                 dic['ts']['ScheduleState']="Completed"
-            ts_obj=testSet(self.rally,dic)
-            ts_obj.updateTS()
-            logger.info("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
+            #ts_obj=testSet(self.rally,dic)
+            #ts_obj.updateTS()
+            self.data=dic.copy()
+            self.updateTS()
+            self.logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
         except Exception,details:
-            logger.error('ERROR: %s \n' % details, exc_info=True)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
     
 

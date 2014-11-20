@@ -6,17 +6,20 @@ Created on Oct 28, 2014
 import sys
 
 from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
-from pprint import pprint
+#from pprint import pprint
 import json
-from test.run.testCase import *
-from test.run.testCaseStep import *
-from test.run.testFolder import *
-from test.run.testSet import *
-from testObject import *
-import logging
-from logging import config
+#from test.run.testCase import *
+#from test.run.testCaseStep import *
+#from test.run.testFolder import *
+#from test.run.testSet import *
+from testObject import testObject
+#from testObject import testObject
+#import logging
+#from logging import config
+from rallyLogger import *
 
-logger = logging.getLogger("example")
+#logger = logging.getLogger(__name__)
+#logger.propagate=False
 '''
 #Fetch test cases 
 def fetch_tc(rally,num,tcid):
@@ -124,15 +127,20 @@ def del_tc(data):
     if delete_success == True:
         print "Test case deleted, FormattedID: %s" % data['tc']['FormattedID']
 '''
-
+'''
 #To log   
 def logConfig(log_config):
 
     #root = logging.getLogger('')
-    with open(log_config, 'rt') as f:
-        config = json.load(f)
-    logging.config.dictConfig(config)
-    logger.propagate = False
+    try:
+        with open(log_config, 'rt') as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
+        logger.propagate = False
+        logger.debug("The logging configuration is successfully loaded")
+    except Exception,details:
+        logger.error('ERROR: %s \n' % details, exc_info=True)
+        sys.exit(1)
     #root.disabled=True
     #handler = logging.FileHandler('rally-automation-framework-%s.log' % datetime.datetime.now())
         
@@ -146,14 +154,16 @@ def logConfig(log_config):
     #root.info('Hello baby')
     #root.debug('This is debugging message')
     #root.error('This is an error')
-
+'''
 
     
 if __name__ == '__main__':
     #Setup
     try:
-        logConfig("logging.json")
-       
+        #logConfig("logging.json")
+        setup("logging.json")
+        logger = logging.getLogger(__name__)
+        logger.propagate=False
         options = [opt for opt in sys.argv[1:] if opt.startswith('--')]
         server, user, password, apikey, workspace, project = rallyWorkset(options) #apikey can be obtained from https://rally1.rallydev.com/login/
         #print "--------------------------------------------------------------------\nRally project info is as below:"
@@ -182,7 +192,7 @@ if __name__ == '__main__':
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
             #print "--------------------------------------------------------------------"    
     except Exception,details:
-            logger.error('ERROR: %s \n' % details, exc_info=True)
+            logger.error('ERROR: %s %s \n' % (Exception,details), exc_info=True)
             sys.exit(1)
     #tcases=fetch_tc(rally,data['tcoption'],data['tc']['FormattedID'])    
     #all_tc_of_tf(tcases,data['tf'])

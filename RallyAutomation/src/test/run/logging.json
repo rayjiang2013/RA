@@ -41,6 +41,16 @@
         }
     },
     "loggers": {
+        "__main__": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },		
         "example": {
             "handlers": [
                 "console",
@@ -112,6 +122,16 @@
             "propagate": "no"
         },
         "user": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "rallyLogger": {
             "handlers": [
                 "console",
                 "info_file_handler",
