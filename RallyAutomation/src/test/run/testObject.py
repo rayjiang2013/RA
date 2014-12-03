@@ -9,7 +9,7 @@ Created on Nov 10, 2014
 from smtplib import *
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
-from email.MIMEImage import MIMEImage
+#from email.MIMEImage import MIMEImage
 #import sys
 #from pprint import pprint
 #from testSet import *
@@ -45,28 +45,22 @@ class testObject(object):
         #logger.debug("testObject is initiated successfully")
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
-    '''
-    #Update ScheduleState of Test Set 
-    def updateSS(self,state):
+        
+    #Copy test set
+    def copyTS(self):
         try:
-            dic={}
-            dic['ts']=self.data['ts'].copy()
-            dic['ts'].pop('Build',None)
-            if state == 0:
-                dic['ts']['ScheduleState']="In-Progress"
-            if state == 1:        
-                dic['ts']['ScheduleState']="Accepted"
-            if state == 2:
-                dic['ts']['ScheduleState']="Completed"
-            ts_obj=testSet(self.rally,dic)
-            ts_obj.updateTS()
-            #self.data=dic.copy()
-            #self.updateTS()
-            logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
-        except Exception,details:
-            logger.error('ERROR: %s \n' % details, exc_info=True)
+            ts_obj=testSet(self.rally,self.data)
+            (ts_origin,ts_origin_dic)=ts_obj.getTSByID()
+            ts_dst=ts_obj.createTS(ts_origin_dic)
+            ts_obj.addTCs(ts_origin,ts_dst)
+            self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
+            #self.data['ts']={}
+            self.data['ts']['FormattedID']=ts_dst.FormattedID
+            self.logger.info("The test set is successfully copied")
+            return ts_dst
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details)
             sys.exit(1)
-    '''
         
     #Main executor & verification      
     def runTO(self):
@@ -87,7 +81,7 @@ class testObject(object):
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
                     
-            verdict=[0,1,1,0]
+            verdict=[1,1,1]
             self.logger.info("The test run is successfully run")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
@@ -97,7 +91,7 @@ class testObject(object):
     def runTS(self,tc_verds): 
         try:
             ts_obj=testSet(self.rally,self.data)
-            ts=ts_obj.getTSByID()
+            ts=ts_obj.getTSByID()[0]
             tcs=ts_obj.allTCofTS(ts)
             #to_obj=testObject(self.rally,self.data)
             #tc_verds=to_obj.runTO() #run the actual tests for AVNext
@@ -162,7 +156,7 @@ class testObject(object):
     
     #Send email notification; two ways - 1.http://z3ugma.github.io/blog/2014/01/26/getting-python-working-on-microsoft-exchange/    not working, hold for now
     #2. http://www.tutorialspoint.com/python/python_sending_email.htm
-    
+    # Also, the current smtp server of spirent doesnot allow sending email to email address outside the spirent domain.
     def sendNotification(self,fname):
         try:
             #Create the email.
@@ -188,7 +182,7 @@ class testObject(object):
             #smtpObj.login(None,None)#user=EMAIL_FROM, password=EMAIL_PASSWD) Actually the spirent smtp server does not allow authentication, so no login is needed
             #Send email
             #smtpObj.sendmail(EMAIL_FROM, EMAIL_RECEIVER, msg.as_string())
-            smtpObj.sendmail(msg["From"], msg["To"], msg.as_string())
+            smtpObj.sendmail(msg["From"], msg["To"].split(','), msg.as_string())
             #close connection and session.
             smtpObj.quit()
             #print "The report is successfully sent"

@@ -48,7 +48,7 @@ class testSet(object):
             #print "--------------------------------------------------------------------"
             #pprint(dic)
             self.logger.debug("Test set obtained, ObjectID: %s, FormattedID: %s, Content: %s" % (ts.oid,ts.FormattedID,dic))
-            return ts
+            return (ts,dic)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
@@ -78,8 +78,14 @@ class testSet(object):
     
     #Update test set
     def updateTS(self):
-        ts_data = self.data['ts']
+
+
         try: 
+            ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') or (key == u'FormattedID'))}
+            #ts_data = self.data['ts']
+            for key in ts_data.iterkeys():
+                if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
+                    ts_data[key]=ts_data[key]._ref            
             ts = self.rally.post('TestSet', ts_data)  
             self.logger.debug("Test Set %s is updated" % ts.FormattedID)        
         except Exception, details:
@@ -96,6 +102,7 @@ class testSet(object):
             dic={}
             dic['ts']=self.data['ts'].copy()
             dic['ts'].pop('Build',None)
+            dic['ts'].pop('Blocked',None)
             if state == 0:
                 dic['ts']['ScheduleState']="In-Progress"
             if state == 1:        
@@ -111,7 +118,58 @@ class testSet(object):
             self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)
     
-
+    #Create test set
+    def createTS(self,ts_dic):
+        #ts_data={}
+        #ts_data['Name'] = self.data['ts']['Name'] #Create a test set with the test set name defined in extra.json
+        try:
+            if ts_dic is not None:
+                ts_data = {key: value for key, value in ts_dic.iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))}
+            else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
+            #ts_data['TestCases']=self.data['ts']['__collection_ref_for_TestCases']
+            for key in ts_data.iterkeys():
+                if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
+                    ts_data[key]=ts_data[key]._ref
+            ts = self.rally.put('TestSet', ts_data)
+            self.data['ts'].update(ts_data)
+            #self.data['ts']=ts_data
+            self.logger.debug("Test set created, ObjectID: %s  FormattedID: %s" % (ts.oid, ts.FormattedID))      
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details)
+            sys.exit(1)
+        
+        return ts  
+    '''
+    #Copy test set
+    def copyTS(self):
+        try:
+            (ts_origin,ts_origin_dic)=self.getTSByID()
+            ts_dst=self.createTS(ts_origin_dic)
+            self.addTCs(ts_origin,ts_dst)
+            self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details)
+            sys.exit(1)
+    '''
+    
+    #Add test cases to test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
+    #. _ref is like http://xyc/abc/12345) as reference to an object when needed. 
+    #Ex: http://stackoverflow.com/questions/21718491/how-to-add-new-testcases-to-an-existing-rally-folder
+    def addTCs(self,ts_origin,ts_dst):
+        try: 
+            tcs=self.allTCofTS(ts_origin)
+            dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[] }    
+            for tc in tcs:
+                dic['TestCases'].append({'_ref' : str(tc._ref)})      
+                self.logger.debug("Test case %s is added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
+            self.rally.post('TestSet', dic) 
+            self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
+            sys.exit(1)    
+    
+    
     '''
     #Run the test set
     def runTS(self): 

@@ -90,8 +90,7 @@ class testFolder:
     #Ex: http://stackoverflow.com/questions/21718491/how-to-add-new-testcases-to-an-existing-rally-folder
     def addTC(self):
         try: 
-            tf_obj=testFolder(self.rally,self.data)
-            tf=tf_obj.getTFByID()
+            tf=self.getTFByID()
             self.data['tc']['TestFolder']=str(tf._ref)
             tc_new = self.rally.post('TestCase', self.data['tc'])   
             self.logger.debug("Test cases %s is added to Test folder %s" % (tc_new.FormattedID,tf.FormattedID))  

@@ -13,10 +13,10 @@ import json
 #from test.run.testFolder import *
 #from test.run.testSet import *
 from testObject import testObject
-#from testObject import testObject
 #import logging
 #from logging import config
 from rallyLogger import *
+#from testSet import testSet
 
 #logger = logging.getLogger(__name__)
 #logger.propagate=False
@@ -214,9 +214,13 @@ if __name__ == '__main__':
     #tf.delTF()
     #tf.addTC()
     #ts=testSet(rally,data)    
-    #ts.runTS()
-
+    #ts.createTS()
+    #ts.copyTS()
+    #ts.addTCs()
+    #data['ts']['FormattedID']=
+    
     to=testObject(rally,data)
+    to.copyTS()
     verd=to.runTO()
     test_results=to.runTS(verd)    
     report=to.genReport(test_results)
@@ -227,14 +231,3 @@ if __name__ == '__main__':
 
     
 
-'''
-response = rally.get('Release', fetch="Project,Name,ReleaseStartDate,ReleaseDate",
-                     order="ReleaseDate")
-print response
-
-for release in response:
-    rlsStart = rls.ReleaseStartDate.split('T')[0]  # just need the date part
-    rlsDate  = rls.ReleaseDate.split('T')[0]       # ditto
-    print "%-6.6s  %-16.16s   %s  -->  %s" % \
-          (rls.Project.Name, rls.Name, rlsStart, rlsDate)
-'''

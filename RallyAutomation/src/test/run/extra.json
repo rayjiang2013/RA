@@ -56,8 +56,20 @@
     },
     "ts": {
         "Build": "6666",
-        "FormattedID": "TS7",
-        "ScheduleState": "In-Progress"
+        "FormattedID": "TS8",
+        "Name": "New test set",
+        "ScheduleState": "Defined",
+		"Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
+		"Description":"",
+		"Owner":"https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
+		"Ready":"",
+		"Release":"",
+		"PlanEstimate":"",
+		"Blocked":"",
+		"BlockedReason":"",
+		"Iteration":"",
+		"Expedite":"",
+		"__collection_ref_for_TestCases":""		
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
