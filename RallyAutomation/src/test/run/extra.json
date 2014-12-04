@@ -55,23 +55,33 @@
         "TestCases": ""
     },
     "ts": {
+        "Blocked": "",
+        "BlockedReason": "",
         "Build": "6666",
+        "Description": "",
+        "Expedite": "",
         "FormattedID": "TS8",
+        "Iteration": "",
         "Name": "New test set",
+        "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
+        "PlanEstimate": "",
+        "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
+        "Ready": "",
+        "Release": "",
         "ScheduleState": "Defined",
-		"Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
-		"Description":"",
-		"Owner":"https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
-		"Ready":"",
-		"Release":"",
-		"PlanEstimate":"",
-		"Blocked":"",
-		"BlockedReason":"",
-		"Iteration":"",
-		"Expedite":"",
-		"__collection_ref_for_TestCases":""		
+        "__collection_ref_for_TestCases": ""
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    }
+    },
+	"df":{
+		"FormattedID":"DE3803",
+		"TargetBuild": "6666",
+		"Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
+		"Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
+		"ScheduleState":"Defined",
+		"State":"Submitted",
+		"Name":"Error found in TC766: Sixth Test Case (automatically created with rally api) - updated",
+		"TestCase":"https://rally1.rallydev.com/slm/webservice/v2.0/testcase/24801567446"
+	}
 }

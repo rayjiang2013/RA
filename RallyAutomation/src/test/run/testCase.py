@@ -49,7 +49,7 @@ class testCase:
     
     #Create test case
     def createTC(self):
-        tc_data = {key: value for key, value in self.data['tc'].items() if key is not 'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
+        tc_data = {key: value for key, value in self.data['tc'].items() if key != u'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
         try:
             tc = self.rally.put('TestCase', tc_data)
             self.logger.debug("Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID))
