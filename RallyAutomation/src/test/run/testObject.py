@@ -10,7 +10,7 @@ from smtplib import *
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 #from email.MIMEImage import MIMEImage
-#import sys
+import sys
 #from pprint import pprint
 #from testSet import *
 from testSet import testSet
@@ -25,7 +25,7 @@ import logging
 #import json
 #from logging import config
 #from rallyLogger import *
-
+from defect import defect
 
 
 
@@ -59,7 +59,7 @@ class testObject(object):
             self.logger.info("The test set is successfully copied")
             return ts_dst
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
         
     #Main executor & verification      
@@ -81,7 +81,8 @@ class testObject(object):
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
                     
-            verdict=[1,1,1]
+            #verdict=[0,1,1]
+            verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
             self.logger.info("The test run is successfully run")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
@@ -102,16 +103,75 @@ class testObject(object):
             num_pass=0     
             for tc,verd in zip(tcs,tc_verds):
                 dic={}
-                if verd == 0:
-                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}      
-                if verd == 1:
-                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}
+                if verd[0] == 0:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
+                    df_obj=defect(self.rally,dic)   
+                    dfs=df_obj.allDFofTC(tc)
+                    i=1
+                    for df in dfs:
+                        #if not exist create new issue for the failed test cases
+                        if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
+                            if i==len(dfs):
+
+                                create_df={"FoundInBuild": self.data['ts']['Build'],
+                                            "Project": ts.Project._ref,
+                                            "Owner": ts.Owner._ref,
+                                            "ScheduleState":"Defined",
+                                            "State":"Submitted",
+                                            "Name":"Error found in %s: Sixth Test Case (automatically created with rally api) - updated" % tc.FormattedID,
+                                            "TestCase":tc._ref}
+                                self.data['df'].update(create_df)
+                                df_obj=defect(self.rally,self.data)
+                                new_df=df_obj.createDF()
+                                
+                                #update test case result
+                                tcr=testCaseResult(self.rally,dic)                
+                                #tr=self.rally.put('TestCaseResult', dic)
+                                tr=tcr.createTCResult() 
+                                trs.append(tr)  
+                                
+                                #update defect with link to test case result
+                                update_df={'df':None}
+                                update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
+                                df_obj=defect(self.rally,update_df)
+                                df_obj.updateDF()    
+                                self.logger.info("The defect %s is successfully linked with test case result %s" % (new_df.FormattedID,tr._ref))         
+                            i+=1                                
+                            continue        
+                        #if exist
+                        else:
+                            #check if the defect is marked as fixed or not
+                            if df.State == "Fixed":
+                                update_df={'df':None}
+                                #reopen the defect, make notes about the build, env and steps. Assign to someone
+                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s. " % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
+                                self.logger.info("The defect %s is being re-open and updated with repro info" % df.FormattedID)                      
+                            else: #inserting notes. 
+                                update_df={'df':None}
+                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s. " % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
+                                self.logger.info("The defect %s is being updated with repro info" % df.FormattedID) 
+                            df_obj=defect(self.rally,update_df)
+                            df_obj.updateDF()   
+
+                            #update test case result
+                            tcr=testCaseResult(self.rally,dic)                
+                            #tr=self.rally.put('TestCaseResult', dic)
+                            tr=tcr.createTCResult() 
+                            trs.append(tr)  
+                            break
+                                                   
+
+                if verd[0] == 1:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}
                     num_pass=num_pass+1
-                #try:
-                tcr=testCaseResult(self.rally,dic)                
-                #tr=self.rally.put('TestCaseResult', dic)
-                tr=tcr.createTCResult() 
-                trs.append(tr)          
+
+                    #update test case result
+                    tcr=testCaseResult(self.rally,dic)                
+                    #tr=self.rally.put('TestCaseResult', dic)
+                    tr=tcr.createTCResult() 
+                    trs.append(tr)          
+
+                
                 #except Exception, details:
                     #sys.stderr.write('ERROR: %s \n' % details)
                     #sys.exit(1)
@@ -130,6 +190,7 @@ class testObject(object):
             '''
             if num_pass == len(tc_verds):
                 ts_obj.updateSS(1) 
+
             else:
                 ts_obj.updateSS(2)       
             self.logger.info("The test set %s is successfully run on Rally" % ts.FormattedID)     
@@ -142,8 +203,12 @@ class testObject(object):
         filename="Report-%s.log" % datetime.datetime.now()
         try:
             with open(filename,"ab+") as f:
+                i=0
                 for tr in trs:
-                    f.write("Test Report for Test Set %s:\nTest Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestSet.FormattedID,tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
+                    if i == 0:
+                        f.write("Test Report for Test Set %s:\n" % tr.TestSet.FormattedID)
+                        i+=1                       
+                    f.write("Test Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
             self.logger.info('Report %s is successfully generated' % filename)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)

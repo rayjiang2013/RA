@@ -13,7 +13,7 @@ import sys
 
 import logging
 #from rallyLogger import *
-
+from types import *
 
 
 class testSet(object):
@@ -78,8 +78,6 @@ class testSet(object):
     
     #Update test set
     def updateTS(self):
-
-
         try: 
             ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') or (key == u'FormattedID'))}
             #ts_data = self.data['ts']
@@ -90,7 +88,7 @@ class testSet(object):
             self.logger.debug("Test Set %s is updated" % ts.FormattedID)        
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
         #print "Test Set %s updated" % ts.FormattedID
         #print "--------------------------------------------------------------------"
@@ -120,22 +118,27 @@ class testSet(object):
     
     #Create test set
     def createTS(self,ts_dic):
-        #ts_data={}
+        ts_data={}
         #ts_data['Name'] = self.data['ts']['Name'] #Create a test set with the test set name defined in extra.json
         try:
             if ts_dic is not None:
-                ts_data = {key: value for key, value in ts_dic.iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))}
-            else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
+                for key, value in ts_dic.iteritems():
+                    #http://stackoverflow.com/questions/16069517/python-logical-evaluation-order-in-if-statement : The expression x and y first evaluates x; if x is false, its value is returned; otherwise, y is evaluated and the resulting value is returned.The expression x or y first evaluates x; if x is true, its value is returned; otherwise, y is evaluated and the resulting value is returned.
+                    if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build')) and (value is not None)): 
+                        ts_data[key]=value     
+                #ts_data = {key: value for key, value in ts_dic.iteritems() if ((key == 'Name') or (key == 'ScheduleState') or (key == 'Project') or (key == 'Description') or (key == 'Owner') or (key == 'Ready') or (key == 'Release') or (key == 'PlanEstimate') or (key == 'Blocked') or (key == 'BlockedReason') or (key == 'Iteration') or (key == 'Expedite') or (key == 'Build'))}
+            else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build')) and (value is not None))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
             #ts_data['TestCases']=self.data['ts']['__collection_ref_for_TestCases']
             for key in ts_data.iterkeys():
                 if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
                     ts_data[key]=ts_data[key]._ref
+            ts_data['ScheduleState']="Defined"
             ts = self.rally.put('TestSet', ts_data)
             self.data['ts'].update(ts_data)
             #self.data['ts']=ts_data
             self.logger.debug("Test set created, ObjectID: %s  FormattedID: %s" % (ts.oid, ts.FormattedID))      
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
         
         return ts  

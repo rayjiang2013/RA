@@ -70,3 +70,38 @@ class defect:
             #sys.stderr.write('ERROR: %s \n' % details)
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
+
+    #Fetch all the defects of specific test case            
+    def allDFofTC(self,tc):
+        try:
+            lst=[]
+            #ts_obj=testSet(self.rally,self.data)
+            #ts=ts_obj.getTSByID()       
+            query_criteria = 'TestCase = "%s"' % str(tc._ref)
+            response = self.rally.get('Defect', fetch=True, query=query_criteria)
+            for df in response:
+                lst.append(df)
+                #print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
+                self.logger.debug("Defect obtained, ObjectID: %s, Formatted ID: %s, test case id: %s" % (df.oid,df.FormattedID,tc.FormattedID))
+            #self.logger.debug("The content of all test cases of test set %s is: %s" % (ts.FormattedID,lst))
+            #pprint(lst)
+            #print "--------------------------------------------------------------------"
+            return lst
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
+            sys.exit(1)
+            
+    #Update defect
+    def updateDF(self):
+        df_data = self.data['df']
+        try: 
+            df = self.rally.post('Defect', df_data)
+            self.logger.debug("Defect %s updated" % df.FormattedID)          
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #sys.exit(1)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
+            sys.exit(1)
+        #print "Test Case %s updated" % tc.FormattedID
+        return df

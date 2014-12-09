@@ -1,4 +1,15 @@
 {
+    "df": {
+        "FormattedID": "DE3803",
+        "FoundInBuild": "6666",
+        "Name": "Error found in TC766: Sixth Test Case (automatically created with rally api) - updated",
+        "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
+        "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
+        "ScheduleState": "Defined",
+        "State": "Submitted",
+        "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/24801567446",
+        "TestCaseResult": ""
+    },
     "email": {
         "EMAIL_FROM": "lei.jiang@spirent.com",
         "EMAIL_RECEIVER": [
@@ -60,7 +71,7 @@
         "Build": "6666",
         "Description": "",
         "Expedite": "",
-        "FormattedID": "TS8",
+        "FormattedID": "TS48",
         "Iteration": "",
         "Name": "New test set",
         "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
@@ -73,15 +84,5 @@
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    },
-	"df":{
-		"FormattedID":"DE3803",
-		"TargetBuild": "6666",
-		"Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
-		"Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
-		"ScheduleState":"Defined",
-		"State":"Submitted",
-		"Name":"Error found in TC766: Sixth Test Case (automatically created with rally api) - updated",
-		"TestCase":"https://rally1.rallydev.com/slm/webservice/v2.0/testcase/24801567446"
-	}
+    }
 }

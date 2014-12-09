@@ -17,8 +17,10 @@ from testObject import testObject
 #from logging import config
 from rallyLogger import *
 #from testSet import testSet
-from defect import defect
+#from defect import defect
 
+#from testCase import testCase
+#from testCaseResult import testCaseResult
 #logger = logging.getLogger(__name__)
 #logger.propagate=False
 '''
@@ -219,17 +221,20 @@ if __name__ == '__main__':
     #ts.copyTS()
     #ts.addTCs()
     #data['ts']['FormattedID']=
-    df=defect(rally,data)
+    #df=defect(rally,data)
     #df.getDFByID()
-    df.createDF()
-    '''
+    #df.createDF()
+    #tcr=testCaseResult(rally,data)
+    #tc=testCase(rally,data)
+    #tcr.allTCRofTC(tc.getTCByID())
+    
     to=testObject(rally,data)
     to.copyTS()
     verd=to.runTO()
     test_results=to.runTS(verd)    
     report=to.genReport(test_results)
     to.sendNotification(report)
-    '''
+    
     #to_obj=testObject(None,None)
     #to_obj.log("logging.json")
 
