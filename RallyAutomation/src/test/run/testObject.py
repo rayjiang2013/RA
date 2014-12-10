@@ -108,6 +108,33 @@ class testObject(object):
                     df_obj=defect(self.rally,dic)   
                     dfs=df_obj.allDFofTC(tc)
                     i=1
+                    #if there is no existing defects in the test case, just create one
+                    if len(dfs)==0:
+                        #if not exist create new issue for the failed test cases
+
+                            create_df={"FoundInBuild": self.data['ts']['Build'],
+                                        "Project": ts.Project._ref,
+                                        "Owner": ts.Owner._ref,
+                                        "ScheduleState":"Defined",
+                                        "State":"Submitted",
+                                        "Name":"Error found in %s: Sixth Test Case (automatically created with rally api) - updated" % tc.FormattedID,
+                                        "TestCase":tc._ref}
+                            self.data['df'].update(create_df)
+                            df_obj=defect(self.rally,self.data)
+                            new_df=df_obj.createDF()
+                            
+                            #update test case result
+                            tcr=testCaseResult(self.rally,dic)                
+                            #tr=self.rally.put('TestCaseResult', dic)
+                            tr=tcr.createTCResult() 
+                            trs.append(tr)  
+                                
+                            #update defect with link to test case result
+                            update_df={'df':None}
+                            update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
+                            df_obj=defect(self.rally,update_df)
+                            df_obj.updateDF()    
+                            self.logger.info("The defect %s is successfully linked with test case result %s" % (new_df.FormattedID,tr._ref))  
                     for df in dfs:
                         #if not exist create new issue for the failed test cases
                         if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
@@ -144,11 +171,12 @@ class testObject(object):
                             if df.State == "Fixed":
                                 update_df={'df':None}
                                 #reopen the defect, make notes about the build, env and steps. Assign to someone
-                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s. " % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
+                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br>" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
                                 self.logger.info("The defect %s is being re-open and updated with repro info" % df.FormattedID)                      
                             else: #inserting notes. 
                                 update_df={'df':None}
-                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s. " % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
+                                #print df.Notes
+                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br>" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
                                 self.logger.info("The defect %s is being updated with repro info" % df.FormattedID) 
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()   

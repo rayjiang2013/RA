@@ -61,7 +61,7 @@ class testSet(object):
             #ts_obj=testSet(self.rally,self.data)
             #ts=ts_obj.getTSByID()       
             query_criteria = 'TestSets = "%s"' % str(ts._ref)
-            response = self.rally.get('TestCase', fetch=True, query=query_criteria)
+            response = self.rally.get('TestCase', fetch=True, query=query_criteria, order='DragAndDropRank')
             for tc in response:
                 lst.append(tc)
                 #print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
@@ -124,16 +124,17 @@ class testSet(object):
             if ts_dic is not None:
                 for key, value in ts_dic.iteritems():
                     #http://stackoverflow.com/questions/16069517/python-logical-evaluation-order-in-if-statement : The expression x and y first evaluates x; if x is false, its value is returned; otherwise, y is evaluated and the resulting value is returned.The expression x or y first evaluates x; if x is true, its value is returned; otherwise, y is evaluated and the resulting value is returned.
-                    if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build')) and (value is not None)): 
+                    if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') ) and (value is not None)): 
                         ts_data[key]=value     
                 #ts_data = {key: value for key, value in ts_dic.iteritems() if ((key == 'Name') or (key == 'ScheduleState') or (key == 'Project') or (key == 'Description') or (key == 'Owner') or (key == 'Ready') or (key == 'Release') or (key == 'PlanEstimate') or (key == 'Blocked') or (key == 'BlockedReason') or (key == 'Iteration') or (key == 'Expedite') or (key == 'Build'))}
-            else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build')) and (value is not None))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
+            else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if (((key == u'Name') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') ) and (value is not None))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
             #ts_data['TestCases']=self.data['ts']['__collection_ref_for_TestCases']
             for key in ts_data.iterkeys():
                 if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
                     ts_data[key]=ts_data[key]._ref
             ts_data['ScheduleState']="Defined"
             ts = self.rally.put('TestSet', ts_data)
+
             self.data['ts'].update(ts_data)
             #self.data['ts']=ts_data
             self.logger.debug("Test set created, ObjectID: %s  FormattedID: %s" % (ts.oid, ts.FormattedID))      
@@ -162,11 +163,21 @@ class testSet(object):
         try: 
             tcs=self.allTCofTS(ts_origin)
             dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[] }    
+            #rank=[]
             for tc in tcs:
-                dic['TestCases'].append({'_ref' : str(tc._ref)})      
+                dic['TestCases'].append({'_ref' : str(tc._ref)}) 
+                #rank.append(tc.DragAndDropRank)     
                 self.logger.debug("Test case %s is added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
-            self.rally.post('TestSet', dic) 
+            new_ts=self.rally.post('TestSet', dic) 
             self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
+            #Rank it 
+            #new_tcs=self.allTCofTS(new_ts)
+            #i=0
+            #for new_tc in new_tcs:            
+                #tc_rank_dic={'FormattedID':new_tc.FormattedID,'DragAndDropRank':rank[i]}
+                #tc_rank=self.rally.post('TestCase', tc_rank_dic)
+                #i+=1
+            return new_ts
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             self.logger.error('ERROR: %s \n' % details, exc_info=True)
