@@ -26,7 +26,8 @@ import logging
 #from logging import config
 #from rallyLogger import *
 from defect import defect
-
+import requests
+import ast
 
 
 class testObject(object):
@@ -52,18 +53,18 @@ class testObject(object):
             ts_obj=testSet(self.rally,self.data)
             (ts_origin,ts_origin_dic)=ts_obj.getTSByID()
             ts_dst=ts_obj.createTS(ts_origin_dic)
-            ts_obj.addTCs(ts_origin,ts_dst)
+            ts_new=ts_obj.addTCs(ts_origin,ts_dst)
             self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
             #self.data['ts']={}
             self.data['ts']['FormattedID']=ts_dst.FormattedID
             self.logger.info("The test set is successfully copied")
-            return ts_dst
+            return ts_new
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
         
     #Main executor & verification      
-    def runTO(self):
+    def runTO(self,testset_under_test):
         '''
         Excute and verification
         '''
@@ -78,11 +79,59 @@ class testObject(object):
         logger.info("ScheduleState is successfully updated")
         '''
         try:
+            verdict=[]
+            dic={}
+            for tc in testset_under_test.TestCases:
+                #Check if the test case is blocked in most recent run with current build. For...else is used(http://psung.blogspot.com/2007/12/for-else-in-python.html)
+                for tr in reversed(tc.Results):
+                    if self.data['ts']['Build']==tr.Build:
+                        if tr.Verdict=='Blocked':                            
+                            #dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':testset_under_test._ref}  
+                            #update test case result
+                            #tcr=testCaseResult(self.rally,dic)                
+                            #tr=tcr.createTCResult() 
+                            verdict.append((2,'Blocked:the test case is blocked in last test run with same build id %s' % self.data["ts"]["Build"]))
+                            break
+                        else:
+                            lst=tc.c_QATCPARAMSSTRING.split('|')
+                            if lst[0] == "GET":
+                                r = requests.get(lst[1])                        
+                            if lst[0] == "POST":
+                                r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
+                            if lst[0] == "DELETE":
+                                r = requests.delete(lst[1])
+                            if lst[0] == "PUT":
+                                r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
+                            
+                            if r.status_code == int(lst[3]):
+                                verdict.append((1,'Success:'+lst[4]))
+                            else: 
+                                verdict.append((0,'Failure:'+lst[4]))
+                            
+                            break
+                else:    
+                    lst=tc.c_QATCPARAMSSTRING.split('|')
+                    if lst[0] == "GET":
+                        r = requests.get(lst[1])                        
+                    if lst[0] == "POST":
+                        r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
+                    if lst[0] == "DELETE":
+                        r = requests.delete(lst[1])
+                    if lst[0] == "PUT":
+                        r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
+                                
+                    if r.status_code == int(lst[3]):
+                        verdict.append((1,'Success:'+lst[4]))
+                    else: 
+                        verdict.append((0,'Failure:'+lst[4]))
+                    
+            #To be continued    
+                
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
                     
             #verdict=[0,1,1]
-            verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
+            #verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
             self.logger.info("The test run is successfully run")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
@@ -199,7 +248,13 @@ class testObject(object):
                     tr=tcr.createTCResult() 
                     trs.append(tr)          
 
-                
+                if verd[0] == 2:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
+                    #update test case result
+                    tcr=testCaseResult(self.rally,dic)                
+                    tr=tcr.createTCResult()    
+                    trs.append(tr) 
+                                 
                 #except Exception, details:
                     #sys.stderr.write('ERROR: %s \n' % details)
                     #sys.exit(1)

@@ -229,8 +229,8 @@ if __name__ == '__main__':
     #tcr.allTCRofTC(tc.getTCByID())
     
     to=testObject(rally,data)
-    to.copyTS()
-    verd=to.runTO()
+    ts_ut=to.copyTS()
+    verd=to.runTO(ts_ut)
     test_results=to.runTS(verd)    
     report=to.genReport(test_results)
     to.sendNotification(report)
