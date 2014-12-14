@@ -104,9 +104,9 @@ class testObject(object):
                                 r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
                             
                             if r.status_code == int(lst[3]):
-                                verdict.append((1,'Success:'+lst[4]))
+                                verdict.append((1,'Success: status code expected'))
                             else: 
-                                verdict.append((0,'Failure:'+lst[4]))
+                                verdict.append((0,'Failure: status code unexpected'))
                             
                             break
                 else:    
@@ -121,9 +121,9 @@ class testObject(object):
                         r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
                                 
                     if r.status_code == int(lst[3]):
-                        verdict.append((1,'Success:'+lst[4]))
+                        verdict.append((1,'Success: status code expected'))
                     else: 
-                        verdict.append((0,'Failure:'+lst[4]))
+                        verdict.append((0,'Failure: status code unexpected'))
                     
             #To be continued    
                 
@@ -220,12 +220,12 @@ class testObject(object):
                             if df.State == "Fixed":
                                 update_df={'df':None}
                                 #reopen the defect, make notes about the build, env and steps. Assign to someone
-                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br>" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
+                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
                                 self.logger.info("The defect %s is being re-open and updated with repro info" % df.FormattedID)                      
                             else: #inserting notes. 
                                 update_df={'df':None}
                                 #print df.Notes
-                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br>" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
+                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
                                 self.logger.info("The defect %s is being updated with repro info" % df.FormattedID) 
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()   
