@@ -235,7 +235,7 @@ if __name__ == '__main__':
     report=to.genReport(test_results)
     to.sendNotification(report)
     
-    #to_obj=testObject(None,None)
+    #to_obj=testObject(None,None)    
     #to_obj.log("logging.json")
 
     

@@ -80,10 +80,10 @@ class testObject(object):
         '''
         try:
             verdict=[]
-            dic={}
             for tc in testset_under_test.TestCases:
+                sorted_trs=sorted(tc.Results, key=lambda x: x.Date, reverse=True)
                 #Check if the test case is blocked in most recent run with current build. For...else is used(http://psung.blogspot.com/2007/12/for-else-in-python.html)
-                for tr in reversed(tc.Results):
+                for tr in sorted_trs:
                     if self.data['ts']['Build']==tr.Build:
                         if tr.Verdict=='Blocked':                            
                             #dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':testset_under_test._ref}  
@@ -91,6 +91,7 @@ class testObject(object):
                             #tcr=testCaseResult(self.rally,dic)                
                             #tr=tcr.createTCResult() 
                             verdict.append((2,'Blocked:the test case is blocked in last test run with same build id %s' % self.data["ts"]["Build"]))
+                            self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
                             lst=tc.c_QATCPARAMSSTRING.split('|')
@@ -107,7 +108,7 @@ class testObject(object):
                                 verdict.append((1,'Success: status code expected'))
                             else: 
                                 verdict.append((0,'Failure: status code unexpected'))
-                            
+                            self.logger.debug("The test case %s for build %s will be executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                 else:    
                     lst=tc.c_QATCPARAMSSTRING.split('|')
@@ -125,14 +126,14 @@ class testObject(object):
                     else: 
                         verdict.append((0,'Failure: status code unexpected'))
                     
-            #To be continued    
+                    self.logger.debug("The test case %s for build %s will be executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                 
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
                     
             #verdict=[0,1,1]
             #verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
-            self.logger.info("The test run is successfully run")
+            self.logger.info("The test run is successfully executed")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
         return verdict
