@@ -54,10 +54,10 @@ class testObject(object):
             (ts_origin,ts_origin_dic)=ts_obj.getTSByID()
             ts_dst=ts_obj.createTS(ts_origin_dic)
             ts_new=ts_obj.addTCs(ts_origin,ts_dst)
-            self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
+            self.logger.info("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
             #self.data['ts']={}
             self.data['ts']['FormattedID']=ts_dst.FormattedID
-            self.logger.info("The test set is successfully copied")
+            #self.logger.info("The test set is successfully copied")
             return ts_new
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
@@ -133,7 +133,7 @@ class testObject(object):
                     
             #verdict=[0,1,1]
             #verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
-            self.logger.info("The test run is successfully executed")
+            self.logger.info("The test run is successfully executed on Chasis")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
         return verdict
@@ -184,7 +184,7 @@ class testObject(object):
                             update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()    
-                            self.logger.info("The defect %s is successfully linked with test case result %s" % (new_df.FormattedID,tr._ref))  
+                            self.logger.debug("The defect %s is linked to test case result %s" % (new_df.FormattedID,tr._ref))  
                     for df in dfs:
                         #if not exist create new issue for the failed test cases
                         if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
@@ -212,7 +212,7 @@ class testObject(object):
                                 update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
                                 df_obj=defect(self.rally,update_df)
                                 df_obj.updateDF()    
-                                self.logger.info("The defect %s is successfully linked with test case result %s" % (new_df.FormattedID,tr._ref))         
+                                self.logger.debug("The defect %s is linked to test case result %s" % (new_df.FormattedID,tr._ref))         
                             i+=1                                
                             continue        
                         #if exist
@@ -222,12 +222,12 @@ class testObject(object):
                                 update_df={'df':None}
                                 #reopen the defect, make notes about the build, env and steps. Assign to someone
                                 update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
-                                self.logger.info("The defect %s is being re-open and updated with repro info" % df.FormattedID)                      
+                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will re-open and update it with repro info" % (df.FormattedID,self.data['ts']['Build'],ts.FormattedID,tc.FormattedID))                      
                             else: #inserting notes. 
                                 update_df={'df':None}
                                 #print df.Notes
                                 update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
-                                self.logger.info("The defect %s is being updated with repro info" % df.FormattedID) 
+                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will update it with repro info" % (df.FormattedID,self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)) 
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()   
 
@@ -277,7 +277,7 @@ class testObject(object):
 
             else:
                 ts_obj.updateSS(2)       
-            self.logger.info("The test set %s is successfully run on Rally" % ts.FormattedID)     
+            self.logger.info("The test set %s on Rally is successfully updated with test execution information" % ts.FormattedID)     
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
         return trs
