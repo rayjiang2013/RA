@@ -5,7 +5,7 @@ Created on Nov 10, 2014
 '''
 import sys
 #from pprint import pprint
-#from testCase import *
+from testCase import *
 #from testObject import *
 #import datetime
 #from user import *
@@ -183,6 +183,24 @@ class testSet(object):
             self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)    
     
+    #Manually add the test case because of the Rally bug: https://rallydev.force.com/cases/detail?id=5001400000mYFVuAAO
+    def manualAddTCs(self,ts_dst):
+        try: 
+            tcids=self.data['ts']['TestCases']
+            dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[]}    
+            for tcid in tcids:
+                self.data['tc']['FormattedID']=tcid
+                tc_obj=testCase(self.rally,self.data)
+                tc=tc_obj.getTCByID()
+                dic['TestCases'].append({'_ref' : str(tc._ref)})
+                self.logger.debug("Test case %s will be added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
+            new_ts=self.rally.post('TestSet', dic) 
+            self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
+            return new_ts
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            self.logger.error('ERROR: %s \n' % details, exc_info=True)
+            sys.exit(1)            
     
     '''
     #Run the test set

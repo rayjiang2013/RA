@@ -34,7 +34,7 @@ class testCase:
                 for key in dir(tc):
                     if not key.endswith("__"):
                         dic[key]=getattr(tc,key)
-                    print key,getattr(tc,key)
+                    #print key,getattr(tc,key)
                 break        
             #print "Test case obtained, ObjectID: %s  FormattedID: %s  Content: " % (tc.oid,tc.FormattedID)
             #pprint(dic)

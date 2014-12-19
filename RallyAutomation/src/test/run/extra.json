@@ -80,6 +80,12 @@
         "Ready": "",
         "Release": "",
         "ScheduleState": "Defined",
+        "TestCases": [
+            "TC1023",
+            "TC1079",
+            "TC1027",
+            "TC1026"
+        ],
         "__collection_ref_for_TestCases": ""
     },
     "user": {

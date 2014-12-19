@@ -53,7 +53,8 @@ class testObject(object):
             ts_obj=testSet(self.rally,self.data)
             (ts_origin,ts_origin_dic)=ts_obj.getTSByID()
             ts_dst=ts_obj.createTS(ts_origin_dic)
-            ts_new=ts_obj.addTCs(ts_origin,ts_dst)
+            #ts_new=ts_obj.addTCs(ts_origin,ts_dst)
+            ts_new=ts_obj.manualAddTCs(ts_dst)
             self.logger.info("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
             #self.data['ts']={}
             self.data['ts']['FormattedID']=ts_dst.FormattedID
