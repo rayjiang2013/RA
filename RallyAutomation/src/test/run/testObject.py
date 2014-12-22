@@ -104,6 +104,23 @@ class testObject(object):
                             if lst[0] == "PUT":
                                 r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
                             
+                            
+                            #Verification
+                            if lst[7] == "GET":
+                                r_ver = requests.get(lst[6])                        
+                            if lst[7] == "POST":
+                                r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
+                            if lst[7] == "DELETE":
+                                r_ver = requests.delete(lst[6])
+                            if lst[7] == "PUT":
+                                r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
+                            
+                            ver_point = ast.literal_eval(lst[5])
+                            for item in ver_point.items():
+                                if item in r_ver._content:
+                                    print "verified"
+                                
+                            
                             if r.status_code == int(lst[3]):
                                 verdict.append((1,'Success: status code expected'))
                             else: 
