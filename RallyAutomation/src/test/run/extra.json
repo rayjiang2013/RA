@@ -68,10 +68,10 @@
     "ts": {
         "Blocked": "",
         "BlockedReason": "",
-        "Build": "7000",
+        "Build": "7002",
         "Description": "",
         "Expedite": "",
-        "FormattedID": "TS109",
+        "FormattedID": "TS184",
         "Iteration": "",
         "Name": "New test set",
         "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
