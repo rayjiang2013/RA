@@ -62,7 +62,7 @@ class testObject(object):
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
-        
+            
     #Main executor & verification      
     def runTO(self,testset_under_test):
         '''
@@ -94,7 +94,8 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
-                            lst=tc.c_QATCPARAMSSTRING.split('|')
+                            #lst=tc.c_QATCPARAMSSTRING.split('|')
+                            lst=tc.c_QATCPARAMSTEXT.split('|')
                             if lst[0] == "GET":
                                 r = requests.get(lst[1])                        
                             if lst[0] == "POST":
@@ -106,6 +107,8 @@ class testObject(object):
                             
                             
                             #Verification
+                            verified=None
+                            
                             if lst[7] == "GET":
                                 r_ver = requests.get(lst[6])                        
                             if lst[7] == "POST":
@@ -115,20 +118,30 @@ class testObject(object):
                             if lst[7] == "PUT":
                                 r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
                             
-                            ver_point = ast.literal_eval(lst[5])
-                            for item in ver_point.items():
-                                if item in r_ver._content:
-                                    print "verified"
+                            if lst[5] != u'':
+                                ver_point = ast.literal_eval(lst[5])
+                                r_ver_content=ast.literal_eval(r_ver._content)
+                                for key in ver_point:                                    
+                                    if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
+                                        verdict.append((0,'Failure: verification failed'))
+                                        verified=False
+                                        break
+                                else:                                    
+                                    verified=True
                                 
-                            
-                            if r.status_code == int(lst[3]):
-                                verdict.append((1,'Success: status code expected'))
+                            if verified==False:
+                                pass
                             else: 
-                                verdict.append((0,'Failure: status code unexpected'))
-                            self.logger.debug("The test case %s for build %s will be executed." % (tc.FormattedID,self.data["ts"]["Build"]))
+                                if r.status_code == int(lst[3]):
+                                    verdict.append((1,'Success: status code expected'))
+                                else: 
+                                    verdict.append((0,'Failure: status code unexpected'))
+                                    
+                            self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                 else:    
-                    lst=tc.c_QATCPARAMSSTRING.split('|')
+                    #lst=tc.c_QATCPARAMSSTRING.split('|')
+                    lst=tc.c_QATCPARAMSTEXT.split('|')
                     if lst[0] == "GET":
                         r = requests.get(lst[1])                        
                     if lst[0] == "POST":
@@ -137,13 +150,40 @@ class testObject(object):
                         r = requests.delete(lst[1])
                     if lst[0] == "PUT":
                         r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
+
+
+                    #Verification
+                    verified=None
+                            
+                    if lst[7] == "GET":
+                        r_ver = requests.get(lst[6])                        
+                    if lst[7] == "POST":
+                        r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
+                    if lst[7] == "DELETE":
+                        r_ver = requests.delete(lst[6])
+                    if lst[7] == "PUT":
+                        r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
                                 
-                    if r.status_code == int(lst[3]):
-                        verdict.append((1,'Success: status code expected'))
+                    if lst[5] != u'':
+                        ver_point = ast.literal_eval(lst[5])
+                        r_ver_content=ast.literal_eval(r_ver._content)
+                        for key in ver_point:                                    
+                            if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
+                                verdict.append((0,'Failure: verification failed'))
+                                verified=False
+                                break
+                        else:                                    
+                            verified=True
+                                
+                    if verified==False:
+                        pass
                     else: 
-                        verdict.append((0,'Failure: status code unexpected'))
+                        if r.status_code == int(lst[3]):
+                            verdict.append((1,'Success: status code expected'))
+                        else: 
+                            verdict.append((0,'Failure: status code unexpected'))
                     
-                    self.logger.debug("The test case %s for build %s will be executed." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                 
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
