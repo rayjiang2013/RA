@@ -168,7 +168,7 @@ class testObject(object):
                                         "Owner": ts.Owner._ref,
                                         "ScheduleState":"Defined",
                                         "State":"Submitted",
-                                        "Name":"Error found in %s: Sixth Test Case (automatically created with rally api) - updated" % tc.FormattedID,
+                                        "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
                                         "TestCase":tc._ref}
                             self.data['df'].update(create_df)
                             df_obj=defect(self.rally,self.data)
@@ -196,7 +196,7 @@ class testObject(object):
                                             "Owner": ts.Owner._ref,
                                             "ScheduleState":"Defined",
                                             "State":"Submitted",
-                                            "Name":"Error found in %s: Sixth Test Case (automatically created with rally api) - updated" % tc.FormattedID,
+                                            "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
                                             "TestCase":tc._ref}
                                 self.data['df'].update(create_df)
                                 df_obj=defect(self.rally,self.data)
