@@ -62,7 +62,76 @@ class testObject(object):
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
+
+    #Test execution
+    def executor(self,tc):
+        try:
+            #lst=tc.c_QATCPARAMSSTRING.split('|')
+            lst=tc.c_QATCPARAMSTEXT.split('|')
+            if lst[0] == "GET":
+                r = requests.get(lst[1])                        
+            if lst[0] == "POST":
+                r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
+            if lst[0] == "DELETE":
+                r = requests.delete(lst[1])
+            if lst[0] == "PUT":
+                r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
             
+            self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))       
+            return (r,lst) 
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
+            sys.exit(1)        
+    
+    #Test verification:
+    def verificator(self,lst,r,verdict,tc):
+        try:
+            #Verification
+            #verified=None
+            if r.status_code != int(lst[3]):
+                verdict.append((0,'Failure: status code unexpected'))    
+            else:
+                if lst[7]==u"" or lst[5]==u"" or lst[6]==u"":
+                    self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
+                    verdict.append((1,'Success: status code expected without verification'))
+                else:    
+                    if lst[7] == "GET":
+                        r_ver = requests.get(lst[6])                        
+                    if lst[7] == "POST":
+                        r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
+                    if lst[7] == "DELETE":
+                        r_ver = requests.delete(lst[6])
+                    if lst[7] == "PUT":
+                        r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
+                
+                    ver_point = ast.literal_eval(lst[5])
+                    r_ver_content=ast.literal_eval(r_ver._content)
+                    for key in ver_point:                                    
+                        if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
+                            verdict.append((0,'Failure: verification failed'))
+                            #verified=False
+                            self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                            break                  
+                    else:                                    
+                        #verified=True
+                        verdict.append((1,'Success: status code expected and verified'))
+                        self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+        
+                '''        
+                if verified==False:
+                    pass
+                else: 
+                    if r.status_code == int(lst[3]):
+                        verdict.append((1,'Success: status code expected'))
+                    else: 
+                        verdict.append((0,'Failure: status code unexpected'))        
+                '''    
+            return verdict
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
+            sys.exit(1)                         
+        
+        
     #Main executor & verification      
     def runTO(self,testset_under_test):
         '''
@@ -94,6 +163,7 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
+                            '''
                             #lst=tc.c_QATCPARAMSSTRING.split('|')
                             lst=tc.c_QATCPARAMSTEXT.split('|')
                             if lst[0] == "GET":
@@ -105,7 +175,7 @@ class testObject(object):
                             if lst[0] == "PUT":
                                 r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
                             
-                            
+                            self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                             #Verification
                             verified=None
                             
@@ -125,10 +195,14 @@ class testObject(object):
                                     if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
                                         verdict.append((0,'Failure: verification failed'))
                                         verified=False
+                                        self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))
                                         break
                                 else:                                    
                                     verified=True
-                                
+                                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+                            
+                            else: self.logger.debug("As no verification info is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
+                            
                             if verified==False:
                                 pass
                             else: 
@@ -136,10 +210,15 @@ class testObject(object):
                                     verdict.append((1,'Success: status code expected'))
                                 else: 
                                     verdict.append((0,'Failure: status code unexpected'))
-                                    
-                            self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
-                else:    
+                            '''
+                            (response,lst_of_par)=self.executor(tc)
+                            verdict=self.verificator(lst_of_par, response, verdict, tc)
+                            break
+                            
+                            
+                else:
+                    '''    
                     #lst=tc.c_QATCPARAMSSTRING.split('|')
                     lst=tc.c_QATCPARAMSTEXT.split('|')
                     if lst[0] == "GET":
@@ -150,11 +229,11 @@ class testObject(object):
                         r = requests.delete(lst[1])
                     if lst[0] == "PUT":
                         r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
-
-
+                    
+                    self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
                     #Verification
                     verified=None
-                            
+                    
                     if lst[7] == "GET":
                         r_ver = requests.get(lst[6])                        
                     if lst[7] == "POST":
@@ -163,7 +242,7 @@ class testObject(object):
                         r_ver = requests.delete(lst[6])
                     if lst[7] == "PUT":
                         r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
-                                
+                    
                     if lst[5] != u'':
                         ver_point = ast.literal_eval(lst[5])
                         r_ver_content=ast.literal_eval(r_ver._content)
@@ -171,10 +250,14 @@ class testObject(object):
                             if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
                                 verdict.append((0,'Failure: verification failed'))
                                 verified=False
+                                self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))
                                 break
                         else:                                    
                             verified=True
-                                
+                            self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    
+                    else: self.logger.debug("As no verification info is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
+                    
                     if verified==False:
                         pass
                     else: 
@@ -182,8 +265,9 @@ class testObject(object):
                             verdict.append((1,'Success: status code expected'))
                         else: 
                             verdict.append((0,'Failure: status code unexpected'))
-                    
-                    self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    '''
+                    (response,lst_of_par)=self.executor(tc)
+                    verdict=self.verificator(lst_of_par, response, verdict, tc)
                 
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
