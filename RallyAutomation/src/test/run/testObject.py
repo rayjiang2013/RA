@@ -131,12 +131,32 @@ class testObject(object):
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)                         
         
+    #Cleanup
+    def cleaner(self,lst,tc):
+        try:
+            if lst[10]==u"":
+                self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is not cleaned up" % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))
+            else: 
+                if lst[9] == "GET":
+                    r_clr = requests.get(lst[10])                        
+                if lst[9] == "POST":
+                    r_clr = requests.post(lst[10],data=ast.literal_eval(lst[11]))
+                if lst[9] == "DELETE":
+                    r_clr = requests.delete(lst[10])
+                if lst[9] == "PUT":
+                    r_clr = requests.put(lst[10],data=ast.literal_eval(lst[11]))
+                
+                if int(lst[12])==r_clr.status_code:              
+                    self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))       
+                else: 
+                    self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))       
+             
+        except Exception, details:
+            self.logger.error('ERROR: %s \n' % details,exc_info=True)
+            sys.exit(1)    
         
-    #Main executor & verification      
+    #Main execution wrapper      
     def runTO(self,testset_under_test):
-        '''
-        Excute and verification
-        '''
         #Update ScheduleState of Test Set 
         '''
         dic={}
@@ -214,6 +234,7 @@ class testObject(object):
                             '''
                             (response,lst_of_par)=self.executor(tc)
                             verdict=self.verificator(lst_of_par, response, verdict, tc)
+                            self.cleaner(lst_of_par, tc)
                             break
                             
                             
@@ -268,6 +289,7 @@ class testObject(object):
                     '''
                     (response,lst_of_par)=self.executor(tc)
                     verdict=self.verificator(lst_of_par, response, verdict, tc)
+                    self.cleaner(lst_of_par, tc)
                 
             ts_obj=testSet(self.rally,self.data)
             ts_obj.updateSS(0) 
