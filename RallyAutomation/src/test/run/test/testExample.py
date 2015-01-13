@@ -53,7 +53,7 @@ def setup_function(function):
 
 def teardown_function(function):
     try:
-        ts_obj=testSet(rally,data)
+        ts_obj=testSet(rally,new_self_data)
         ts_obj.delTS()
     except Exception,details:
         
@@ -66,10 +66,13 @@ def test_testobject_copyts_equal_formattedid():
     ts_new=to_obj.copyTS()   
     assert ts_new.FormattedID==data["ts"]["FormattedID"]  
 '''    
-def test_testobject_copts_same_tc_order():
-    tc_new=to_obj.copyTS()
-    tcs=tc_new.TestCases
+def test_testobject_copyts_same_tc_order():
+    ts_new=to_obj.copyTS()
+    global new_self_data
+    new_self_data=data.copy()
+    new_self_data['ts']['FormattedID']=ts_new.FormattedID
+    tcs=ts_new.TestCases
     for tc in tcs:
         assert tc.FormattedID==fids[tcs.index(tc)]
-        
+
     
