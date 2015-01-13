@@ -183,6 +183,15 @@ class testSet(object):
             self.logger.error('ERROR: %s \n' % details, exc_info=True)
             sys.exit(1)    
     
+    #Delete test case
+    def delTS(self):
+        try: 
+            delete_success=self.rally.delete('TestSet', self.data['ts']['FormattedID'])
+        except Exception, details:
+            sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']))
+            sys.exit(1)
+        if delete_success == True:
+            print "Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID']   
     
     '''
     #Run the test set
