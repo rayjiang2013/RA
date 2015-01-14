@@ -56,7 +56,7 @@ def setup_function(function):
         
         ts_new=to_obj.copyTS()
         #global new_self_data
-        new_self_data=deepcopy(data)
+        new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
         new_self_data['ts']['FormattedID']=ts_new.FormattedID
     except Exception,details:
         
