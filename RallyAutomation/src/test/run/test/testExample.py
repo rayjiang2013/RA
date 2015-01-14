@@ -41,55 +41,60 @@ def teardown_module(module):
         print details
         sys.exit(1)
 '''
-def setup_function(function):
-    try:
-        print ("setup_function    function:%s" % function.__name__)
-        global ts_obj,ts,tcs,fids,new_self_data,ts_new
         
-        ts_obj=testSet(rally,data)
-        ts=ts_obj.getTSByID()[0]
-        tcs=ts_obj.allTCofTS(ts)
-
-        fids=[]
+class TestTOCopyTS:
+    def setup_method(self,method):
+        try:
+            print ("setup_method    method:%s" % method.__name__)
+            global ts_obj,ts,tcs,fids,new_self_data,ts_new
+            
+            ts_obj=testSet(rally,data)
+            ts=ts_obj.getTSByID()[0]
+            tcs=ts_obj.allTCofTS(ts)
+    
+            fids=[]
+            for tc in tcs:
+                fids.append(tc.FormattedID)
+            
+            ts_new=to_obj.copyTS()
+            #global new_self_data
+            new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+            new_self_data['ts']['FormattedID']=ts_new.FormattedID
+        except Exception,details:
+            
+            print details
+            sys.exit(1)    
+    
+    def teardown_method(self,method):
+        try:
+            print ("teardown_method method:%s" % method.__name__)
+            ts_new_obj=testSet(rally,new_self_data)
+            ts_new_obj.delTS()
+    
+        except Exception,details:
+            
+            print details
+            sys.exit(1)    
+    
+    '''
+    def test_testobject_copyts_equal_formattedid():
+        
+        ts_new=to_obj.copyTS()   
+        assert ts_new.FormattedID==data["ts"]["FormattedID"]  
+    '''    
+    def test_testobject_copyts_same_tc_order(self):
+        print 'test_testobject_copyts_same_tc_order  <============================ actual test code'
+    
+        tcs=ts_new.TestCases
         for tc in tcs:
-            fids.append(tc.FormattedID)
-        
-        ts_new=to_obj.copyTS()
-        #global new_self_data
-        new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-        new_self_data['ts']['FormattedID']=ts_new.FormattedID
-    except Exception,details:
-        
-        print details
-        sys.exit(1)    
-
-def teardown_function(function):
-    try:
-        print ("teardown_function function:%s" % function.__name__)
-        ts_new_obj=testSet(rally,new_self_data)
-        ts_new_obj.delTS()
-
-    except Exception,details:
-        
-        print details
-        sys.exit(1)    
-
-'''
-def test_testobject_copyts_equal_formattedid():
+            assert tc.FormattedID==fids[tcs.index(tc)]
     
-    ts_new=to_obj.copyTS()   
-    assert ts_new.FormattedID==data["ts"]["FormattedID"]  
-'''    
-def test_testobject_copyts_same_tc_order():
-    print 'test_testobject_copyts_same_tc_order  <============================ actual test code'
-
-    tcs=ts_new.TestCases
-    for tc in tcs:
-        assert tc.FormattedID==fids[tcs.index(tc)]
-
-def test_testobject_copyts_same_ts_name():
-    print 'test_testobject_copyts_same_ts_name  <============================ actual test code'
-
-    assert ts_new.Name==ts.Name
-
+    def test_testobject_copyts_same_ts_name(self):
+        print 'test_testobject_copyts_same_ts_name  <============================ actual test code'
     
+        assert ts_new.Name==ts.Name
+    
+    def test_testobject_copyts_defined_state(self):
+        print 'test_testobject_copyts_same_ts_name  <============================ actual test code'
+        
+        assert ts_new.ScheduleState=="Defined"
