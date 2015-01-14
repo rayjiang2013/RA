@@ -188,10 +188,10 @@ class testSet(object):
         try: 
             delete_success=self.rally.delete('TestSet', self.data['ts']['FormattedID'])
         except Exception, details:
-            sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']))
+            self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']), exc_info=True)
             sys.exit(1)
         if delete_success == True:
-            print "Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID']   
+            self.logger.debug("Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID'], exc_info=True)
     
     '''
     #Run the test set
