@@ -56,6 +56,17 @@ class testCaseResult:
             #sys.stderr.write('ERROR: %s \n' % details)
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
+
+    #Delete test case result
+    def delTCR(self):
+        try: 
+            delete_success=self.rally.delete('TestCaseResult', self.data['tcresult']['oid'])
+        except Exception, details:
+            self.logger.error('ERROR: %s %s Test Case Result %s does not exist\n' % (Exception,details,self.data['tcresult']['oid']), exc_info=True)
+            sys.exit(1)
+        if delete_success == True:
+            self.logger.debug("Test case result deleted, ObjectID: %s" % self.data['tcresult']['oid'], exc_info=True)
+
             
     '''        
     #Update test case result

@@ -28,7 +28,7 @@ import logging
 from defect import defect
 import requests
 import ast
-
+from copy import deepcopy
 
 class testObject(object):
     '''
@@ -291,7 +291,7 @@ class testObject(object):
                     verdict=self.verificator(lst_of_par, response, verdict, tc)
                     self.cleaner(lst_of_par, tc,testset_under_test)
              
-            new_data=self.data.copy() 
+            new_data=deepcopy(self.data) 
             new_data['ts']['FormattedID']=testset_under_test.FormattedID
             ts_obj=testSet(self.rally,new_data)
             ts_obj.updateSS(0) 

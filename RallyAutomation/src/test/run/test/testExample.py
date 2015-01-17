@@ -9,7 +9,7 @@ from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a 
 import json
 
 
-
+#xunit-style example
 def setup_module(module):
     try:
         global rally,data,to_obj
@@ -41,7 +41,7 @@ def teardown_module(module):
         print details
         sys.exit(1)
 '''
-        
+#Test testObject/copyTS
 class TestTOCopyTS:
     def setup_method(self,method):
         try:
@@ -95,6 +95,7 @@ class TestTOCopyTS:
         assert ts_new.Name==ts.Name
     
     def test_testobject_copyts_defined_state(self):
-        print 'test_testobject_copyts_same_ts_name  <============================ actual test code'
+        print 'test_testobject_copyts_defined_state  <============================ actual test code'
         
         assert ts_new.ScheduleState=="Defined"
+        
