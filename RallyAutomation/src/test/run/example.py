@@ -230,8 +230,8 @@ if __name__ == '__main__':
     
     to=testObject(rally,data)
     ts_ut=to.copyTS()
-    verd=to.runTO(ts_ut)
-    test_results=to.runTS(verd)    
+    (verd,newdt)=to.runTO(ts_ut)
+    test_results=to.runTS(verd,newdt)    
     report=to.genReport(test_results)
     to.sendNotification(report)
     

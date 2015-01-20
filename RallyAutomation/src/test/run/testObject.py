@@ -28,7 +28,7 @@ import logging
 from defect import defect
 import requests
 import ast
-
+from copy import deepcopy
 
 class testObject(object):
     '''
@@ -56,7 +56,7 @@ class testObject(object):
             ts_new=ts_obj.addTCs(ts_origin,ts_dst)
             self.logger.info("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
             #self.data['ts']={}
-            self.data['ts']['FormattedID']=ts_dst.FormattedID
+            #self.data['ts']['FormattedID']=ts_dst.FormattedID
             #self.logger.info("The test set is successfully copied")
             return ts_new
         except Exception, details:
@@ -132,10 +132,10 @@ class testObject(object):
             sys.exit(1)                         
         
     #Cleanup
-    def cleaner(self,lst,tc):
+    def cleaner(self,lst,tc,ts):
         try:
             if lst[10]==u"":
-                self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is not cleaned up" % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))
+                self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
                 if lst[9] == "GET":
                     r_clr = requests.get(lst[10])                        
@@ -147,9 +147,9 @@ class testObject(object):
                     r_clr = requests.put(lst[10],data=ast.literal_eval(lst[11]))
                 
                 if int(lst[12])==r_clr.status_code:              
-                    self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))       
+                    self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                 else: 
-                    self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],self.data["ts"]["FormattedID"]))       
+                    self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
              
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
@@ -234,7 +234,7 @@ class testObject(object):
                             '''
                             (response,lst_of_par)=self.executor(tc)
                             verdict=self.verificator(lst_of_par, response, verdict, tc)
-                            self.cleaner(lst_of_par, tc)
+                            self.cleaner(lst_of_par, tc,testset_under_test)
                             break
                             
                             
@@ -289,9 +289,11 @@ class testObject(object):
                     '''
                     (response,lst_of_par)=self.executor(tc)
                     verdict=self.verificator(lst_of_par, response, verdict, tc)
-                    self.cleaner(lst_of_par, tc)
-                
-            ts_obj=testSet(self.rally,self.data)
+                    self.cleaner(lst_of_par, tc,testset_under_test)
+             
+            new_data=deepcopy(self.data) 
+            new_data['ts']['FormattedID']=testset_under_test.FormattedID
+            ts_obj=testSet(self.rally,new_data)
             ts_obj.updateSS(0) 
                     
             #verdict=[0,1,1]
@@ -299,17 +301,17 @@ class testObject(object):
             self.logger.info("The test run is successfully executed on Chasis")
         except Exception,details:
             self.logger.error("Error: %s\n" % details,exc_info=True)
-        return verdict
+        return (verdict,new_data)
     
     #Run the test set
-    def runTS(self,tc_verds): 
+    def runTS(self,tc_verds,new_data): 
         try:
-            ts_obj=testSet(self.rally,self.data)
+            ts_obj=testSet(self.rally,new_data)
             ts=ts_obj.getTSByID()[0]
             tcs=ts_obj.allTCofTS(ts)
             #to_obj=testObject(self.rally,self.data)
             #tc_verds=to_obj.runTO() #run the actual tests for AVNext
-            ur_obj=user(self.rally,self.data)   
+            ur_obj=user(self.rally,new_data)   
             ur=ur_obj.getUser()
     
             trs=[]
@@ -317,7 +319,7 @@ class testObject(object):
             for tc,verd in zip(tcs,tc_verds):
                 dic={}
                 if verd[0] == 0:
-                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Fail','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
                     df_obj=defect(self.rally,dic)   
                     dfs=df_obj.allDFofTC(tc)
                     i=1
@@ -325,15 +327,15 @@ class testObject(object):
                     if len(dfs)==0:
                         #if not exist create new issue for the failed test cases
 
-                            create_df={"FoundInBuild": self.data['ts']['Build'],
+                            create_df={"FoundInBuild": new_data['ts']['Build'],
                                         "Project": ts.Project._ref,
                                         "Owner": ts.Owner._ref,
                                         "ScheduleState":"Defined",
                                         "State":"Submitted",
                                         "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
                                         "TestCase":tc._ref}
-                            self.data['df'].update(create_df)
-                            df_obj=defect(self.rally,self.data)
+                            new_data['df'].update(create_df)
+                            df_obj=defect(self.rally,new_data)
                             new_df=df_obj.createDF()
                             
                             #update test case result
@@ -353,15 +355,15 @@ class testObject(object):
                         if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
                             if i==len(dfs):
 
-                                create_df={"FoundInBuild": self.data['ts']['Build'],
+                                create_df={"FoundInBuild": new_data['ts']['Build'],
                                             "Project": ts.Project._ref,
                                             "Owner": ts.Owner._ref,
                                             "ScheduleState":"Defined",
                                             "State":"Submitted",
                                             "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
                                             "TestCase":tc._ref}
-                                self.data['df'].update(create_df)
-                                df_obj=defect(self.rally,self.data)
+                                new_data['df'].update(create_df)
+                                df_obj=defect(self.rally,new_data)
                                 new_df=df_obj.createDF()
                                 
                                 #update test case result
@@ -384,13 +386,13 @@ class testObject(object):
                             if df.State == "Fixed":
                                 update_df={'df':None}
                                 #reopen the defect, make notes about the build, env and steps. Assign to someone
-                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
-                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will re-open and update it with repro info" % (df.FormattedID,self.data['ts']['Build'],ts.FormattedID,tc.FormattedID))                      
+                                update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
+                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will re-open and update it with repro info" % (df.FormattedID,new_data['ts']['Build'],ts.FormattedID,tc.FormattedID))                      
                             else: #inserting notes. 
                                 update_df={'df':None}
                                 #print df.Notes
-                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br />" % (self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
-                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will update it with repro info" % (df.FormattedID,self.data['ts']['Build'],ts.FormattedID,tc.FormattedID)) 
+                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
+                                self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will update it with repro info" % (df.FormattedID,new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)) 
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()   
 
@@ -403,7 +405,7 @@ class testObject(object):
                                                    
 
                 if verd[0] == 1:
-                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}
                     num_pass=num_pass+1
 
                     #update test case result
@@ -413,7 +415,7 @@ class testObject(object):
                     trs.append(tr)          
 
                 if verd[0] == 2:
-                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
                     #update test case result
                     tcr=testCaseResult(self.rally,dic)                
                     tr=tcr.createTCResult()    
