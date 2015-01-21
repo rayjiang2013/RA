@@ -22511,3 +22511,170 @@
 2014-11-18 18:00:00.958 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
 2014-11-18 18:00:01.020 GET testset/25408334963?workspace=workspace/2959998575&project=project/24755623223
 2014-11-18 18:00:01.118 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:24.553 Following entries record Rally REST API interaction via https://rally1.rallydev.com/slm/webservice/v2.0 for user: lei.jiang@spirent.com
+2015-01-20 16:39:24.554 GET TestSet?fetch=true&query=(FormattedID = "TS185")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:24.687 200 TestSet TotalResultCount 1
+2015-01-20 16:39:24.803 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:24.880 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:24.880 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:24.957 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:24.957 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.096 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.096 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.171 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.172 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10514/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.240 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10514/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.241 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10503/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.316 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10503/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.316 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10509/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.386 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10509/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.386 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10519/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.520 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10519/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.521 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.592 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.592 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10507/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.661 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10507/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.661 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10517/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.732 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10517/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.732 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10518/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.804 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10518/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.804 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10502/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.881 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10502/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:25.881 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10512/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:25.982 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10512/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 24
+2015-01-20 16:39:26.091 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10506/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.215 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10506/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 50
+2015-01-20 16:39:26.335 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10515/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.404 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10515/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.405 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10505/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.479 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10505/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.480 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10511/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.566 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10511/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.566 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41548/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.639 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41548/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.639 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41542/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.712 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41542/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.713 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41550/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.803 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41550/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.803 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41545/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.873 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41545/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.873 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41549/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:26.946 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-41549/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:26.946 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35002/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.018 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35002/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:27.018 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35005/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.101 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35005/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 12
+2015-01-20 16:39:27.185 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.260 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:27.260 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35004/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.337 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35004/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 4
+2015-01-20 16:39:27.624 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35009/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.695 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35009/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:27.695 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35006/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:27.773 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-35006/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:27.773 PUT testset/create?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {"TestSet": {"Description": "", "Iteration": "https://rally1.rallydev.com/slm/webservice/v2.0/iteration/24755623244", "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223", "Ready": false, "ScheduleState": "Defined", "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282", "Name": "Avalanche Next test run example", "Expedite": false, "Blocked": false}}
+2015-01-20 16:39:28.130 200 created TestSet OID: 28726017966
+2015-01-20 16:39:28.130 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:28.131 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:28.229 200 TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:28.230 GET TestCase?fetch=true&query=(FormattedID = "TC1023")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:28.373 200 TestCase TotalResultCount 1
+2015-01-20 16:39:28.375 GET TestCase?fetch=true&query=(FormattedID = "TC1079")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:28.508 200 TestCase TotalResultCount 1
+2015-01-20 16:39:28.510 GET TestCase?fetch=true&query=(FormattedID = "TC1027")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:28.640 200 TestCase TotalResultCount 1
+2015-01-20 16:39:28.642 GET TestCase?fetch=true&query=(FormattedID = "TC1026")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:28.790 200 TestCase TotalResultCount 1
+2015-01-20 16:39:28.792 GET TestSet?fetch=ObjectID&query=(FormattedID = "TS350")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:28.877 200 TestSet TotalResultCount 1
+2015-01-20 16:39:28.877 POST testset/28726017966?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {'TestSet': {'FormattedID': u'TS350', 'TestCases': [{'_ref': 'https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26769489839'}, {'_ref': 'https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26994277791'}, {'_ref': 'https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26770223946'}, {'_ref': 'https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26770221614'}], 'ObjectID': 28726017966L}}
+2015-01-20 16:39:29.146 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:29.146 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:29.250 200 TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:29.251 GET https://rally1.rallydev.com/slm/webservice/v2.0/TestSet/28726017966/TestCases?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:29.548 200 https://rally1.rallydev.com/slm/webservice/v2.0/TestSet/28726017966/TestCases?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 4
+2015-01-20 16:39:29.552 GET https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26769489839/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:30.017 200 https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26769489839/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 70
+2015-01-20 16:39:30.546 GET https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26770221614/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:31.136 200 https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26770221614/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 68
+2015-01-20 16:39:31.541 GET https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26770223946/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:31.988 200 https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26770223946/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 68
+2015-01-20 16:39:32.210 GET https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26994277791/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:32.586 200 https://rally1.rallydev.com/slm/webservice/v2.0/TestCase/26994277791/Results?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 68
+2015-01-20 16:39:32.789 GET TestSet?fetch=ObjectID&query=(FormattedID = "TS350")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:32.882 200 TestSet TotalResultCount 1
+2015-01-20 16:39:32.883 POST testset/28726017966?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {'TestSet': {u'FormattedID': u'TS350', u'BlockedReason': u'', u'Name': u'Avalanche Next test run example', 'ObjectID': 28726017966L, u'PlanEstimate': u'', u'Iteration': u'https://rally1.rallydev.com/slm/webservice/v2.0/iteration/24755623244', u'Project': u'https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223', u'Ready': False, u'ScheduleState': 'In-Progress', u'Release': u'', u'Owner': u'https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282', u'Expedite': False, u'Description': u''}}
+2015-01-20 16:39:33.107 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.107 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.213 200 TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.215 GET TestSet?fetch=true&query=(FormattedID = "TS350")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:33.322 200 TestSet TotalResultCount 1
+2015-01-20 16:39:33.324 GET TestCase?fetch=true&query=(TestSets = "https://rally1.rallydev.com/slm/webservice/v2.0/testset/28726017966")&order=DragAndDropRank&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:33.525 200 TestCase TotalResultCount 4
+2015-01-20 16:39:33.530 GET User?fetch=true&query=(UserName = "lei.jiang@spirent.com")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:33.620 200 User TotalResultCount 1
+2015-01-20 16:39:33.622 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.694 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10001/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:33.694 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.760 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-10000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:33.760 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.839 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17000/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:33.839 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.907 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-17500/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:33.907 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20507/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:33.979 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20507/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:33.979 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20501/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.048 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20501/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:34.048 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20509/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.118 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20509/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:34.118 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20506/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.194 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20506/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:34.194 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20504/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.266 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20504/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:34.266 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20508/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.340 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20508/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 0
+2015-01-20 16:39:34.340 GET https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20510/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:34.433 200 https://rally1.rallydev.com/slm/webservice/v2.0/attributedefinition/-20510/AllowedValues?pagesize=200&start=1&workspace=workspace/2959998575&project=project/24755623223 TotalResultCount 24
+2015-01-20 16:39:34.525 PUT testcaseresult/create?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {"TestCaseResult": {"TestSet": "https://rally1.rallydev.com/slm/webservice/v2.0/testset/28726017966", "Tester": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282", "Notes": "Success: status code expected", "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26769489839", "Verdict": "Pass", "Build": "7002", "Date": "2015-01-20T16:39:33.621807"}}
+2015-01-20 16:39:35.206 200 created TestCaseResult OID: 28726271438
+2015-01-20 16:39:35.206 GET TestCaseResult/28726271438?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.206 GET TestCaseResult/28726271438?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.305 200 TestCaseResult/28726271438?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.306 GET testcase/26769489839?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.429 PUT testcaseresult/create?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {"TestCaseResult": {"TestSet": "https://rally1.rallydev.com/slm/webservice/v2.0/testset/28726017966", "Tester": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282", "Notes": "Success: status code expected", "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26770221614", "Verdict": "Pass", "Build": "7002", "Date": "2015-01-20T16:39:35.429419"}}
+2015-01-20 16:39:35.769 200 created TestCaseResult OID: 28726272348
+2015-01-20 16:39:35.769 GET TestCaseResult/28726272348?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.770 GET TestCaseResult/28726272348?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.876 200 TestCaseResult/28726272348?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:35.877 GET testcase/26770221614?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:36.006 PUT testcaseresult/create?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {"TestCaseResult": {"TestSet": "https://rally1.rallydev.com/slm/webservice/v2.0/testset/28726017966", "Tester": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282", "Notes": "Success: status code expected", "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26770223946", "Verdict": "Pass", "Build": "7002", "Date": "2015-01-20T16:39:36.006293"}}
+2015-01-20 16:39:36.444 200 created TestCaseResult OID: 28726273122
+2015-01-20 16:39:36.444 GET TestCaseResult/28726273122?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:36.444 GET TestCaseResult/28726273122?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:36.538 200 TestCaseResult/28726273122?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:36.539 GET testcase/26770223946?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:36.744 PUT testcaseresult/create?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {"TestCaseResult": {"TestSet": "https://rally1.rallydev.com/slm/webservice/v2.0/testset/28726017966", "Tester": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282", "Notes": "Success: status code expected", "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/26994277791", "Verdict": "Pass", "Build": "7002", "Date": "2015-01-20T16:39:36.744124"}}
+2015-01-20 16:39:37.326 200 created TestCaseResult OID: 28726273400
+2015-01-20 16:39:37.326 GET TestCaseResult/28726273400?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:37.326 GET TestCaseResult/28726273400?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:37.422 200 TestCaseResult/28726273400?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:37.423 GET testcase/26994277791?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:37.564 GET TestSet?fetch=ObjectID&query=(FormattedID = "TS350")&workspace=workspace/2959998575&project=project/24755623223&pagesize=100&start=1
+2015-01-20 16:39:37.731 200 TestSet TotalResultCount 1
+2015-01-20 16:39:37.732 POST testset/28726017966?key=f8777bfc-0c8e-4bb2-aafc-fe6589614625&workspace=workspace/2959998575&project=project/24755623223
+                            {'TestSet': {u'FormattedID': u'TS350', u'BlockedReason': u'', u'Name': u'Avalanche Next test run example', 'ObjectID': 28726017966L, u'PlanEstimate': u'', u'Iteration': u'https://rally1.rallydev.com/slm/webservice/v2.0/iteration/24755623244', u'Project': u'https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223', u'Ready': False, u'ScheduleState': 'Accepted', u'Release': u'', u'Owner': u'https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282', u'Expedite': False, u'Description': u''}}
+2015-01-20 16:39:37.989 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:37.989 GET TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.091 200 TestSet/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.092 GET testset/28726017966?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.194 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.276 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.359 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
+2015-01-20 16:39:38.444 GET user/24343572282?workspace=workspace/2959998575&project=project/24755623223
