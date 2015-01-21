@@ -4,15 +4,7 @@ Created on Nov 10, 2014
 @author: ljiang
 '''
 import sys
-#from pprint import pprint
-#from testCase import *
-#from testObject import *
-#import datetime
-#from user import *
-#import user
-
 import logging
-#from rallyLogger import *
 from types import *
 
 
@@ -143,18 +135,6 @@ class testSet(object):
             sys.exit(1)
         
         return ts  
-    '''
-    #Copy test set
-    def copyTS(self):
-        try:
-            (ts_origin,ts_origin_dic)=self.getTSByID()
-            ts_dst=self.createTS(ts_origin_dic)
-            self.addTCs(ts_origin,ts_dst)
-            self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
-        except Exception, details:
-            self.logger.error('ERROR: %s \n' % details)
-            sys.exit(1)
-    '''
     
     #Add test cases to test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
     #. _ref is like http://xyc/abc/12345) as reference to an object when needed. 
@@ -193,79 +173,3 @@ class testSet(object):
         if delete_success == True:
             self.logger.debug("Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID'], exc_info=True)
     
-    '''
-    #Run the test set
-    def runTS(self): 
-        ts_obj=testSet(self.rally,self.data)
-        ts=ts_obj.getTSByID()
-        tcs=ts_obj.allTCofTS()
-        to_obj=testObject(self.rally,self.data)
-        tc_verds=to_obj.runTO() #run the actual tests for AVNext
-        ur_obj=user(self.rally,self.data)   
-        ur=ur_obj.getUser()
-        trs=[]     
-        for tc,verd in zip(tcs,tc_verds):
-            if verd == 0:
-                dic = {'TestCase':tc._ref,'Verdict':u'Fail','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}      
-            if verd == 1:
-                dic = {'TestCase':tc._ref,'Verdict':u'Pass','Build':self.data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref}
-            try:
-                tr=self.rally.put('TestCaseResult', dic) 
-                trs.append(tr)          
-            except Exception, details:
-                sys.stderr.write('ERROR: %s \n' % details)
-                sys.exit(1)
-            print "Test Case %s updated; Test result oid %s is created" % (tc.FormattedID,tr.oid)
-
-        #Generate report
-        filename="Report-%s.log" % datetime.datetime.now()
-        try:
-            with open(filename,"ab+") as f:
-                for tr in trs:
-                    f.write("Test Report:\nTest Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
-        except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
-            sys.exit(1)
-        print "Report %s is successfully generated" % filename        
-        return trs
-        
-        
-                           
-                              
-                    
-                    
-                     
-                    
-    
-    #Create test case
-    def createTC(self):
-        tc_data = {key: value for key, value in self.data['tc'].items() if key is not 'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
-        try:
-            tc = self.rally.put('TestCase', tc_data)
-        except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
-            sys.exit(1)
-        print "Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID)      
-        return tc  
-        
-    #Update test case
-    def updateTC(self):
-        tc_data = self.data['tc']
-        try: 
-            tc = self.rally.post('TestCase', tc_data)          
-        except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
-            sys.exit(1)
-        print "Test Case %s updated" % tc.FormattedID
-        return tc
-    
-    #Delete test case
-    def delTC(self):
-        try: 
-            delete_success=self.rally.delete('TestCase', self.data['tc']['FormattedID'])
-        except Exception, details:
-            sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']))
-            sys.exit(1)
-        if delete_success == True:
-            print "Test case deleted, FormattedID: %s" % self.data['tc']['FormattedID']        
-    '''
