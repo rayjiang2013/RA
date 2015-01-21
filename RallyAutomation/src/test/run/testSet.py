@@ -4,6 +4,7 @@ Created on Nov 10, 2014
 @author: ljiang
 '''
 import sys
+<<<<<<< HEAD
 #from pprint import pprint
 from testCase import *
 #from testObject import *
@@ -11,8 +12,9 @@ from testCase import *
 #from user import *
 #import user
 
+=======
+>>>>>>> refs/heads/temp_dev
 import logging
-#from rallyLogger import *
 from types import *
 
 
@@ -143,18 +145,6 @@ class testSet(object):
             sys.exit(1)
         
         return ts  
-    '''
-    #Copy test set
-    def copyTS(self):
-        try:
-            (ts_origin,ts_origin_dic)=self.getTSByID()
-            ts_dst=self.createTS(ts_origin_dic)
-            self.addTCs(ts_origin,ts_dst)
-            self.logger.debug("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
-        except Exception, details:
-            self.logger.error('ERROR: %s \n' % details)
-            sys.exit(1)
-    '''
     
     #Add test cases to test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
     #. _ref is like http://xyc/abc/12345) as reference to an object when needed. 
@@ -213,6 +203,7 @@ class testSet(object):
             self.logger.debug("Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID'], exc_info=True)
 
     
+<<<<<<< HEAD
     '''
     #Run the test set
     def runTS(self): 
@@ -289,3 +280,5 @@ class testSet(object):
         if delete_success == True:
             print "Test case deleted, FormattedID: %s" % self.data['tc']['FormattedID']        
     '''
+=======
+>>>>>>> refs/heads/temp_dev

@@ -9,22 +9,12 @@ Created on Nov 10, 2014
 from smtplib import *
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
-#from email.MIMEImage import MIMEImage
 import sys
-#from pprint import pprint
-#from testSet import *
 from testSet import testSet
-#from testCase import *
-#import testCase
 import datetime
-#from user import *
 from user import user
-#from testCaseResult import *
 from testCaseResult import testCaseResult
 import logging
-#import json
-#from logging import config
-#from rallyLogger import *
 from defect import defect
 import requests
 import ast
@@ -88,7 +78,6 @@ class testObject(object):
     def verificator(self,lst,r,verdict,tc):
         try:
             #Verification
-            #verified=None
             if r.status_code != int(lst[3]):
                 verdict.append((0,'Failure: status code unexpected'))    
             else:
@@ -118,15 +107,6 @@ class testObject(object):
                         verdict.append((1,'Success: status code expected and verified'))
                         self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
         
-                '''        
-                if verified==False:
-                    pass
-                else: 
-                    if r.status_code == int(lst[3]):
-                        verdict.append((1,'Success: status code expected'))
-                    else: 
-                        verdict.append((0,'Failure: status code unexpected'))        
-                '''    
             return verdict
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
@@ -158,16 +138,7 @@ class testObject(object):
         
     #Main execution wrapper      
     def runTO(self,testset_under_test):
-        #Update ScheduleState of Test Set 
-        '''
-        dic={}
-        dic['ts']=self.data['ts'].copy()
-        dic['ts'].pop('Build',None)
-        dic['ts']['ScheduleState']="In-Progress"
-        ts_obj=testSet(self.rally,dic)
-        ts_obj.updateTS()
-        logger.info("ScheduleState is successfully updated")
-        '''
+         
         try:
             verdict=[]
             for tc in testset_under_test.TestCases:
@@ -184,55 +155,6 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
-                            '''
-                            #lst=tc.c_QATCPARAMSSTRING.split('|')
-                            lst=tc.c_QATCPARAMSTEXT.split('|')
-                            if lst[0] == "GET":
-                                r = requests.get(lst[1])                        
-                            if lst[0] == "POST":
-                                r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
-                            if lst[0] == "DELETE":
-                                r = requests.delete(lst[1])
-                            if lst[0] == "PUT":
-                                r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
-                            
-                            self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
-                            #Verification
-                            verified=None
-                            
-                            if lst[7] == "GET":
-                                r_ver = requests.get(lst[6])                        
-                            if lst[7] == "POST":
-                                r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
-                            if lst[7] == "DELETE":
-                                r_ver = requests.delete(lst[6])
-                            if lst[7] == "PUT":
-                                r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
-                            
-                            if lst[5] != u'':
-                                ver_point = ast.literal_eval(lst[5])
-                                r_ver_content=ast.literal_eval(r_ver._content)
-                                for key in ver_point:                                    
-                                    if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
-                                        verdict.append((0,'Failure: verification failed'))
-                                        verified=False
-                                        self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))
-                                        break
-                                else:                                    
-                                    verified=True
-                                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-                            
-                            else: self.logger.debug("As no verification info is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
-                            
-                            if verified==False:
-                                pass
-                            else: 
-                                if r.status_code == int(lst[3]):
-                                    verdict.append((1,'Success: status code expected'))
-                                else: 
-                                    verdict.append((0,'Failure: status code unexpected'))
-                            break
-                            '''
                             (response,lst_of_par)=self.executor(tc)
                             verdict=self.verificator(lst_of_par, response, verdict, tc)
                             self.cleaner(lst_of_par, tc,testset_under_test)
@@ -240,58 +162,11 @@ class testObject(object):
                             
                             
                 else:
-                    '''    
-                    #lst=tc.c_QATCPARAMSSTRING.split('|')
-                    lst=tc.c_QATCPARAMSTEXT.split('|')
-                    if lst[0] == "GET":
-                        r = requests.get(lst[1])                        
-                    if lst[0] == "POST":
-                        r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
-                    if lst[0] == "DELETE":
-                        r = requests.delete(lst[1])
-                    if lst[0] == "PUT":
-                        r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
-                    
-                    self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    #Verification
-                    verified=None
-                    
-                    if lst[7] == "GET":
-                        r_ver = requests.get(lst[6])                        
-                    if lst[7] == "POST":
-                        r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
-                    if lst[7] == "DELETE":
-                        r_ver = requests.delete(lst[6])
-                    if lst[7] == "PUT":
-                        r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
-                    
-                    if lst[5] != u'':
-                        ver_point = ast.literal_eval(lst[5])
-                        r_ver_content=ast.literal_eval(r_ver._content)
-                        for key in ver_point:                                    
-                            if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
-                                verdict.append((0,'Failure: verification failed'))
-                                verified=False
-                                self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))
-                                break
-                        else:                                    
-                            verified=True
-                            self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    
-                    else: self.logger.debug("As no verification info is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
-                    
-                    if verified==False:
-                        pass
-                    else: 
-                        if r.status_code == int(lst[3]):
-                            verdict.append((1,'Success: status code expected'))
-                        else: 
-                            verdict.append((0,'Failure: status code unexpected'))
-                    '''
                     (response,lst_of_par)=self.executor(tc)
                     verdict=self.verificator(lst_of_par, response, verdict, tc)
                     self.cleaner(lst_of_par, tc,testset_under_test)
-             
+            
+            #Update ScheduleState of Test Set 
             new_data=deepcopy(self.data) 
             new_data['ts']['FormattedID']=testset_under_test.FormattedID
             ts_obj=testSet(self.rally,new_data)
@@ -327,30 +202,29 @@ class testObject(object):
                     #if there is no existing defects in the test case, just create one
                     if len(dfs)==0:
                         #if not exist create new issue for the failed test cases
-
-                            create_df={"FoundInBuild": new_data['ts']['Build'],
-                                        "Project": ts.Project._ref,
-                                        "Owner": ts.Owner._ref,
-                                        "ScheduleState":"Defined",
-                                        "State":"Submitted",
-                                        "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
-                                        "TestCase":tc._ref}
-                            new_data['df'].update(create_df)
-                            df_obj=defect(self.rally,new_data)
-                            new_df=df_obj.createDF()
+                        create_df={"FoundInBuild": new_data['ts']['Build'],
+                                    "Project": ts.Project._ref,
+                                    "Owner": ts.Owner._ref,
+                                    "ScheduleState":"Defined",
+                                    "State":"Submitted",
+                                    "Name":"Error found in %s: %s" % (tc.FormattedID,tc.Name),
+                                    "TestCase":tc._ref}
+                        new_data['df'].update(create_df)
+                        df_obj=defect(self.rally,new_data)
+                        new_df=df_obj.createDF()
+                        
+                        #update test case result
+                        tcr=testCaseResult(self.rally,dic)                
+                        #tr=self.rally.put('TestCaseResult', dic)
+                        tr=tcr.createTCResult() 
+                        trs.append(tr)  
                             
-                            #update test case result
-                            tcr=testCaseResult(self.rally,dic)                
-                            #tr=self.rally.put('TestCaseResult', dic)
-                            tr=tcr.createTCResult() 
-                            trs.append(tr)  
-                                
-                            #update defect with link to test case result
-                            update_df={'df':None}
-                            update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
-                            df_obj=defect(self.rally,update_df)
-                            df_obj.updateDF()    
-                            self.logger.debug("The defect %s is linked to test case result %s" % (new_df.FormattedID,tr._ref))  
+                        #update defect with link to test case result
+                        update_df={'df':None}
+                        update_df['df']={"FormattedID":new_df.FormattedID,"TestCaseResult":tr._ref}
+                        df_obj=defect(self.rally,update_df)
+                        df_obj.updateDF()    
+                        self.logger.debug("The defect %s is linked to test case result %s" % (new_df.FormattedID,tr._ref))  
                     for df in dfs:
                         #if not exist create new issue for the failed test cases
                         if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
@@ -422,22 +296,6 @@ class testObject(object):
                     tr=tcr.createTCResult()    
                     trs.append(tr) 
                                  
-                #except Exception, details:
-                    #sys.stderr.write('ERROR: %s \n' % details)
-                    #sys.exit(1)
-                #print "Test Case %s updated; Test result oid %s is created" % (tc.FormattedID,tr.oid)
-            '''
-            #Update ScheduleState of Test Set 
-            dic={}
-            dic['ts']=self.data['ts'].copy()
-            dic['ts'].pop('Build',None)        
-            if num_pass == len(tc_verds):        
-                dic['ts']['ScheduleState']="Accepted"
-            else:
-                dic['ts']['ScheduleState']="Completed"
-            ts_obj_2=testSet(self.rally,dic)
-            ts_obj_2.updateTS()
-            '''
             if num_pass == len(tc_verds):
                 ts_obj.updateSS(1) 
 
@@ -506,47 +364,4 @@ class testObject(object):
         except SMTPException as error:
             #print "Error: unable to send email :  {err}".format(err=error)
             self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
-        '''
-        SERVER = "smtp.gmail.com"
-        FROM = "spirenttestsunnyvale@gmail.com"
-        TO = ["lei.jiang@spirent.com"] # must be a list
-        
-        SUBJECT = "Hello!"
-        TEXT = "This is a test of emailing through smtp in google."
-        
-        # Prepare actual message
-        message = """From: %s\r\nTo: %s\r\nSubject: %s\r\n\
-        
-        %s
-        """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
-       
-        # Send the mail
-        server = smtplib.SMTP(SERVER,587)
-        server.starttls()
-        server.ehlo()
-        server.login('spirenttestsunnyvale@gmail.com', 'house999')
-        server.sendmail(FROM, TO, message)
-        server.quit()      
-        '''
-    '''
-    #To log   
-    def log(self,log_config):
 
-        with open(log_config, 'rt') as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
-        logger.propagate = False
-        #root.disabled=True
-        #handler = logging.FileHandler('rally-automation-framework-%s.log' % datetime.datetime.now())
-        
-        
-        #logger.addHandler(handler)
-
-        logger.info('Hello baby')
-        logger.debug('This is debugging message')
-        logger.error('This is an error')
-        
-        #root.info('Hello baby')
-        #root.debug('This is debugging message')
-        #root.error('This is an error')
-    '''
