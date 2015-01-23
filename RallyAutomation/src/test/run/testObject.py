@@ -94,7 +94,7 @@ class testObject(object):
                         r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
                 
                     ver_point = ast.literal_eval(lst[5])
-                    r_ver_content=ast.literal_eval(r_ver._content)
+                    r_ver_content=ast.literal_eval(r_ver.content)
                     for key in ver_point:                                    
                         if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
                             verdict.append((0,'Failure: verification failed'))
