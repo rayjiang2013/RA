@@ -8,7 +8,7 @@ import sys
 #from testCase import *
 import logging
 #from logging import config
-
+import inspect
 
 
 class testFolder:
@@ -42,8 +42,13 @@ class testFolder:
             return tf
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
          
     
     #Create test case
@@ -54,8 +59,13 @@ class testFolder:
             self.logger.debug("Test folder created, ObjectID: %s  FormattedID: %s" % (tf.oid, tf.FormattedID))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test folder created, ObjectID: %s  FormattedID: %s" % (tf.oid, tf.FormattedID)      
         return tf  
         
@@ -67,8 +77,13 @@ class testFolder:
             self.logger.debug("Test Folder %s updated" % tf.FormattedID)      
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test Folder %s updated" % tf.FormattedID
         return tf
     
@@ -81,8 +96,13 @@ class testFolder:
                 self.logger.debug("Test Folder deleted, FormattedID: %s" % self.data['tf']['FormattedID'])
         except Exception, details:
             #sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tf']['FormattedID']))
-            self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tf']['FormattedID']), exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tf']['FormattedID']), exc_info=True)
+                sys.exit(1)            
         
             
     #Add test cases to test folder; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
@@ -96,6 +116,11 @@ class testFolder:
             self.logger.debug("Test cases %s is added to Test folder %s" % (tc_new.FormattedID,tf.FormattedID))  
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test cases %s is added to Test folder %s" % (tc_new.FormattedID,tf.FormattedID)

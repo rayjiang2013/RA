@@ -6,6 +6,7 @@ Created on Nov 10, 2014
 import sys
 import logging
 from types import *
+import inspect
 
 
 class testSet(object):
@@ -42,9 +43,13 @@ class testSet(object):
             self.logger.debug("Test set obtained, ObjectID: %s, FormattedID: %s, Content: %s" % (ts.oid,ts.FormattedID,dic))
             return (ts,dic)
         except Exception, details:
-            #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 
     #Fetch all the test cases of specific test set
     def allTCofTS(self,ts):
@@ -64,8 +69,13 @@ class testSet(object):
             return lst
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 
     
     #Update test set
@@ -80,8 +90,13 @@ class testSet(object):
             self.logger.debug("Test Set %s is updated" % ts.FormattedID)        
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test Set %s updated" % ts.FormattedID
         #print "--------------------------------------------------------------------"
         return ts    
@@ -105,8 +120,13 @@ class testSet(object):
             self.updateTS()
             self.logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
         except Exception,details:
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
     
     #Create test set
     def createTS(self,ts_dic):
@@ -131,8 +151,13 @@ class testSet(object):
             #self.data['ts']=ts_data
             self.logger.debug("Test set created, ObjectID: %s  FormattedID: %s" % (ts.oid, ts.FormattedID))      
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         
         return ts  
     
@@ -160,16 +185,27 @@ class testSet(object):
             return new_ts
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)    
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
     
     #Delete test case
     def delTS(self):
         try: 
             delete_success=self.rally.delete('TestSet', self.data['ts']['FormattedID'])
         except Exception, details:
-            self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']), exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']), exc_info=True)
+                sys.exit(1)            
+
         if delete_success == True:
             self.logger.debug("Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID'], exc_info=True)
     

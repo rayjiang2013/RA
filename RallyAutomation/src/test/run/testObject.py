@@ -19,6 +19,7 @@ from defect import defect
 import requests
 import ast
 from copy import deepcopy
+import inspect
 
 class testObject(object):
     '''
@@ -50,8 +51,14 @@ class testObject(object):
             #self.logger.info("The test set is successfully copied")
             return ts_new
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 
     #Test execution
     def executor(self,tc):
@@ -70,8 +77,13 @@ class testObject(object):
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))       
             return (r,lst) 
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)        
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1) 
     
     #Test verification:
     def verificator(self,lst,r,verdict,tc):
@@ -108,8 +120,13 @@ class testObject(object):
         
             return verdict
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)                         
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)                       
         
     #Cleanup
     def cleaner(self,lst,tc,ts):
@@ -132,8 +149,13 @@ class testObject(object):
                     self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
              
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)    
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         
     #Main execution wrapper      
     def runTO(self,testset_under_test):
@@ -150,7 +172,7 @@ class testObject(object):
                             #update test case result
                             #tcr=testCaseResult(self.rally,dic)                
                             #tr=tcr.createTCResult() 
-                            verdict.append((2,'Blocked:the test case is blocked in last test run with same build id %s' % self.data["ts"]["Build"]))
+                            verdict.append((2,'Blocked: the test case is blocked in last test run with same build id %s' % self.data["ts"]["Build"]))
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
@@ -175,7 +197,13 @@ class testObject(object):
             #verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
             self.logger.info("The test run is successfully executed on Chasis")
         except Exception,details:
-            self.logger.error("Error: %s\n" % details,exc_info=True)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         return (verdict,new_data)
     
     #Run the test set
@@ -278,7 +306,7 @@ class testObject(object):
                             break
                                                    
 
-                if verd[0] == 1:
+                elif verd[0] == 1:
                     dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Pass','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}
                     num_pass=num_pass+1
 
@@ -288,8 +316,15 @@ class testObject(object):
                     tr=tcr.createTCResult() 
                     trs.append(tr)          
 
-                if verd[0] == 2:
+                elif verd[0] == 2:
                     dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Blocked','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':verd[1]}  
+                    #update test case result
+                    tcr=testCaseResult(self.rally,dic)                
+                    tr=tcr.createTCResult()    
+                    trs.append(tr) 
+                
+                else:
+                    dic['tcresult'] = {'TestCase':tc._ref,'Verdict':u'Error','Build':new_data["ts"]["Build"],'Date':datetime.datetime.now().isoformat(),'TestSet':ts._ref,'Tester':ur._ref,'Notes':'Unexpected verdict'}  
                     #update test case result
                     tcr=testCaseResult(self.rally,dic)                
                     tr=tcr.createTCResult()    
@@ -302,7 +337,13 @@ class testObject(object):
                 ts_obj.updateSS(2)       
             self.logger.info("The test set %s on Rally is successfully updated with test execution information" % ts.FormattedID)     
         except Exception,details:
-            self.logger.error("Error: %s\n" % details,exc_info=True)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         return trs
         
     #Generate report
@@ -319,8 +360,13 @@ class testObject(object):
             self.logger.info('Report %s is successfully generated' % filename)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Report %s is successfully generated" % filename   
         #print "--------------------------------------------------------------------"     
         return filename
@@ -361,6 +407,13 @@ class testObject(object):
             #print "--------------------------------------------------------------------"
             self.logger.info("The report is successfully sent")
         except SMTPException as error:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
+                sys.exit(1)
             #print "Error: unable to send email :  {err}".format(err=error)
-            self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
+            
 

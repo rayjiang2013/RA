@@ -8,7 +8,7 @@ import sys
 
 import logging
 #from logging import config
-
+import inspect
 
 class testCase:
     '''
@@ -43,8 +43,13 @@ class testCase:
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             #sys.exit(1)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
          
     
     #Create test case
@@ -55,9 +60,13 @@ class testCase:
             self.logger.debug("Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            #sys.exit(1)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID)   
            
         return tc  
@@ -70,9 +79,13 @@ class testCase:
             self.logger.debug("Test Case %s updated" % tc.FormattedID)          
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            #sys.exit(1)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test Case %s updated" % tc.FormattedID
         return tc
     
@@ -86,8 +99,15 @@ class testCase:
         except Exception, details:
             #sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']))
             #sys.exit(1)
-            self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']), exc_info=True)
-            sys.exit(1)
+            
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']), exc_info=True)
+                sys.exit(1)
+
 
             
 
