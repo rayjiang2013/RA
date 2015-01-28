@@ -10,7 +10,7 @@ import sys
 from testCase import testCase
 import logging
 #from logging import config
-
+import inspect
 
 
 class testCaseStep:
@@ -49,8 +49,13 @@ class testCaseStep:
             return ts
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
          
     
     #Create test case step
@@ -68,8 +73,13 @@ class testCaseStep:
                 self.logger.debug("===> Created  TestCaseStep: %s   OID: %s" % (testcasestep.StepIndex, testcasestep.oid))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)    
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 '''       
     #Update test case step
     def updateTCStep(self):

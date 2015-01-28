@@ -9,7 +9,7 @@ from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a 
 import json
 from testObject import testObject
 from rallyLogger import *
-
+import inspect
 #The main function    
 if __name__ == '__main__':
     #Setup
@@ -46,7 +46,12 @@ if __name__ == '__main__':
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
             #print "--------------------------------------------------------------------"    
     except Exception,details:
-            logger.error('ERROR: %s %s \n' % (Exception,details), exc_info=True)
+        #x=inspect.stack()
+        if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+            raise
+        else:
+            #print Exception,details
+            logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
 
     to=testObject(rally,data)

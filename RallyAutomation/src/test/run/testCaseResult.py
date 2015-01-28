@@ -8,7 +8,7 @@ import sys
 
 import logging
 #from logging import config
-
+import inspect
 
 
 class testCaseResult:
@@ -31,8 +31,13 @@ class testCaseResult:
             self.logger.debug("Test Case %s updated; Test result oid %s is created" % (tr.TestCase.FormattedID,tr.oid))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test Case %s updated; Test result oid %s is created" % (tr.TestCase.FormattedID,tr.oid)     
         return tr  
     
@@ -54,16 +59,26 @@ class testCaseResult:
             return lst
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 
     #Delete test case result
     def delTCR(self):
         try: 
             delete_success=self.rally.delete('TestCaseResult', self.data['tcresult']['oid'])
         except Exception, details:
-            self.logger.error('ERROR: %s %s Test Case Result %s does not exist\n' % (Exception,details,self.data['tcresult']['oid']), exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s %s Test Case Result %s does not exist\n' % (Exception,details,self.data['tcresult']['oid']), exc_info=True)
+                sys.exit(1)            
         if delete_success == True:
             self.logger.debug("Test case result deleted, ObjectID: %s" % self.data['tcresult']['oid'], exc_info=True)
 

@@ -14,6 +14,7 @@ import sys
 import logging
 #from logging import config
 
+import inspect
 
 class defect:
     '''
@@ -44,8 +45,13 @@ class defect:
             #self.data['ts']=ts_data
             self.logger.debug("Defect created, ObjectID: %s  FormattedID: %s" % (df.oid, df.FormattedID))      
         except Exception, details:
-            self.logger.error('ERROR: %s \n' % details)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         
         return df  
 
@@ -68,8 +74,13 @@ class defect:
             return (df,dic)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
 
     #Fetch all the defects of specific test case            
     def allDFofTC(self,tc):
@@ -89,8 +100,13 @@ class defect:
             return lst
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
             
     #Update defect
     def updateDF(self):
@@ -100,8 +116,12 @@ class defect:
             self.logger.debug("Defect %s updated" % df.FormattedID)          
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
-            #sys.exit(1)
-            self.logger.error('ERROR: %s \n' % details, exc_info=True)
-            sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
         #print "Test Case %s updated" % tc.FormattedID
         return df
