@@ -169,16 +169,18 @@ class testSet(object):
     def manualAddTCs(self,ts_dst):
         try: 
             tcids=self.data['ts']['TestCases']
-            dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[]}    
+            dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[]}   
+            tcs=[] 
             for tcid in tcids:
                 self.data['tc']['FormattedID']=tcid
                 tc_obj=testCase(self.rally,self.data)
                 tc=tc_obj.getTCByID()
+                tcs.append(tc)
                 dic['TestCases'].append({'_ref' : str(tc._ref)})
                 self.logger.debug("Test case %s will be added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
             new_ts=self.rally.post('TestSet', dic) 
             self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
-            return new_ts
+            return (new_ts,tcs)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             self.logger.error('ERROR: %s \n' % details, exc_info=True)

@@ -30,7 +30,7 @@ class TestTOrunTO:
             for tc in tcs:
                 fids.append(tc.FormattedID)
             
-            ts_new=to_obj.copyTS()
+            ts_new,tcs_objs=to_obj.copyTS()
             #(verd,new_data)=config_module[0].runTO(ts_new)
             #global new_self_data
             new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
@@ -49,7 +49,7 @@ class TestTOrunTO:
                     
             request.addfinalizer(fin)
             
-            return (ts_new,ts,fids,new_self_data)#verd,new_data)
+            return (ts_new,ts,fids,new_self_data,tcs_objs)#verd,new_data)
         except Exception,details:
             
             print details
@@ -60,7 +60,7 @@ class TestTOrunTO:
     def add_block_tr(self,test_config_module,config_class,request):
         try:
             print ("setup_method    method:%s" % inspect.stack()[0][3])
-            (ts_new,ts,fids,new_self_data)=config_class
+            (ts_new,ts,fids,new_self_data,tcs_objs)=config_class
             rally=test_config_module[1]
             tcr_data={"Build":new_self_data['ts']['Build'],
                       "Verdict":"Blocked",
@@ -100,22 +100,23 @@ class TestTOrunTO:
     def test_testobject_runto_equal_formattedid(self,config_class,test_config_module):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
         to_obj=test_config_module[0]
-        ts_new=config_class[0]
-        new_data=(to_obj.runTO(ts_new))[1]
+        ts_new,tcs_objs=config_class[0],config_class[4]
+        new_data=(to_obj.runTO(ts_new,tcs_objs))[1]
         assert ts_new.FormattedID==new_data['ts']['FormattedID']
         
     def test_testobject_runto_same_verdict_size(self,config_class,test_config_module):
         print 'test_testobject_runto_same_verdict_size  <============================ actual test code'
         to_obj=test_config_module[0]
-        ts_new=config_class[0]
-        verd=(to_obj.runTO(ts_new))[0]
+        ts_new,tcs_objs=config_class[0],config_class[4]
+        verd=(to_obj.runTO(ts_new,tcs_objs))[0]
         assert len(ts_new.TestCases)==len(verd)
         
     def test_testobject_runto_blocked(self,config_class,add_block_tr,test_config_module):
         print 'test_testobject_runto_blocked  <============================ actual test code'
         to_obj=test_config_module[0]
+        tcs_objs=config_class[4]
         ts_new=add_block_tr
-        (verd,new_data)=to_obj.runTO(ts_new)
+        (verd,new_data)=to_obj.runTO(ts_new,tcs_objs)
         tcs=ts_new.TestCases
         for v in verd:
             if v[0] == 2:
@@ -130,8 +131,8 @@ class TestTOrunTO:
     def test_testobject_runto_state_in_process(self,config_class,test_config_module):
         print 'test_testobject_runto_state_in_process  <============================ actual test code'
         to_obj,rally=test_config_module[0:2]
-        ts_new=config_class[0]
-        data_new=to_obj.runTO(ts_new)[1]
+        ts_new,tcs_objs=config_class[0],config_class[4]
+        data_new=to_obj.runTO(ts_new,tcs_objs)[1]
         ts_obj=testSet(rally,data_new)
         ts_after_runTO=ts_obj.getTSByID()[0]
         assert ts_after_runTO.ScheduleState=="In-Progress"

@@ -50,9 +50,9 @@ if __name__ == '__main__':
             sys.exit(1)
 
     to=testObject(rally,data)
-    ts_ut=to.copyTS()
-    (verd,newdt)=to.runTO(ts_ut)
-    test_results=to.runTS(verd,newdt)    
+    ts_ut,tcs_objs=to.copyTS()
+    (verd,newdt)=to.runTO(ts_ut,tcs_objs)
+    test_results=to.runTS(verd,newdt,tcs_objs)    
     report=to.genReport(test_results)
     to.sendNotification(report)
     

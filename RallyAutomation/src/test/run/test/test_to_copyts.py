@@ -27,7 +27,7 @@ class TestTOCopyTS:
             for tc in tcs:
                 fids.append(tc.FormattedID)
             
-            ts_new=to_obj.copyTS()
+            ts_new=to_obj.copyTS()[0]
             #global new_self_data
             new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
             new_self_data['ts']['FormattedID']=ts_new.FormattedID

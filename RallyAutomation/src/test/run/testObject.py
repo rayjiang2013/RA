@@ -44,12 +44,12 @@ class testObject(object):
             (ts_origin,ts_origin_dic)=ts_obj.getTSByID()
             ts_dst=ts_obj.createTS(ts_origin_dic)
             #ts_new=ts_obj.addTCs(ts_origin,ts_dst)
-            ts_new=ts_obj.manualAddTCs(ts_dst)
+            ts_new,tcs=ts_obj.manualAddTCs(ts_dst)
             self.logger.info("Test set %s is copied to test set %s" % (ts_origin.FormattedID, ts_dst.FormattedID))
             #self.data['ts']={}
             #self.data['ts']['FormattedID']=ts_dst.FormattedID
             #self.logger.info("The test set is successfully copied")
-            return ts_new
+            return ts_new,tcs
         except Exception, details:
             self.logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
@@ -137,11 +137,11 @@ class testObject(object):
             sys.exit(1)    
         
     #Main execution wrapper      
-    def runTO(self,testset_under_test):
+    def runTO(self,testset_under_test,tcs_list):
          
         try:
             verdict=[]
-            for tc in testset_under_test.TestCases:
+            for tc in tcs_list:
                 sorted_trs=sorted(tc.Results, key=lambda x: x.Date, reverse=True)
                 #Check if the test case is blocked in most recent run with current build. For...else is used(http://psung.blogspot.com/2007/12/for-else-in-python.html)
                 for tr in sorted_trs:
@@ -180,11 +180,11 @@ class testObject(object):
         return (verdict,new_data)
     
     #Run the test set
-    def runTS(self,tc_verds,new_data): 
+    def runTS(self,tc_verds,new_data,tcs): 
         try:
             ts_obj=testSet(self.rally,new_data)
             ts=ts_obj.getTSByID()[0]
-            tcs=ts_obj.allTCofTS(ts)
+            #tcs=ts_obj.allTCofTS(ts)
             #to_obj=testObject(self.rally,self.data)
             #tc_verds=to_obj.runTO() #run the actual tests for AVNext
             ur_obj=user(self.rally,new_data)   
