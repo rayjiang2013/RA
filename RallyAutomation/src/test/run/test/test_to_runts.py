@@ -30,7 +30,7 @@ class TestTOrunTS:
             for tc in tcs:
                 fids.append(tc.FormattedID)
             
-            ts_new=to_obj.copyTS()
+            ts_new,tcs_objs=to_obj.copyTS()
             #(verd,new_self_data)=to_obj.runTO(ts_new)
             #(verd,new_data)=config_module[0].runTO(ts_new)
             #global new_self_data
@@ -50,7 +50,7 @@ class TestTOrunTS:
                     
             request.addfinalizer(fin)
             
-            return (ts_new,ts,fids,new_self_data)#verd,new_data)
+            return (ts_new,ts,fids,new_self_data,tcs_objs)#verd,new_data)
         except Exception,details:
             
             print details
@@ -60,8 +60,8 @@ class TestTOrunTS:
     def test_testobject_runts_same_verdicts(self,config_class,test_config_module,verd):
         print 'test_testobject_runts_other_verdicts_negative  <============================ actual test code'
         to_obj=test_config_module[0]
-        new_self_data=config_class[3]
-        trs=to_obj.runTS(verd,new_self_data) 
+        new_self_data,tcs_objs=config_class[3],config_class[4]
+        trs=to_obj.runTS(verd,new_self_data,tcs_objs) 
         for tr,v in zip(trs,verd):
             if v[0]==0:
                 assert tr.Verdict=='Fail'
