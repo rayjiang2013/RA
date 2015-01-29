@@ -105,9 +105,12 @@ class testSet(object):
     def updateSS(self,state):
         try:
             dic={}
+            dic['ts']={key: value for key, value in self.data['ts'].iteritems() if ((key == u'ScheduleState') or (key == u'FormattedID'))}
+            '''
             dic['ts']=self.data['ts'].copy()
             dic['ts'].pop('Build',None)
             dic['ts'].pop('Blocked',None)
+            '''
             if state == 0:
                 dic['ts']['ScheduleState']="In-Progress"
             if state == 1:        
@@ -116,8 +119,9 @@ class testSet(object):
                 dic['ts']['ScheduleState']="Completed"
             #ts_obj=testSet(self.rally,dic)
             #ts_obj.updateTS()
-            self.data=dic.copy()
-            self.updateTS()
+            #self.data=dic.copy()
+            #self.updateTS()
+            self.rally.post('TestSet', dic['ts'])  
             self.logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
         except Exception,details:
             #x=inspect.stack()

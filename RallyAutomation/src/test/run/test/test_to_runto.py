@@ -17,7 +17,7 @@ from src.test.run.testObject import testObject
         
 #Test testObject/runTO
 class TestTOrunTO:
-    @pytest.fixture(scope="class",params=['TS500'])
+    @pytest.fixture(scope="class",params=['TS484'])
     def config_class(self,test_config_module,request):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
@@ -38,8 +38,8 @@ class TestTOrunTO:
             def fin():
                 try:
                     print ("teardown_class class:%s" % self.__class__.__name__)
-                    ts_new_obj=testSet(rally,data_to_runto)
-                    ts_new_obj.delTS()
+                    #ts_new_obj=testSet(rally,data_to_runto)
+                    #ts_new_obj.delTS()
             
                 except Exception,details:
                     
