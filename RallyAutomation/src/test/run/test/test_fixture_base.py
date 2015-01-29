@@ -6,6 +6,7 @@ from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a 
 import json
 
 import os
+from copy import deepcopy
 
 #pytest fixture example
 @pytest.fixture(scope="module")
@@ -23,14 +24,14 @@ def test_config_module(request):
         # Read other configuration parameters from the extra.json
         with open(parent_path+'/extra.json') as data_file:    
             data = json.load(data_file)
-        #global to_obj
-        to_obj=testObject(rally,data)
+        #global to_obj      
+        #to_obj=testObject(rally,data)
         
         def fin():
             print "teardown_module      module:%s" % __name__
         request.addfinalizer(fin)
         
-        return (to_obj,rally,data)
+        return rally,data
     except Exception,details:
         
         print details
