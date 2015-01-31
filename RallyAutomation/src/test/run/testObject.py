@@ -20,6 +20,8 @@ import requests
 import ast
 from copy import deepcopy
 import inspect
+from buildDefinition import buildDefinition
+from build import build
 
 class testObject(object):
     '''
@@ -37,7 +39,34 @@ class testObject(object):
         #logger.debug("testObject is initiated successfully")
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
-        
+    
+    
+    #Get build information
+    def getBuildInfo(self):
+        try:
+            builddf_obj=buildDefinition(self.rally,self.data)
+            builddf=builddf_obj.getBuildDefinitionByName()
+            data_with_bddf_ref=deepcopy(self.data)
+            data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
+            build_obj=build(self.rally,data_with_bddf_ref)
+            bd=build_obj.getBuild()
+            #self.data['ts']['Build']=build.Number
+            
+            if bd.Status=="SUCCESS":
+                return
+            else: raise Exception('Build failed')
+
+        except Exception, details:
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+                
+    
     #Copy test set
     def copyTS(self):
         try:

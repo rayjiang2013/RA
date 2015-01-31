@@ -68,7 +68,7 @@
     "ts": {
         "Blocked": "",
         "BlockedReason": "",
-        "Build": "7003",
+        "Build": "14",
         "Description": "",
         "Expedite": "",
         "FormattedID": "TS185",
@@ -84,5 +84,12 @@
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    }
+    },
+    "build": {
+        "Number": "14",
+		"BuildDefinition":""
+    },
+    "builddf": {
+        "Name": "Proto2"
+    }	
 }

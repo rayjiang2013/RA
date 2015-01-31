@@ -1,4 +1,9 @@
 '''
+Created on Jan 30, 2015
+
+@author: ljiang
+'''
+'''
 Created on Nov 5, 2014
 
 @author: ljiang
@@ -10,7 +15,7 @@ import logging
 #from logging import config
 import inspect
 
-class testCase:
+class build(object):
     '''
     This is the class module for test case    
     '''
@@ -24,22 +29,25 @@ class testCase:
         self.logger.propagate=False
 
     
-    #Show a TestCase identified by the FormattedID value
-    def getTCByID(self):
+    #get a build identified by the build number and BuildDefinition ref
+    def getBuild(self):
         try:
-            query_criteria = 'FormattedID = "%s"' % str(self.data['tc']['FormattedID'])
-            response = self.rally.get('TestCase', fetch=True, query=query_criteria)
+            query_criteria = '(Number = "%s") and (BuildDefinition = "%s")' % (str(self.data['ts']['Build']),str(self.data['build']['BuildDefinition']))
+            response = self.rally.get('Build', fetch=True, query=query_criteria)
+            
             dic={}
-            for tc in response:
-                for key in dir(tc):
+            
+            for build in response:
+                for key in dir(build):
                     if not key.endswith("__"):
-                        dic[key]=getattr(tc,key)
-                    #print key,getattr(tc,key)
+                        dic[key]=getattr(build,key)
+                    #print key,getattr(build,key)
                 break        
             #print "Test case obtained, ObjectID: %s  FormattedID: %s  Content: " % (tc.oid,tc.FormattedID)
             #pprint(dic)
-            self.logger.debug("Test case obtained, ObjectID: %s  FormattedID: %s  Content: %s" % (tc.oid,tc.FormattedID,dic))
-            return tc
+            
+            self.logger.debug("Build obtained, ObjectID: %s  Build Number: %s  Content: %s" % (build.oid,build.Number,dic))
+            return build
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             #sys.exit(1)
@@ -51,7 +59,7 @@ class testCase:
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
          
-    
+    '''
     #Create test case
     def createTC(self):
         tc_data = {key: value for key, value in self.data['tc'].items() if key != u'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
@@ -107,7 +115,7 @@ class testCase:
                 #print Exception,details
                 self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']), exc_info=True)
                 sys.exit(1)
-
+    '''
 
             
 

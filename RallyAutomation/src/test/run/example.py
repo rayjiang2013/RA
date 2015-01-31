@@ -55,6 +55,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
     to=testObject(rally,data)
+    to.getBuildInfo()
     ts_ut=to.copyTS()
     (verd,newdt)=to.runTO(ts_ut)
     test_results=to.runTS(verd,newdt)    
