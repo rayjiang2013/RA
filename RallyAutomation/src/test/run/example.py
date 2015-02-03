@@ -10,6 +10,8 @@ import json
 from testObject import testObject
 from rallyLogger import *
 import inspect
+import os
+
 #The main function    
 if __name__ == '__main__':
     #Setup
@@ -18,6 +20,7 @@ if __name__ == '__main__':
         setup("logging.json")
         logger = logging.getLogger(__name__)
         logger.propagate=False
+                
         options = [opt for opt in sys.argv[1:] if opt.startswith('--')]
         server, user, password, apikey, workspace, project = rallyWorkset(options) #apikey can be obtained from https://rally1.rallydev.com/login/
         #print "--------------------------------------------------------------------\nRally project info is as below:"
@@ -40,7 +43,7 @@ if __name__ == '__main__':
         '''
         
         # Read other configuration parameters from the extra.json
-        with open('extra.json') as data_file:    
+        with open(sys.argv[2]) as data_file:    
             data = json.load(data_file)
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
@@ -55,7 +58,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
     to=testObject(rally,data)
-    to.getBuildInfo()
+    to.getLatestBuild()
     ts_ut=to.copyTS()
     (verd,newdt)=to.runTO(ts_ut)
     test_results=to.runTS(verd,newdt)    

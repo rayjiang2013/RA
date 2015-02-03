@@ -58,6 +58,30 @@ class build(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
+
+    #get a build identified by the build number and BuildDefinition ref
+    def getAllBuilds(self):
+        try:
+            #query_criteria = 'BuildDefinition = "%s"' % (str(self.data['build']['BuildDefinition']))
+            response = self.rally.get('Build', fetch=True)#query=query_criteria)
+            
+            builds=[]
+            
+            for build in response:
+                builds.append(build)                    
+                self.logger.debug("Build obtained, ObjectID: %s  Build Number: %s Build Name: %s \n" % (build.oid,build.Number,build.Name))
+            return builds
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+
          
     '''
     #Create test case

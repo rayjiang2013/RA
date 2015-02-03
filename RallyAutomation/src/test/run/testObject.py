@@ -65,7 +65,35 @@ class testObject(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-                
+
+
+    #Get build information
+    def getLatestBuild(self):
+        try:
+            builddf_obj=buildDefinition(self.rally,self.data)
+            builddf=builddf_obj.getBuildDefinitionByName()
+            data_with_bddf_ref=deepcopy(self.data)
+            data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
+            build_obj=build(self.rally,data_with_bddf_ref)
+            bds=build_obj.getAllBuilds()
+            sorted_bds=sorted(bds, key=lambda x: x.CreationDate, reverse=True)
+            bd=sorted_bds[0]
+            #build_number=bd.number
+            self.data['ts']['Build']=bd.Number
+            
+            if bd.Status=="SUCCESS":
+                return
+            else: raise Exception('Build failed')
+
+        except Exception, details:
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)                
     
     #Copy test set
     def copyTS(self):
