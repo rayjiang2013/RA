@@ -17,7 +17,7 @@ if __name__ == '__main__':
     #Setup
     try:
         #logConfig("logging.json")
-        setup("logging.json")
+        setup(sys.argv[3])
         logger = logging.getLogger(__name__)
         logger.propagate=False
                 
