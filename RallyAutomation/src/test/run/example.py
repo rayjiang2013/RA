@@ -3,14 +3,16 @@ Created on Oct 28, 2014
 
 @author: ljiang
 '''
+import inspect
 import sys
 
 from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
 import json
 from testObject import testObject
 from rallyLogger import *
-import inspect
+
 import os
+
 
 #The main function    
 if __name__ == '__main__':
@@ -48,23 +50,28 @@ if __name__ == '__main__':
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
             #print "--------------------------------------------------------------------"    
+
+        to=testObject(rally,data)
+        
+        if to.sanityCheck():
+            to.getLatestBuild()
+            ts_ut=to.copyTS()
+            (verd,newdt)=to.runTO(ts_ut)
+            test_results=to.runTS(verd,newdt)    
+            report=to.genReport(test_results)
+            to.sendNotification(report)
+        
+        else: raise Exception('Environment sanity check failed')            
+        
     except Exception,details:
         #x=inspect.stack()
-        if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+        #print ('test_' in x[1][3])
+        if ('test_' in inspect.stack()[1][3]) or ('test_' in inspect.stack()[2][3]):
             raise
         else:
             #print Exception,details
             logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
-
-    to=testObject(rally,data)
-    to.getLatestBuild()
-    ts_ut=to.copyTS()
-    (verd,newdt)=to.runTO(ts_ut)
-    test_results=to.runTS(verd,newdt)    
-    report=to.genReport(test_results)
-    to.sendNotification(report)
-    
 
     
 

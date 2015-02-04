@@ -40,6 +40,22 @@ class testObject(object):
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
     
+    def sanityCheck(self):
+        try:
+            pass
+            #raise Exception
+        except Exception, details:
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+        self.logger.info("Sanity check is successfully performed")
+        return True
+    
     
     #Get build information
     def getBuildInfo(self):
@@ -51,7 +67,8 @@ class testObject(object):
             build_obj=build(self.rally,data_with_bddf_ref)
             bd=build_obj.getBuild()
             #self.data['ts']['Build']=build.Number
-            
+            self.logger.info("Build name %s number %s is obtained" % (bd.Name, bd.Number))
+
             if bd.Status=="SUCCESS":
                 return
             else: raise Exception('Build failed')
@@ -80,6 +97,7 @@ class testObject(object):
             bd=sorted_bds[0]
             #build_number=bd.number
             self.data['ts']['Build']=bd.Number
+            self.logger.info("Latest build name %s number %s is obtained" % (bd.Name, bd.Number))
             
             if bd.Status=="SUCCESS":
                 return
@@ -147,7 +165,14 @@ class testObject(object):
         try:
             #Verification
             if r.status_code != int(lst[3]):
-                verdict.append((0,'Failure: status code unexpected'))    
+                #Run Env Sanity Check
+                #to_obj=testObject(self.rally,self.data)                
+                if self.sanityCheck():
+                    verdict.append((0,'Failure: status code unexpected')) 
+                else:    
+                    raise Exception('Environment sanity check failed')
+                    #verdict.append((0,'Failure: sanity check of environment failed'))
+                   
             else:
                 if lst[7]==u"" or lst[5]==u"" or lst[6]==u"":
                     self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
