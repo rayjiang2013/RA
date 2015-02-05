@@ -29,7 +29,7 @@ s = requests.session()
 
 
 payload = {
-'user[email]':'pv@spirent.com',
+'user[email]':'nonexist@spirent.com',
 'user[password]':'spirent'
 }
 r = s.post(url+'login',data=payload,verify = False)
@@ -37,7 +37,6 @@ r = s.post(url+'login',data=payload,verify = False)
 r2=s.get(url+'current_user')
 
 r3= s.delete(url+'logout')
-
 
 pass
 

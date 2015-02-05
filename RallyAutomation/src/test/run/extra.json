@@ -71,7 +71,7 @@
         "Build": "19",
         "Description": "",
         "Expedite": "",
-        "FormattedID": "TS185",
+        "FormattedID": "TS541",
         "Iteration": "",
         "Name": "New test set",
         "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
@@ -91,5 +91,10 @@
     },
     "builddf": {
         "Name": "Proto2"
-    }	
+    },
+	"env":{
+		"ControllerURL":"http://10.61.40.102",
+		"ControllerUsername":"pv@spirent.com",
+		"ControllerPassword":"spirent"
+	}	
 }

@@ -136,18 +136,25 @@ class testObject(object):
                 sys.exit(1)
 
     #Test execution
-    def executor(self,tc):
+    def executor(self,tc,s_ession):
         try:
             #lst=tc.c_QATCPARAMSSTRING.split('|')
             lst=tc.c_QATCPARAMSTEXT.split('|')
+            if lst[1]!= u'':
+                lst[1]=self.data['env']['ControllerURL']+lst[1]
+            if lst[6]!= u'':
+                lst[6]=self.data['env']['ControllerURL']+lst[6]
+            if lst[10]!= u'':
+                lst[10]=self.data['env']['ControllerURL']+lst[10]
+
             if lst[0] == "GET":
-                r = requests.get(lst[1])                        
-            if lst[0] == "POST":
-                r = requests.post(lst[1],data=ast.literal_eval(lst[2]))
+                r = s_ession.get(lst[1])                        
+            if lst[0] == "POST":#only support http for now, verify = false
+                r = s_ession.post(lst[1],data=ast.literal_eval(lst[2]),verify=False)
             if lst[0] == "DELETE":
-                r = requests.delete(lst[1])
-            if lst[0] == "PUT":
-                r = requests.put(lst[1],data=ast.literal_eval(lst[2]))
+                r = s_ession.delete(lst[1])
+            if lst[0] == "PUT":#only support http for now, verify = false
+                r = s_ession.put(lst[1],data=ast.literal_eval(lst[2]),verify=False)
             
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))       
             return (r,lst) 
@@ -161,12 +168,13 @@ class testObject(object):
                 sys.exit(1) 
     
     #Test verification:
-    def verificator(self,lst,r,verdict,tc):
+    def verificator(self,lst,r,verdict,tc,s_ession):
         try:
             #Verification
             if r.status_code != int(lst[3]):
+
                 #Run Env Sanity Check
-                #to_obj=testObject(self.rally,self.data)                
+                #to_obj=testObject(self.rally,self.data)       
                 if self.sanityCheck():
                     verdict.append((0,'Failure: status code unexpected')) 
                 else:    
@@ -174,21 +182,73 @@ class testObject(object):
                     #verdict.append((0,'Failure: sanity check of environment failed'))
                    
             else:
-                if lst[7]==u"" or lst[5]==u"" or lst[6]==u"":
+                if (lst[4] != u'' ):# and (r.content==str(lst[4])):
+                    x=r.content
+                    y=str(lst[4])
+                    if x==y:
+                        if (ast.literal_eval(lst[4])['message'] != None):
+                            z=ast.literal_eval(lst[4])
+                            verdict.append((1,'Success: status code expected without verification. Message: '+z['message']) )
+                    else:
+                        #Run Env Sanity Check
+                        #to_obj=testObject(self.rally,self.data)       
+                        if self.sanityCheck():
+                            verdict.append((0,'Failure: status code expected but message unexpected')) 
+                        else:    
+                            raise Exception('Environment sanity check failed')
+                            #verdict.append((0,'Failure: sanity check of environment failed'))
+                elif (lst[4] == u'') and (lst[7]==u"" or lst[5]==u"" or lst[6]==u""):
                     self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
                     verdict.append((1,'Success: status code expected without verification'))
                 else:    
                     if lst[7] == "GET":
-                        r_ver = requests.get(lst[6])                        
+                        r_ver = s_ession.get(lst[6])                        
                     if lst[7] == "POST":
-                        r_ver = requests.post(lst[6],data=ast.literal_eval(lst[8]))
+                        r_ver = s_ession.post(lst[6],data=ast.literal_eval(lst[8]))
                     if lst[7] == "DELETE":
-                        r_ver = requests.delete(lst[6])
+                        r_ver = s_ession.delete(lst[6])
                     if lst[7] == "PUT":
-                        r_ver = requests.put(lst[6],data=ast.literal_eval(lst[8]))
+                        r_ver = s_ession.put(lst[6],data=ast.literal_eval(lst[8]))
                 
                     ver_point = ast.literal_eval(lst[5])
-                    r_ver_content=ast.literal_eval(r_ver.content)
+                    r_ver_content=deepcopy(r_ver.content)
+                    r2= r_ver_content.replace("true","\"true\"")
+                        
+                    r_ver_content=ast.literal_eval(r2)
+                    #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
+                    #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
+
+                    for key in ver_point:                                    
+                        if not (key in r_ver_content):
+                            verdict.append((0,'Failure: verification failed'))
+                            #verified=False
+                            self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                            break                  
+                        elif not (ver_point[key]==r_ver_content[key]):
+                            if type(ver_point[key]) is dict and type(r_ver_content[key]) is dict:
+                                for k in ver_point[key]:
+                                    if not ((k in r_ver_content[key]) and (ver_point[key][k]==r_ver_content[key][k])): 
+                                        verdict.append((0,'Failure: verification failed'))
+                                        #verified=False
+                                        self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                                        break   
+                                else:                                    
+                                    #verified=True
+                                    verdict.append((1,'Success: status code expected and verified'))
+                                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))  
+                                    break                              
+                            else: 
+                                verdict.append((0,'Failure: verification failed'))
+                                #verified=False
+                                self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                                break     
+                            break         
+                    else:                                    
+                        #verified=True
+                        verdict.append((1,'Success: status code expected and verified'))
+                        self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+ 
+                    '''
                     for key in ver_point:                                    
                         if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
                             verdict.append((0,'Failure: verification failed'))
@@ -199,7 +259,7 @@ class testObject(object):
                         #verified=True
                         verdict.append((1,'Success: status code expected and verified'))
                         self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-        
+                    '''
             return verdict
         except Exception, details:
             #x=inspect.stack()
@@ -211,24 +271,25 @@ class testObject(object):
                 sys.exit(1)                       
         
     #Cleanup
-    def cleaner(self,lst,tc,ts):
+    def cleaner(self,lst,tc,ts,s_ession):
         try:
             if lst[10]==u"":
                 self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
                 if lst[9] == "GET":
-                    r_clr = requests.get(lst[10])                        
+                    r_clr = s_ession.get(lst[10])                        
                 if lst[9] == "POST":
-                    r_clr = requests.post(lst[10],data=ast.literal_eval(lst[11]))
+                    r_clr = s_ession.post(lst[10],data=ast.literal_eval(lst[11]))
                 if lst[9] == "DELETE":
-                    r_clr = requests.delete(lst[10])
+                    r_clr = s_ession.delete(lst[10])
                 if lst[9] == "PUT":
-                    r_clr = requests.put(lst[10],data=ast.literal_eval(lst[11]))
+                    r_clr = s_ession.put(lst[10],data=ast.literal_eval(lst[11]))
                 
                 if int(lst[12])==r_clr.status_code:              
                     self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                 else: 
-                    self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
+                    raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
+                    #self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
              
         except Exception, details:
             #x=inspect.stack()
@@ -258,16 +319,18 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
-                            (response,lst_of_par)=self.executor(tc)
-                            verdict=self.verificator(lst_of_par, response, verdict, tc)
-                            self.cleaner(lst_of_par, tc,testset_under_test)
+                            s = requests.session()
+                            (response,lst_of_par)=self.executor(tc,s)
+                            verdict=self.verificator(lst_of_par, response, verdict, tc,s)
+                            self.cleaner(lst_of_par, tc,testset_under_test,s)
                             break
                             
                             
                 else:
-                    (response,lst_of_par)=self.executor(tc)
-                    verdict=self.verificator(lst_of_par, response, verdict, tc)
-                    self.cleaner(lst_of_par, tc,testset_under_test)
+                    s = requests.session()
+                    (response,lst_of_par)=self.executor(tc,s)
+                    verdict=self.verificator(lst_of_par, response, verdict, tc,s)
+                    self.cleaner(lst_of_par, tc,testset_under_test,s)
             
             #Update ScheduleState of Test Set 
             new_data=deepcopy(self.data) 
