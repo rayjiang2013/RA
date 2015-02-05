@@ -18,7 +18,7 @@ from test_fixture_base import test_config_module
         
 #Test testObject/runTO
 class TestTOrunTS:
-    @pytest.fixture(scope="class",params=['TS484'])
+    @pytest.fixture(scope="class",params=['TS484'])#unit test not working yet need update
     def config_class(self,test_config_module,request):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
