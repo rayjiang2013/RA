@@ -17,7 +17,7 @@ from src.test.run.testObject import testObject
         
 #Test testObject/runTO
 class TestTOrunTO:
-    @pytest.fixture(scope="class",params=['TS484'])
+    @pytest.fixture(scope="class",params=['TS541'])
     def config_class(self,test_config_module,request):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
