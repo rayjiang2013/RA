@@ -1,4 +1,11 @@
 {
+    "build": {
+        "BuildDefinition": "",
+        "Number": "14"
+    },
+    "builddf": {
+        "Name": "Proto2"
+    },
     "df": {
         "FormattedID": "DE3803",
         "FoundInBuild": "6666",
@@ -19,6 +26,17 @@
         "EMAIL_SMTP_PORT": 25,
         "EMAIL_SUBJECT": "Test Report",
         "TEXT_SUBTYPE": "plain"
+    },
+    "env": {
+        "ControllerPassword": "spirent",
+        "ControllerURL": "http://10.61.40.102",
+        "ControllerUsername": "pv@spirent.com"
+    },
+    "ssh": {
+        "ip": "127.0.0.1",
+        "password": "Jag6413682",
+        "port": 22,
+        "username": "ljiang"
     },
     "tc": {
         "Description": "Test",
@@ -84,17 +102,5 @@
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    },
-    "build": {
-        "Number": "14",
-		"BuildDefinition":""
-    },
-    "builddf": {
-        "Name": "Proto2"
-    },
-	"env":{
-		"ControllerURL":"http://10.61.40.102",
-		"ControllerUsername":"pv@spirent.com",
-		"ControllerPassword":"spirent"
-	}	
+    }
 }
