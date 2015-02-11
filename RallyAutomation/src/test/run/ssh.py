@@ -75,3 +75,33 @@ class ssh():
                 sys.exit(1)
         self.logger.info("A directory %s is created remotely" % dirname)            
         return stdin, stdout, stderr                 
+    
+    def readLog(self,connection,filename):
+        try:
+            sftp_client=connection.open_sftp()
+            remote_file=sftp_client.open(filename,mode='r')
+        except Exception,details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+        self.logger.info("A log file %s is read" % filename)            
+        return remote_file
+    '''
+    def closeLog(self,remote_file):
+        try:
+            remote_file.close()
+        except Exception,details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+        self.logger.info("A log file %s is closed" % remote_file.FILE)            
+        return 
+    '''

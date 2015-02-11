@@ -81,3 +81,48 @@ class TestSSH:
                 assertion.append(True)
         assert True in assertion
 
+    @pytest.fixture(scope="function",params=['lei.log'])
+    def config_test_read_log(self,request,config_class):
+        try:
+            print ("setup_method    method:%s" % inspect.stack()[0][3])
+            connection,ssh_obj=config_class        
+            stdin, stdout, stderr=connection.exec_command('ls')
+            for line in stdout.readlines():
+                if request.param+'\n' == line:
+                    break
+            else: 
+                connection.exec_command('touch %s' % request.param)
+                connection.exec_command('echo "this is for test" > %s' % request.param)
+            def fin():
+                try:
+                    print ("teardown_method method:%s" % inspect.stack()[0][3])
+                    
+                    connection.exec_command('rm %s' % request.param)
+            
+                except Exception,details:
+                    
+                    print details
+                    sys.exit(1)    
+            request.addfinalizer(fin)
+            
+            return request.param
+        except Exception,details:
+            
+            print details
+            sys.exit(1)            
+
+
+    
+    #@pytest.mark.parametrize("filename", ['123.log'])        
+    def test_read_log(self,config_class,config_test_read_log):
+        print 'test_read_log  <============================ actual test code'
+        connection,ssh_obj=config_class
+        filename=config_test_read_log
+        remote_file=ssh_obj.readLog(connection,filename)
+        stdin_new, stdout_new, stderr_new=connection.exec_command('cat %s' % filename)
+        str=""
+        for line in stdout_new.readlines():
+            str+=line
+        remote_file_string=remote_file.read()  
+        remote_file.close() 
+        assert str==remote_file_string      
