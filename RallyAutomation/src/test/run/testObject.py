@@ -234,7 +234,48 @@ class testObject(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)           
+    
+    #search dictionary recursively
+    def searchDict(self,dict1,dict2):
+        try:
+            for item2 in dict2.items():                
+                for item1 in dict1.items():
+                    if item2[0]==item1[0]:
+                        if (type(item2[1]) != dict):
+                            if item2[1]==dict1[item1[0]]:
+                                #verified=True
+                                status=1
+                                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                                #verdict.append((1,'Success: status code expected and verified'))
+                                #self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))  
+                                break         
+                            else: 
+                                status=2
+                                #verdict[-1]=(0,'Failure: verification failed')
+                                #verified=False
+                                #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                                return status   
+                        else:
+                            return self.searchDict(item1[1],item2[1])
+                            #break
+                            
+                else:
+                    status=2
+                    #verdict[-1]=(0,'Failure: verification failed')
+                    #verified=False
+                    #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                    return status                           
+            return status
+        except Exception, details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)     
 
+    
     #Test verification:
     def verificator(self,lst,r,verdict,tc,s_ession):
         try:
@@ -287,7 +328,16 @@ class testObject(object):
                 r_ver_content=ast.literal_eval(r2)
                 #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
                 #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
-            
+                                
+                status=self.searchDict(r_ver_content,ver_point)
+                if status==1:
+                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                    #verdict.append((1,'Success: status code expected and verified'))
+                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))                  
+                if status==2:
+                    verdict[-1]=(0,'Failure: verification failed')
+                    self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                '''
                 for key in ver_point:                                    
                     if not (key in r_ver_content):
                         verdict[-1]=(0,'Failure: verification failed')
@@ -320,7 +370,7 @@ class testObject(object):
                     verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
                     self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
             
-                '''
+                
                 for key in ver_point:                                    
                     if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
                         verdict.append((0,'Failure: verification failed'))

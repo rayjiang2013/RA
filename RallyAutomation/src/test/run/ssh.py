@@ -75,4 +75,3 @@ class ssh():
                 sys.exit(1)
         self.logger.info("A directory %s is created remotely" % dirname)            
         return stdin, stdout, stderr                 
-     
