@@ -74,10 +74,10 @@ class TestSSH:
         connection,ssh_obj=config_class
         dirname=config_test_remote_mkdir
         stdin, stdout, stderr=ssh_obj.remoteMkdir(connection,dirname)
-        stdin_new, stdout_new, stderr_new=connection.exec_command('ls -l')
+        stdin_new, stdout_new, stderr_new=connection.exec_command('ls')
         assertion=[]
         for line in stdout_new.readlines():
-            if dirname in line:
+            if dirname+'\n' == line:
                 assertion.append(True)
         assert True in assertion
 
