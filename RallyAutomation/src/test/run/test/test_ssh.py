@@ -14,7 +14,7 @@ from copy import deepcopy
 #Test testObject/copyTS
 class TestSSH:
     
-    @pytest.fixture(scope="class",params=[{'ip':'127.0.0.1','port':22,'username':'ljiang','password':'Jag6413682'},{'ip':'10.10.2.59','port':22,'username':'lei','password':'spirent'}])
+    @pytest.fixture(scope="class",params=[{'ip':'10.61.46.70','port':22,'username':'thot','password':'thot123'}])#,{'ip':'127.0.0.1','port':22,'username':'ljiang','password':'Jag6413682'},{'ip':'10.10.2.59','port':22,'username':'lei','password':'spirent'}])
     def config_class(self,request,test_config_module):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
@@ -126,3 +126,9 @@ class TestSSH:
         remote_file_string=remote_file.read()  
         remote_file.close() 
         assert str==remote_file_string      
+        
+    def test_run_THoT(self,config_class):
+        print 'test_run_THoT  <============================ actual test code'
+        connection,ssh_obj=config_class
+        ssh_obj.runTHoT(connection)
+        assert True     
