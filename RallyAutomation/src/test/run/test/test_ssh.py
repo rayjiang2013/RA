@@ -131,4 +131,6 @@ class TestSSH:
         print 'test_run_THoT  <============================ actual test code'
         connection,ssh_obj=config_class
         ssh_obj.runTHoT(connection)
-        assert True     
+        stdin, stdout, stderr=connection.exec_command("tasklist\n")
+        processlist=stdout.readlines()
+        assert "mono" not in processlist
