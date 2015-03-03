@@ -121,7 +121,7 @@ class ssh():
             stdin2.write("TH_STARTSUITE -suite %s" % suite_id)
             time.sleep(30)
             stdin2.write("TH_CANCELSUITE -suite %s" % suite_id)
-            time.sleep(300)
+            time.sleep(60)
             #stdin2.write("TH_UNREGISTERSUITE -suite %s" % suite_id)
             stdin2.flush()
             stdin3, stdout3, stderr3=connection.exec_command("taskkill /F /IM mono.exe")

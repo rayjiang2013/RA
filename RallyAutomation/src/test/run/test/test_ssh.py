@@ -81,23 +81,30 @@ class TestSSH:
                 assertion.append(True)
         assert True in assertion
 
-    @pytest.fixture(scope="function",params=['lei.log'])
+    @pytest.fixture(scope="function",params=[['lei.log','windows']])
     def config_test_read_log(self,request,config_class):
         try:
             print ("setup_method    method:%s" % inspect.stack()[0][3])
             connection,ssh_obj=config_class        
             stdin, stdout, stderr=connection.exec_command('ls')
             for line in stdout.readlines():
-                if request.param+'\n' == line:
+                if request.param[0]+'\n' == line:
                     break
             else: 
-                connection.exec_command('touch %s' % request.param)
-                connection.exec_command('echo "this is for test" > %s' % request.param)
+                if request.param[1]=='windows':    
+                    stdin_3, stdout_3, stderr_3=connection.exec_command('type NUL > %s' % request.param[0])
+                    print stderr_3.readlines()
+                    stdin_3, stdout_3, stderr_3=connection.exec_command('echo this is for test\n > %s' % request.param[0])
+                else:                
+                    stdin_1, stdout_1, stderr_1=connection.exec_command('touch %s' % request.param[0])
+                    print stderr_1.readlines()
+                    stdin_2, stdout_2, stderr_2=connection.exec_command('echo "this is for test" > %s' % request.param[0])
+                    print stderr_2.readlines()
             def fin():
                 try:
                     print ("teardown_method method:%s" % inspect.stack()[0][3])
                     
-                    connection.exec_command('rm %s' % request.param)
+                    connection.exec_command('rm %s' % request.param[0])
             
                 except Exception,details:
                     
@@ -105,7 +112,7 @@ class TestSSH:
                     sys.exit(1)    
             request.addfinalizer(fin)
             
-            return request.param
+            return request.param[0]
         except Exception,details:
             
             print details
