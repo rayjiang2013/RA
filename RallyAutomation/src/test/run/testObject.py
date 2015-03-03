@@ -22,7 +22,7 @@ from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
-from matplotlib.cbook import Null
+#from matplotlib.cbook import Null
 
 class testObject(object):
     '''
