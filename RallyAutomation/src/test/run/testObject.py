@@ -213,7 +213,7 @@ class testObject(object):
         for k in d1:
             if k not in d2:
                 #print "%s:%s is missing from content of response" % (k,d1[k])
-                error_message+= "'"+k+"' : "+str(d1[k])+" is missing from content of response. "
+                error_message+= " '"+k+"' : "+str(d1[k])+" is missing from content of response."
         for k in d2:
             
             if k not in d1:
@@ -223,10 +223,10 @@ class testObject(object):
             if d2[k] != d1[k]:
                 if type(d2[k]) != dict:
                     #print "%s:%s is different in content of response" % (k,str(d2[k]))
-                    error_message+= "'"+k+"' : "+str(d2[k])+" in content of response is different from the expected. " 
+                    error_message+= " '"+k+"' : "+str(d2[k])+" in content of response is different from the expected." 
                 else:
                     if type(d1[k]) != type(d2[k]):
-                        error_message+= "'"+k+"' : "+str(d2[k])+" in content of response is different from the expected. " 
+                        error_message+= " '"+k+"' : "+str(d2[k])+" in content of response is different from the expected." 
                         continue
                     else:
                         if type(d2[k]) == dict:
@@ -284,7 +284,7 @@ class testObject(object):
                         self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
                     else:
                         #First level check failed
-                        verdict.append((0,'Failure: status code expected but first level check failed. Error: %s' % error_message))
+                        verdict.append((0,'Failure: status code expected but first level check failed. Error:%s' % error_message))
                         self.logger.debug("Test case %s, build %s failed because first level check failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
                     
                     '''
@@ -405,7 +405,7 @@ class testObject(object):
                     #verdict.append((1,'Success: status code expected and verified'))
                     self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))                  
                 else:
-                    verdict[-1]=(0,'Failure: verification failed. Error: %s' % error_message)
+                    verdict[-1]=(0,'Failure: verification failed. Error:%s' % error_message)
                     self.logger.debug("The test execution for test case %s, build %s is verified to be failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
                 '''
                 for key in ver_point:                                    
@@ -615,7 +615,7 @@ class testObject(object):
                         self.logger.debug("The defect %s is linked to test case result %s" % (new_df.FormattedID,tr._ref))  
                     for df in dfs:
                         #if not exist create new issue for the failed test cases
-                        if (not hasattr(df.TestCaseResult,'Notes')) or (df.TestCaseResult.Notes != dic['tcresult']['Notes']):
+                        if (not hasattr(df.TestCaseResult,'Notes')) or (str(df.TestCaseResult.Notes) != dic['tcresult']['Notes']):
                             if i==len(dfs):
 
                                 create_df={"FoundInBuild": new_data['ts']['Build'],
@@ -645,8 +645,8 @@ class testObject(object):
                             continue        
                         #if exist
                         else:
-                            #check if the defect is marked as fixed or not
-                            if df.State == "Fixed":
+                            #check if the defect is marked as fixed or closed
+                            if df.State == "Fixed" or df.State == "Closed":
                                 update_df={'df':None}
                                 #reopen the defect, make notes about the build, env and steps. Assign to someone
                                 update_df['df']={"FormattedID":df.FormattedID,"State":"Open","Owner":getattr(df.Owner,'_ref',None),"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}        
@@ -654,7 +654,7 @@ class testObject(object):
                             else: #inserting notes. 
                                 update_df={'df':None}
                                 #print df.Notes
-                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
+                                update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
                                 self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will update it with repro info" % (df.FormattedID,new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)) 
                             df_obj=defect(self.rally,update_df)
                             df_obj.updateDF()   
