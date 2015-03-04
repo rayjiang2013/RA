@@ -167,17 +167,84 @@ class testObject(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1) 
+
+
+    #search dictionary recursively
+    def searchDict(self,dict1,dict2):
+        try:
+            for item2 in dict2.items():                
+                for item1 in dict1.items():
+                    if item2[0]==item1[0]:
+                        if (type(item2[1]) != dict):
+                            if item2[1]==dict1[item1[0]]:
+                                #verified=True
+                                status=1
+                                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                                #verdict.append((1,'Success: status code expected and verified'))
+                                #self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))  
+                                break         
+                            else: 
+                                status=2
+                                #verdict[-1]=(0,'Failure: verification failed')
+                                #verified=False
+                                #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                                return status   
+                        else:
+                            return self.searchDict(item1[1],item2[1])
+                            #break
+                else:
+                    status=2
+                    #verdict[-1]=(0,'Failure: verification failed')
+                    #verified=False
+                    #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                    return status                           
+            return status
+        except Exception, details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)     
+    
+    def searchDict2(self,d1, d2, error_message):
+        #print "Changes in " + ctx
+        for k in d1:
+            if k not in d2:
+                #print "%s:%s is missing from content of response" % (k,d1[k])
+                error_message+= "'"+k+"' : "+str(d1[k])+" is missing from content of response. "
+        for k in d2:
+            
+            if k not in d1:
+                #print k + " added in d2"
+                continue
+            
+            if d2[k] != d1[k]:
+                if type(d2[k]) != dict:
+                    #print "%s:%s is different in content of response" % (k,str(d2[k]))
+                    error_message+= "'"+k+"' : "+str(d2[k])+" in content of response is different from the expected. " 
+                else:
+                    if type(d1[k]) != type(d2[k]):
+                        error_message+= "'"+k+"' : "+str(d2[k])+" in content of response is different from the expected. " 
+                        continue
+                    else:
+                        if type(d2[k]) == dict:
+                            error_message=self.searchDict2(d1[k], d2[k],error_message)
+                            continue
+        #print "Done with changes in " + ctx
+        return error_message
+    
     
     #First level check
     def firstLevelCheck(self,lst,r,verdict,tc,s_ession):
         try: 
             if r.status_code != int(lst[3]):
-
                 #Run Env Sanity Check
                 #to_obj=testObject(self.rally,self.data)       
                 if self.sanityCheck():
-                    verdict.append((0,'Failure: status code unexpected')) 
-                    self.logger.debug("Test case %s, build %s failed because status code unexpected" % (tc.FormattedID,self.data["ts"]["Build"]))                       
+                    verdict.append((0,'Failure: status code unexpected. The unexpected status code of the response is %s' % r.status_code)) 
+                    self.logger.debug("Test case %s, build %s failed because status code unexpected. The unexpected status code of the response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.status_code))                       
                     #return verdict
                 else:    
                     raise Exception('Environment sanity check failed')
@@ -190,11 +257,42 @@ class testObject(object):
                     r1= r_ver_content.replace("true","\"true\"")
                     r2= r1.replace("false","\"false\"")    
                     r_ver_content=ast.literal_eval(r2)
+                    
+                    '''
+                    status=self.searchDict(r_ver_content,ver_point)
+                    if status==1:
+                        #First level check succeed
+                        z=ast.literal_eval(lst[4])
+                        if 'message' in r.content:
+                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+z['message']))
+                        else:
+                            verdict.append((1,'Success: status code expected and first level check succeed.'))
+                        self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    if status==2:
+                        #First level check failed
+                        verdict.append((0,'Failure: status code expected but first level check failed. The unexpected content of response is %s' % r.content))
+                        self.logger.debug("Test case %s, build %s failed because first level check failed. The unexpected content of response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.content))   
+                    '''
+                    error_message=self.searchDict2(ver_point,r_ver_content,"")
+                    if error_message=='':
+                        #First level check succeed
+                        z=ast.literal_eval(lst[4])
+                        if 'message' in r.content:
+                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+z['message']))
+                        else:
+                            verdict.append((1,'Success: status code expected and first level check succeed.'))
+                        self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    else:
+                        #First level check failed
+                        verdict.append((0,'Failure: status code expected but first level check failed. Error: %s' % error_message))
+                        self.logger.debug("Test case %s, build %s failed because first level check failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
+                    
+                    '''
                     for key in ver_point:                                    
                         if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
-                            verdict.append((0,'Failure: status code expected but first level check failed'))
+                            verdict.append((0,'Failure: status code expected but first level check failed. The unexpected content of response is %s' % r.content))
                             #verified=False
-                            self.logger.debug("Test case %s, build %s failed because first level check failed" % (tc.FormattedID,self.data["ts"]["Build"]))   
+                            self.logger.debug("Test case %s, build %s failed because first level check failed. The unexpected content of response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.content))   
                             break                  
                     else:                                    
                         #verified=True
@@ -204,6 +302,7 @@ class testObject(object):
                         else:
                             verdict.append((1,'Success: status code expected and first level check succeed.'))
                         self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    '''
                 else:
                     verdict.append((1,'Success: status code expected without first level check.'))
                     self.logger.debug("Test case %s, build %s is successful without first level check." % (tc.FormattedID,self.data["ts"]["Build"]))
@@ -235,45 +334,7 @@ class testObject(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)           
     
-    #search dictionary recursively
-    def searchDict(self,dict1,dict2):
-        try:
-            for item2 in dict2.items():                
-                for item1 in dict1.items():
-                    if item2[0]==item1[0]:
-                        if (type(item2[1]) != dict):
-                            if item2[1]==dict1[item1[0]]:
-                                #verified=True
-                                status=1
-                                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                                #verdict.append((1,'Success: status code expected and verified'))
-                                #self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))  
-                                break         
-                            else: 
-                                status=2
-                                #verdict[-1]=(0,'Failure: verification failed')
-                                #verified=False
-                                #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                                return status   
-                        else:
-                            return self.searchDict(item1[1],item2[1])
-                            #break
-                            
-                else:
-                    status=2
-                    #verdict[-1]=(0,'Failure: verification failed')
-                    #verified=False
-                    #self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                    return status                           
-            return status
-        except Exception, details:
-            #x=inspect.stack()
-            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
-                raise
-            else:
-                #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
-                sys.exit(1)     
+
 
     
     #Test verification:
@@ -328,7 +389,7 @@ class testObject(object):
                 r_ver_content=ast.literal_eval(r2)
                 #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
                 #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
-                                
+                '''   
                 status=self.searchDict(r_ver_content,ver_point)
                 if status==1:
                     verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
@@ -337,6 +398,15 @@ class testObject(object):
                 if status==2:
                     verdict[-1]=(0,'Failure: verification failed')
                     self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
+                '''
+                error_message=self.searchDict2(ver_point,r_ver_content,"")
+                if error_message=='':
+                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                    #verdict.append((1,'Success: status code expected and verified'))
+                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))                  
+                else:
+                    verdict[-1]=(0,'Failure: verification failed. Error: %s' % error_message)
+                    self.logger.debug("The test execution for test case %s, build %s is verified to be failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
                 '''
                 for key in ver_point:                                    
                     if not (key in r_ver_content):
@@ -395,6 +465,7 @@ class testObject(object):
     #Cleanup
     def cleaner(self,lst,tc,ts,s_ession):
         try:
+            r_clr=None
             if lst[10]==u"":
                 self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
@@ -406,13 +477,32 @@ class testObject(object):
                     r_clr = s_ession.delete(lst[10])
                 if lst[9] == "PUT":
                     r_clr = s_ession.put(lst[10],data=ast.literal_eval(lst[11]))
-                
+                '''    
                 if int(lst[12])==r_clr.status_code:              
                     self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                 else: 
                     raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
                     #self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
-             
+                '''
+        
+                if r_clr.status_code != int(lst[12]):
+                    raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                
+                else:
+                    if (lst[13] != u'' ):
+                        ver_point = ast.literal_eval(lst[13])
+                        r_ver_content=deepcopy(r_clr.content)
+                        r1= r_ver_content.replace("true","\"true\"")
+                        r2= r1.replace("false","\"false\"")    
+                        r_ver_content=ast.literal_eval(r2)
+                        
+                        error_message=self.searchDict2(ver_point,r_ver_content,"")
+                        if error_message=='':
+                            self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
+                        else:
+                            raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                    
+                    else:
+                        self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
+                 
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
