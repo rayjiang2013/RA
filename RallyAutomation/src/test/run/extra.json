@@ -1,10 +1,12 @@
 {
     "build": {
         "BuildDefinition": "",
-        "Number": "14"
+        "Number": "14",
+		"Status": "SUCCESS"
     },
     "builddf": {
-        "Name": "RallyTestAutomation"
+        "Name": "RallyTestAutomation",
+        "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223"
     },
     "df": {
         "FormattedID": "DE3803",

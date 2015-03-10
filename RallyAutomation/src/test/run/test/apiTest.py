@@ -22,15 +22,15 @@ response = s.get('http://10.40.60.170/login&nbsp;HTTP/1.1&nbsp;(application/x-ww
 pass
 '''
 
-url = "http://10.61.40.102/"
+url = "http://10.10.1.31/"
 
 s = requests.session()
 #r = s.get(url,verify = False)
 
 
 payload = {
-'user[email]':'nonexist@spirent.com',
-'user[password]':'spirent'
+'user[email]':'lei.jiang@spirent.com',
+'user[password]':'Jag6413682'
 }
 r = s.post(url+'login',data=payload,verify = False)
 
