@@ -73,6 +73,31 @@ class buildDefinition(object):
         #print "Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID)   
            
         return bddf  
+    
+    
+    #get all build definitions 
+    def getAllBuildDefinitions(self):
+        try:
+            #query_criteria = 'BuildDefinition = "%s"' % (str(self.data['build']['BuildDefinition']))
+            response = self.rally.get('BuildDefinition', fetch=True)#query=query_criteria)
+            
+            builddfs=[]
+            
+            for builddf in response:
+                builddfs.append(builddf)                    
+                self.logger.debug("Build definition obtained, ObjectID: %s  Build definition name: %s \n" % (builddf.oid,builddf.Name))
+            return builddfs
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)    
+
     '''    
     #Update test case
     def updateTC(self):

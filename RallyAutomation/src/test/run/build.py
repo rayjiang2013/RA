@@ -59,7 +59,7 @@ class build(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
 
-    #get a build identified by the build number and BuildDefinition ref
+    #get all builds
     def getAllBuilds(self):
         try:
             #query_criteria = 'BuildDefinition = "%s"' % (str(self.data['build']['BuildDefinition']))

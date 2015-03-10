@@ -22,6 +22,7 @@ from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
+from twisted.conch.test.test_endpoints import ExistingConnectionHelperTests
 #from matplotlib.cbook import Null
 
 class testObject(object):
@@ -57,6 +58,39 @@ class testObject(object):
         self.logger.info("Sanity check is successfully performed")
         return True
     
+    
+    #Update build info
+    def updateBuildInfo(self):
+        try:
+            builddf_obj=buildDefinition(self.rally,self.data)
+            builddfs=builddf_obj.getAllBuildDefinitions()
+            for builddf in builddfs:
+                if builddf.Name == self.data['builddf']['Name']:
+                    break
+            else:   
+                new_builddf=builddf_obj.createBuildDefinition()
+                self.logger.info("New build definition name %s is created" % (new_builddf.Name))
+            
+            data_with_bddf_ref=deepcopy(self.data)
+            data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
+            build_obj=build(self.rally,data_with_bddf_ref)
+            bd=build_obj.createBuild()
+            #self.data['ts']['Build']=build.Number
+            self.logger.info("Build name %s number %s is created" % (bd.Name, bd.Number))
+
+            if bd.Status=="SUCCESS":
+                return
+            else: raise Exception('Build failed')
+
+        except Exception, details:
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)        
     
     #Get build information
     def getBuildInfo(self):
