@@ -12,7 +12,9 @@ from testObject import testObject
 from rallyLogger import *
 
 import os
-
+from buildDefinition import buildDefinition
+from build import build
+from copy import deepcopy
 
 #The main function    
 if __name__ == '__main__':
@@ -50,11 +52,20 @@ if __name__ == '__main__':
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
             #print "--------------------------------------------------------------------"    
-
+        '''
+        #Test
+        bddf_obj=buildDefinition(rally,data)
+        builddf=bddf_obj.createBuildDefinition()
+        
+        data_with_bddf_ref=deepcopy(data)
+        data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
+        build_obj=build(rally,data_with_bddf_ref)
+        bd=build_obj.createBuild()
+        '''
         to=testObject(rally,data)
         
         if to.sanityCheck():
-            #to.getLatestBuild()
+            to.getLatestBuild()
             ts_ut=to.copyTS()
             (verd,newdt)=to.runTO(ts_ut)
             test_results=to.runTS(verd,newdt)    

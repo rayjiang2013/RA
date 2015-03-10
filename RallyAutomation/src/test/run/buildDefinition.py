@@ -54,13 +54,13 @@ class buildDefinition(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
          
-    '''
-    #Create test case
-    def createTC(self):
-        tc_data = {key: value for key, value in self.data['tc'].items() if key != u'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
+    
+    #Create build definition
+    def createBuildDefinition(self):
+        bddf_data = {key: value for key, value in self.data['builddf'].items()}
         try:
-            tc = self.rally.put('TestCase', tc_data)
-            self.logger.debug("Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID))
+            bddf = self.rally.put('BuildDefinition', bddf_data)
+            self.logger.debug("Build created, ObjectID: %s, Name: %s" % (bddf.oid, bddf.Name))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             #x=inspect.stack()
@@ -72,8 +72,8 @@ class buildDefinition(object):
                 sys.exit(1)
         #print "Test case created, ObjectID: %s  FormattedID: %s" % (tc.oid, tc.FormattedID)   
            
-        return tc  
-        
+        return bddf  
+    '''    
     #Update test case
     def updateTC(self):
         tc_data = self.data['tc']
