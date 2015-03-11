@@ -6,7 +6,7 @@ Created on Mar 11, 2015
 from jenkinsapi.jenkins import Jenkins
 
 def get_server_instance():
-    jenkins_url = 'http://localhost:8080'
+    jenkins_url = 'http://10.10.2.59:8080'
     server = Jenkins(jenkins_url, username = 'lei', password = 'spirent')
     return server
 
@@ -35,6 +35,6 @@ def get_job_details():
 
 
 if __name__ == '__main__':
-    #print get_server_instance().version
+    print get_server_instance().version
     enable_job()
     get_job_details()

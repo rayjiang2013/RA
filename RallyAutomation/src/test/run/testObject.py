@@ -22,8 +22,7 @@ from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
-from twisted.conch.test.test_endpoints import ExistingConnectionHelperTests
-#from matplotlib.cbook import Null
+
 
 class testObject(object):
     '''
