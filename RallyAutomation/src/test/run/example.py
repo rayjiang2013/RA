@@ -56,7 +56,7 @@ if __name__ == '__main__':
         to=testObject(rally,data)
         
         if to.sanityCheck():
-            to.updateBuildInfo()
+            #to.updateBuildInfo()
             to.getLatestBuild()
             ts_ut=to.copyTS()
             (verd,newdt)=to.runTO(ts_ut)
