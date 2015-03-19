@@ -1,5 +1,10 @@
 {
-    "build": {
+    "jenkins": {
+    	"url": "http://10.10.2.59:8080",
+		"username": "lei",
+		"password": "spirent"
+    },
+	"build": {
         "BuildDefinition": "",
         "Number": "14",
 		"Status": "SUCCESS"

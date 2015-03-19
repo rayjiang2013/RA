@@ -22,7 +22,8 @@ from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
-
+from jenkinsNotifier import jenkinsNotifier
+from dateutil import tz
 
 class testObject(object):
     '''
@@ -57,10 +58,49 @@ class testObject(object):
         self.logger.info("Sanity check is successfully performed")
         return True
     
+    #Get last build information. 
+    def getLastBuildInfoFromJenkins(self):
+        try:
+            jenkins_obj=jenkinsNotifier(self.rally,self.data)
+            server=jenkins_obj.getServerInstance()
+            build_obj,job_obj=jenkins_obj.getLastBuildInfo(server)
+            duration_list=str(build_obj.get_duration()).split(':')
+            duration_double=int(duration_list[0])*3600+int(duration_list[1])*60+float(duration_list[2])
+            utc1=str(build_obj.get_timestamp()).split('+')[0] #2015-03-19 00:01:35+00:00
+            utc2=datetime.datetime.strptime(utc1,'%Y-%m-%d %H:%M:%S')
+            from_zone = tz.tzutc()
+            to_zone = tz.tzlocal()
+            utc2 = utc2.replace(tzinfo=from_zone)
+            local = utc2.astimezone(to_zone)
+            local_iso=local.isoformat()
+            bd_dict={
+                     'Number':build_obj.get_number(),
+                     'Duration':duration_double,
+                     'Uri':build_obj.baseurl, 
+                     'Message':'Build for job '+job_obj.name+ ' was successful.',
+                     'Status': build_obj.get_status(),
+                     'Start':local_iso
+                     }
+            bddf_dict={
+                       'Name':job_obj.name
+                       }
+            self.data['build'].update(bd_dict)
+            self.data['builddf'].update(bddf_dict)
+            self.logger.info("The last build information at Jenkins instance %s is successfully obtained" % (server.baseurl))
+        except Exception, details:
+
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)            
     
     #Update build info
     def updateBuildInfo(self):
         try:
+            
             builddf_obj=buildDefinition(self.rally,self.data)
             builddfs=builddf_obj.getAllBuildDefinitions()
             for builddf in builddfs:

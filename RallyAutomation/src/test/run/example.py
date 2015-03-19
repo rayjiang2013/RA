@@ -51,11 +51,12 @@ if __name__ == '__main__':
             data = json.load(data_file)
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
-            #print "--------------------------------------------------------------------"    
-
+            #print "--------------------------------------------------------------------"
+        
         to=testObject(rally,data)
         
         if to.sanityCheck():
+            to.getLastBuildInfoFromJenkins()
             to.updateBuildInfo()
             to.getLatestBuild()
             ts_ut=to.copyTS()

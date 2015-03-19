@@ -170,7 +170,17 @@
             ],
             "level": "DEBUG",
             "propagate": "no"
-        }
+        },
+        "jenkinsNotifier": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        }		
     },
     "root": {
         "handlers": [
