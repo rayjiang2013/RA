@@ -22,8 +22,12 @@ from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
+
 from jenkinsNotifier import jenkinsNotifier
 from dateutil import tz
+
+import json
+
 
 class testObject(object):
     '''
@@ -209,18 +213,110 @@ class testObject(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
 
-    #Test execution
-    def executor(self,tc,s_ession):
+    #Replace variable
+    def rep(self,strg,tc,ts):
+        varbs=[]
+        for i in xrange(0,len(strg)):
+            if strg[i]=='$':
+                varbs.append(strg[i:].partition('$')[-1].rpartition('%')[0])
+                if varbs[-1] in self.data['env']:
+                    strg=strg.replace('$'+varbs[-1]+'%',self.data['env'][varbs[-1]])
+                else:
+                    self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))    
+                    return False,strg
+        return True,strg
+
+    #Setup
+    def setup(self,lst,tc,ts,s_ession):
         try:
-            #lst=tc.c_QATCPARAMSSTRING.split('|')
-            lst=tc.c_QATCPARAMSTEXT.split('|')
             if lst[1]!= u'':
                 lst[1]=self.data['env']['ControllerURL']+lst[1]
             if lst[6]!= u'':
                 lst[6]=self.data['env']['ControllerURL']+lst[6]
             if lst[10]!= u'':
                 lst[10]=self.data['env']['ControllerURL']+lst[10]
+            if lst[15]!=u'':
+                lst[15]=self.data['env']['ControllerURL']+lst[15]            
 
+            r_stp=None
+            if lst[15]==u"":
+                self.logger.debug("As not enough setup information is provided, the test setup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
+            else: 
+                
+                if '$' in lst[1]:
+                    rep_status,lst[1]=self.rep(lst[1],tc,ts)
+                    if rep_status==False:
+                        return False,lst
+                if '$' in lst[6]:
+                    rep_status,lst[6]=self.rep(lst[6],tc,ts)
+                    if rep_status==False:
+                        return False,lst                                       
+                if '$' in lst[10]:
+                    rep_status,lst[10]=self.rep(lst[10],tc,ts)
+                    if rep_status==False:
+                        return False,lst
+                if '$' in lst[15]:
+                    rep_status,lst[15]=self.rep(lst[15],tc,ts)
+                    if rep_status==False:
+                        return False,lst
+                
+                if lst[14] == "GET":
+                    r_stp = s_ession.get(lst[15])                        
+                if lst[14] == "POST":
+                    r_stp = s_ession.post(lst[15],data=ast.literal_eval(lst[16]))
+                if lst[14] == "DELETE":
+                    r_stp = s_ession.delete(lst[15])
+                if lst[14] == "PUT":
+                    r_stp = s_ession.put(lst[15],data=ast.literal_eval(lst[16]))
+
+        
+                if r_stp.status_code != int(lst[17]):
+                    self.logger.debug("The test case %s for build %s in test set %s is failed to setup because status code is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
+                    return False,lst          
+                else:
+                    if (lst[18] != u'' ):
+                        '''
+                        ver_point = ast.literal_eval(lst[18])
+                        r_ver_content=deepcopy(r_stp.content)
+                        r1= r_ver_content.replace("true","\"true\"")
+                        r2= r1.replace("false","\"false\"")    
+                        r_ver_content=ast.literal_eval(r2)
+                        '''
+                        ver_point=deepcopy(json.loads(lst[18]))
+                        r_ver_content=deepcopy(json.loads(r_stp.content))
+                        
+                        error_message=self.searchDict2(ver_point,r_ver_content,"")
+                        if error_message=='':
+                            self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
+                        else:
+                            self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the content of response body is unexpected" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))   
+                            return False,lst
+                    else:
+                        self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
+            return True,lst 
+        except Exception, details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)       
+        
+    
+
+    #Test execution
+    def executor(self,lst,tc,s_ession):
+        try:
+            #lst=tc.c_QATCPARAMSSTRING.split('|')
+            '''
+            if lst[1]!= u'':
+                lst[1]=self.data['env']['ControllerURL']+lst[1]
+            if lst[6]!= u'':
+                lst[6]=self.data['env']['ControllerURL']+lst[6]
+            if lst[10]!= u'':
+                lst[10]=self.data['env']['ControllerURL']+lst[10]
+            '''
             if lst[0] == "GET":
                 r = s_ession.get(lst[1])                        
             if lst[0] == "POST":#only support http for now, verify = false
@@ -324,34 +420,21 @@ class testObject(object):
                     #verdict.append((0,'Failure: sanity check of environment failed'))            
             else:
                 if (lst[4] != u'' ):# and (r.content==str(lst[4])):
-                    #if 'message' in r.content:
-                    ver_point = ast.literal_eval(lst[4])
-                    r_ver_content=deepcopy(r.content)
-                    r1= r_ver_content.replace("true","\"true\"")
-                    r2= r1.replace("false","\"false\"")    
-                    r_ver_content=ast.literal_eval(r2)
+
+                    #ver_point = ast.literal_eval(lst[4])
+                    ver_point=deepcopy(json.loads(lst[4]))
+                    r_ver_content=deepcopy(json.loads(r.content))
+                    #r1= r_ver_content.replace("true","\"true\"")
+                    #r2= r1.replace("false","\"false\"")    
+                    #r_ver_content=ast.literal_eval(r2)
                     
-                    '''
-                    status=self.searchDict(r_ver_content,ver_point)
-                    if status==1:
-                        #First level check succeed
-                        z=ast.literal_eval(lst[4])
-                        if 'message' in r.content:
-                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+z['message']))
-                        else:
-                            verdict.append((1,'Success: status code expected and first level check succeed.'))
-                        self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    if status==2:
-                        #First level check failed
-                        verdict.append((0,'Failure: status code expected but first level check failed. The unexpected content of response is %s' % r.content))
-                        self.logger.debug("Test case %s, build %s failed because first level check failed. The unexpected content of response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.content))   
-                    '''
+
                     error_message=self.searchDict2(ver_point,r_ver_content,"")
                     if error_message=='':
                         #First level check succeed
-                        z=ast.literal_eval(lst[4])
+                        #z=ast.literal_eval(lst[4])
                         if 'message' in r.content:
-                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+z['message']))
+                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+ver_point['message']))
                         else:
                             verdict.append((1,'Success: status code expected and first level check succeed.'))
                         self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
@@ -360,42 +443,11 @@ class testObject(object):
                         verdict.append((0,'Failure: status code expected but first level check failed. Error:%s' % error_message))
                         self.logger.debug("Test case %s, build %s failed because first level check failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
                     
-                    '''
-                    for key in ver_point:                                    
-                        if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
-                            verdict.append((0,'Failure: status code expected but first level check failed. The unexpected content of response is %s' % r.content))
-                            #verified=False
-                            self.logger.debug("Test case %s, build %s failed because first level check failed. The unexpected content of response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.content))   
-                            break                  
-                    else:                                    
-                        #verified=True
-                        z=ast.literal_eval(lst[4])
-                        if 'message' in r.content:
-                            verdict.append((1,'Success: status code expected and first level check succeed. Message: '+z['message']))
-                        else:
-                            verdict.append((1,'Success: status code expected and first level check succeed.'))
-                        self.logger.debug("First level check for Test case %s, build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    '''
+
                 else:
                     verdict.append((1,'Success: status code expected without first level check.'))
                     self.logger.debug("Test case %s, build %s is successful without first level check." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    '''
-                    #else: 
-                    x=r.content
-                    y=str(lst[4])
-                    if x==y:
-                        if (ast.literal_eval(lst[4])['message'] != None):
-                            z=ast.literal_eval(lst[4])
-                            verdict.append((1,'Success: status code expected without verification. Message: '+z['message']) )
-                    else:
-                        #Run Env Sanity Check
-                        #to_obj=testObject(self.rally,self.data)       
-                        if self.sanityCheck():
-                            verdict.append((0,'Failure: status code expected but message unexpected')) 
-                        else:    
-                            raise Exception('Environment sanity check failed')
-                            #verdict.append((0,'Failure: sanity check of environment failed'))     
-                    '''           
+         
             
             return verdict
         except Exception, details:
@@ -414,34 +466,7 @@ class testObject(object):
     def verificator(self,lst,r,verdict,tc,s_ession):
         try:
             #Verification
-            '''
-            if r.status_code != int(lst[3]):
 
-                #Run Env Sanity Check
-                #to_obj=testObject(self.rally,self.data)       
-                if self.sanityCheck():
-                    verdict.append((0,'Failure: status code unexpected')) 
-                else:    
-                    raise Exception('Environment sanity check failed')
-                    #verdict.append((0,'Failure: sanity check of environment failed'))
-                   
-            else:
-                if (lst[4] != u'' ):# and (r.content==str(lst[4])):
-                    x=r.content
-                    y=str(lst[4])
-                    if x==y:
-                        if (ast.literal_eval(lst[4])['message'] != None):
-                            z=ast.literal_eval(lst[4])
-                            verdict.append((1,'Success: status code expected without verification. Message: '+z['message']) )
-                    else:
-                        #Run Env Sanity Check
-                        #to_obj=testObject(self.rally,self.data)       
-                        if self.sanityCheck():
-                            verdict.append((0,'Failure: status code expected but message unexpected')) 
-                        else:    
-                            raise Exception('Environment sanity check failed')
-                            #verdict.append((0,'Failure: sanity check of environment failed'))
-            '''
             if (lst[7]==u"" or lst[5]==u"" or lst[6]==u""):
                 self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
                 verdict[-1]=(verdict[-1][0],verdict[-1][1]+' No verification is done.')
@@ -454,7 +479,7 @@ class testObject(object):
                     r_ver = s_ession.delete(lst[6])
                 if lst[7] == "PUT":
                     r_ver = s_ession.put(lst[6],data=ast.literal_eval(lst[8]))
-            
+                '''
                 ver_point = ast.literal_eval(lst[5])
                 r_ver_content=deepcopy(r_ver.content)
                 r1= r_ver_content.replace("true","\"true\"")
@@ -462,16 +487,10 @@ class testObject(object):
                 r_ver_content=ast.literal_eval(r2)
                 #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
                 #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
-                '''   
-                status=self.searchDict(r_ver_content,ver_point)
-                if status==1:
-                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                    #verdict.append((1,'Success: status code expected and verified'))
-                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))                  
-                if status==2:
-                    verdict[-1]=(0,'Failure: verification failed')
-                    self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
                 '''
+                ver_point=deepcopy(json.loads(lst[5]))
+                r_ver_content=deepcopy(json.loads(r_ver.content))
+                
                 error_message=self.searchDict2(ver_point,r_ver_content,"")
                 if error_message=='':
                     verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
@@ -480,51 +499,7 @@ class testObject(object):
                 else:
                     verdict[-1]=(0,'Failure: verification failed. Error:%s' % error_message)
                     self.logger.debug("The test execution for test case %s, build %s is verified to be failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
-                '''
-                for key in ver_point:                                    
-                    if not (key in r_ver_content):
-                        verdict[-1]=(0,'Failure: verification failed')
-                        #verified=False
-                        self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                        break                  
-                    elif not (ver_point[key]==r_ver_content[key]):
-                        if type(ver_point[key]) is dict and type(r_ver_content[key]) is dict:
-                            for k in ver_point[key]:
-                                if not ((k in r_ver_content[key]) and (ver_point[key][k]==r_ver_content[key][k])): 
-                                    verdict[-1]=(0,'Failure: verification failed')
-                                    #verified=False
-                                    self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                                    break   
-                            else:                                    
-                                #verified=True
-                                verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                                #verdict.append((1,'Success: status code expected and verified'))
-                                self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))  
-                                break                              
-                        else: 
-                            verdict[-1]=(0,'Failure: verification failed')
-                            #verified=False
-                            self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                            break     
-                        break         
-                else:                                    
-                    #verified=True
-                    #verdict.append((1,'Success: status code expected and verified'))
-                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-            
-                
-                for key in ver_point:                                    
-                    if not ((key in r_ver_content) and (ver_point[key]==r_ver_content[key])):
-                        verdict.append((0,'Failure: verification failed'))
-                        #verified=False
-                        self.logger.debug("The test execution for test case %s, build %s is verified to be failed." % (tc.FormattedID,self.data["ts"]["Build"]))   
-                        break                  
-                else:                                    
-                    #verified=True
-                    verdict.append((1,'Success: status code expected and verified'))
-                    self.logger.debug("The test execution for test case %s, build %s is verified to be successful." % (tc.FormattedID,self.data["ts"]["Build"]))
-                '''
+
             return verdict
         except Exception, details:
             #x=inspect.stack()
@@ -562,11 +537,15 @@ class testObject(object):
                     raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                
                 else:
                     if (lst[13] != u'' ):
+                        '''
                         ver_point = ast.literal_eval(lst[13])
                         r_ver_content=deepcopy(r_clr.content)
                         r1= r_ver_content.replace("true","\"true\"")
                         r2= r1.replace("false","\"false\"")    
                         r_ver_content=ast.literal_eval(r2)
+                        '''
+                        ver_point=deepcopy(json.loads(lst[13]))
+                        r_ver_content=deepcopy(json.loads(r_clr.content))
                         
                         error_message=self.searchDict2(ver_point,r_ver_content,"")
                         if error_message=='':
@@ -589,6 +568,7 @@ class testObject(object):
     def runTO(self,testset_under_test):
          
         try:
+            
             verdict=[]
             for tc in testset_under_test.TestCases:
                 sorted_trs=sorted(tc.Results, key=lambda x: x.Date, reverse=True)
@@ -604,22 +584,33 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
+                            lst=tc.c_QATCPARAMSTEXT.split('|')
                             s = requests.session()
-                            (response,lst_of_par)=self.executor(tc,s)
-                            verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
-                            if verdict[-1][0]!=0:
-                                verdict=self.verificator(lst_of_par, response, verdict, tc,s)
-                            self.cleaner(lst_of_par, tc,testset_under_test,s)
+                            setup_result,lst=self.setup(lst, tc, testset_under_test, s)
+                            if setup_result==True:
+                                (response,lst_of_par)=self.executor(lst,tc,s)
+                                verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
+                                if verdict[-1][0]!=0:
+                                    verdict=self.verificator(lst_of_par, response, verdict, tc,s)
+                                self.cleaner(lst_of_par, tc,testset_under_test,s)
+                            else:
+                                verdict.append((2,'Blocked: the test case is blocked because the test setup failed'))
+                                self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
-                            
-                            
+                                                        
                 else:
+                    lst=tc.c_QATCPARAMSTEXT.split('|')
                     s = requests.session()
-                    (response,lst_of_par)=self.executor(tc,s)
-                    verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
-                    if verdict[-1][0]!=0:
-                        verdict=self.verificator(lst_of_par, response, verdict, tc,s)
-                    self.cleaner(lst_of_par, tc,testset_under_test,s)
+                    setup_result,lst=self.setup(lst, tc, testset_under_test, s)
+                    if setup_result==True:
+                        (response,lst_of_par)=self.executor(lst,tc,s)
+                        verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
+                        if verdict[-1][0]!=0:
+                            verdict=self.verificator(lst_of_par, response, verdict, tc,s)
+                        self.cleaner(lst_of_par, tc,testset_under_test,s)
+                    else:
+                        verdict.append((2,'Blocked: the test case is blocked because the test setup failed'))
+                        self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
             
             #Update ScheduleState of Test Set 
             new_data=deepcopy(self.data) 

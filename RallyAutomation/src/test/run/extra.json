@@ -37,7 +37,8 @@
     "env": {
         "ControllerPassword": "Jag6413682",
         "ControllerURL": "http://10.10.1.31",
-        "ControllerUsername": "lei.jiang@spirent.com"
+        "ControllerUsername": "lei.jiang@spirent.com",
+		"ChassisIP":"10.47.79.68"
     },
     "ssh": {
         "ip": "127.0.0.1",
