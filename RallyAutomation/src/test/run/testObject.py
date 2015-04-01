@@ -174,7 +174,7 @@ class testObject(object):
         varbs=[]
         for i in xrange(0,len(strg)):
             if strg[i]=='$':
-                varbs.append(strg[i:].partition('$')[-1].partition('%')[0])
+                varbs.append(strg[i:].partition('$')[-1].partition('[\n\/\\\b\&\?\;\=]')[0])
                 if varbs[-1] in self.data['env']:
                     strg=strg.replace('$'+varbs[-1]+'%',self.data['env'][varbs[-1]])
                 else:
