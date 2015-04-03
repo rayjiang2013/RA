@@ -94,7 +94,7 @@ action="DELETE"                          action='/av_reports/$type/$runId'
 DeleteLibraryFuzzTest                       
 action="DELETE"                          action='/mutation/fuzztests/$id'
 ----------------------------------------------------------------------------------------------------
-DeleteLibraryAvalancheTest
+DeleteLibraryAvalancheTest 
 action="DELETE"                          action='/avalanche/$testType\\_tests/$id'
 ----------------------------------------------------------------------------------------------------
 DeleteMuLibraryTest                     
@@ -403,13 +403,13 @@ action="PUT"                             action='/profile/traffic_mix/$id'
 GetMuTestByTestId                      
 action="GET"                             action='/report/show?queue_test_id=$testId'
 ----------------------------------------------------------------------------------------------------
-GetMuTestResult
+GetMuTestResult 
 action="GET"                             action='/results/$resultId'
 ----------------------------------------------------------------------------------------------------
-GetMuTestReportByResultId
+GetMuTestReportByResultId 
 action="GET"                             action='/report/download?id=$resultId'
 ----------------------------------------------------------------------------------------------------
-GetMuTestReportByResultIdAndForkId
+GetMuTestReportByResultIdAndForkId 
 action="GET"                             action='/report/download?id=$resultId&amp;forkId=$forkId'
 ----------------------------------------------------------------------------------------------------
 login                                   
