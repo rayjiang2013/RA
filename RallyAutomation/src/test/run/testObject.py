@@ -263,11 +263,11 @@ class testObject(object):
                 if lst[14] == "GET":
                     r_stp = s_ession.get(lst[15])                        
                 if lst[14] == "POST":
-                    r_stp = s_ession.post(lst[15],data=ast.literal_eval(lst[16]))
+                    r_stp = s_ession.post(lst[15],data=json.loads(lst[16]))
                 if lst[14] == "DELETE":
                     r_stp = s_ession.delete(lst[15])
                 if lst[14] == "PUT":
-                    r_stp = s_ession.put(lst[15],data=ast.literal_eval(lst[16]))
+                    r_stp = s_ession.put(lst[15],data=json.loads(lst[16]))
 
         
                 if r_stp.status_code != int(lst[17]):
@@ -320,11 +320,11 @@ class testObject(object):
             if lst[0] == "GET":
                 r = s_ession.get(lst[1])                        
             if lst[0] == "POST":#only support http for now, verify = false
-                r = s_ession.post(lst[1],data=ast.literal_eval(lst[2]),verify=False)
+                r = s_ession.post(lst[1],data=json.loads(lst[2]),verify=False)
             if lst[0] == "DELETE":
                 r = s_ession.delete(lst[1])
             if lst[0] == "PUT":#only support http for now, verify = false
-                r = s_ession.put(lst[1],data=ast.literal_eval(lst[2]),verify=False)
+                r = s_ession.put(lst[1],data=json.loads(lst[2]),verify=False)
             
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))       
             return (r,lst) 
@@ -474,11 +474,11 @@ class testObject(object):
                 if lst[7] == "GET":
                     r_ver = s_ession.get(lst[6])                        
                 if lst[7] == "POST":
-                    r_ver = s_ession.post(lst[6],data=ast.literal_eval(lst[8]))
+                    r_ver = s_ession.post(lst[6],data=json.loads(lst[8]))
                 if lst[7] == "DELETE":
                     r_ver = s_ession.delete(lst[6])
                 if lst[7] == "PUT":
-                    r_ver = s_ession.put(lst[6],data=ast.literal_eval(lst[8]))
+                    r_ver = s_ession.put(lst[6],data=json.loads(lst[8]))
                 '''
                 ver_point = ast.literal_eval(lst[5])
                 r_ver_content=deepcopy(r_ver.content)
@@ -520,11 +520,11 @@ class testObject(object):
                 if lst[9] == "GET":
                     r_clr = s_ession.get(lst[10])                        
                 if lst[9] == "POST":
-                    r_clr = s_ession.post(lst[10],data=ast.literal_eval(lst[11]))
+                    r_clr = s_ession.post(lst[10],data=json.loads(lst[11]))
                 if lst[9] == "DELETE":
                     r_clr = s_ession.delete(lst[10])
                 if lst[9] == "PUT":
-                    r_clr = s_ession.put(lst[10],data=ast.literal_eval(lst[11]))
+                    r_clr = s_ession.put(lst[10],data=json.loads(lst[11]))
                 '''    
                 if int(lst[12])==r_clr.status_code:              
                     self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
