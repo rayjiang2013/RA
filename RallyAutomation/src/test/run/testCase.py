@@ -50,6 +50,29 @@ class testCase:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
+
+    #get all test cases
+    def getAllTCs(self,query_criteria):
+        try:
+            #query_criteria = 'BuildDefinition = "%s"' % (str(self.data['build']['BuildDefinition']))
+            response = self.rally.get("TestCase", fetch=True,query=query_criteria)
+            
+            tcs=[]
+            
+            for tc in response:
+                tcs.append(tc)                    
+                self.logger.debug("Test case obtained, ObjectID: %s  Test Case name: %s \n" % (tc.oid,tc.Name))
+            return tcs
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #sys.exit(1)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)    
          
     
     #Create test case

@@ -16,6 +16,8 @@ from buildDefinition import buildDefinition
 from build import build
 from copy import deepcopy
 
+from extractAPI import extractAPI
+
 #The main function    
 if __name__ == '__main__':
     #Setup
@@ -51,7 +53,9 @@ if __name__ == '__main__':
             data = json.load(data_file)
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
-            #print "--------------------------------------------------------------------"
+   
+        #api_obj=extractAPI(rally,data)
+
         
         to=testObject(rally,data)
         
@@ -66,6 +70,8 @@ if __name__ == '__main__':
             to.sendNotification(report)
         
         else: raise Exception('Environment sanity check failed')            
+        
+        
         
     except Exception,details:
         #x=inspect.stack()
