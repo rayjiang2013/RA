@@ -231,15 +231,15 @@ class testObject(object):
         try:
             if lst[1]!= u'':
                 lst[1]=self.data['env']['ControllerURL']+lst[1]
-            if lst[6]!= u'':
-                lst[6]=self.data['env']['ControllerURL']+lst[6]
-            if lst[10]!= u'':
-                lst[10]=self.data['env']['ControllerURL']+lst[10]
-            if lst[15]!=u'':
-                lst[15]=self.data['env']['ControllerURL']+lst[15]            
+            if lst[7]!= u'':
+                lst[7]=self.data['env']['ControllerURL']+lst[7]
+            if lst[12]!= u'':
+                lst[12]=self.data['env']['ControllerURL']+lst[12]
+            if lst[17]!=u'':
+                lst[17]=self.data['env']['ControllerURL']+lst[17]            
 
             r_stp=None
-            if lst[15]==u"":
+            if lst[17]==u"":
                 self.logger.debug("As not enough setup information is provided, the test setup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
                 
@@ -247,34 +247,34 @@ class testObject(object):
                     rep_status,lst[1]=self.rep(lst[1],tc,ts)
                     if rep_status==False:
                         return False,lst
-                if '$' in lst[6]:
-                    rep_status,lst[6]=self.rep(lst[6],tc,ts)
+                if '$' in lst[7]:
+                    rep_status,lst[7]=self.rep(lst[7],tc,ts)
                     if rep_status==False:
                         return False,lst                                       
-                if '$' in lst[10]:
-                    rep_status,lst[10]=self.rep(lst[10],tc,ts)
+                if '$' in lst[12]:
+                    rep_status,lst[12]=self.rep(lst[12],tc,ts)
                     if rep_status==False:
                         return False,lst
-                if '$' in lst[15]:
-                    rep_status,lst[15]=self.rep(lst[15],tc,ts)
+                if '$' in lst[17]:
+                    rep_status,lst[17]=self.rep(lst[17],tc,ts)
                     if rep_status==False:
                         return False,lst
                 
-                if lst[14] == "GET":
-                    r_stp = s_ession.get(lst[15])                        
-                if lst[14] == "POST":
-                    r_stp = s_ession.post(lst[15],data=json.loads(lst[16]))
-                if lst[14] == "DELETE":
-                    r_stp = s_ession.delete(lst[15])
-                if lst[14] == "PUT":
-                    r_stp = s_ession.put(lst[15],data=json.loads(lst[16]))
+                if lst[16] == "GET":
+                    r_stp = s_ession.get(lst[17])                        
+                if lst[16] == "POST":
+                    r_stp = s_ession.post(lst[17],data=json.loads(lst[18]))
+                if lst[16] == "DELETE":
+                    r_stp = s_ession.delete(lst[17])
+                if lst[16] == "PUT":
+                    r_stp = s_ession.put(lst[17],data=json.loads(lst[18]))
 
         
-                if r_stp.status_code != int(lst[17]):
+                if r_stp.status_code != int(lst[19]):
                     self.logger.debug("The test case %s for build %s in test set %s is failed to setup because status code is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
                     return False,lst          
                 else:
-                    if (lst[18] != u'' ):
+                    if (lst[20] != u'' ):
                         '''
                         ver_point = ast.literal_eval(lst[18])
                         r_ver_content=deepcopy(r_stp.content)
@@ -282,7 +282,7 @@ class testObject(object):
                         r2= r1.replace("false","\"false\"")    
                         r_ver_content=ast.literal_eval(r2)
                         '''
-                        ver_point=deepcopy(json.loads(lst[18]))
+                        ver_point=deepcopy(json.loads(lst[20]))
                         r_ver_content=deepcopy(json.loads(r_stp.content))
                         
                         error_message=self.searchDict2(ver_point,r_ver_content,"")
@@ -467,18 +467,18 @@ class testObject(object):
         try:
             #Verification
 
-            if (lst[7]==u"" or lst[5]==u"" or lst[6]==u""):
+            if (lst[8]==u"" or lst[6]==u"" or lst[7]==u""):
                 self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
                 verdict[-1]=(verdict[-1][0],verdict[-1][1]+' No verification is done.')
             else:    
-                if lst[7] == "GET":
-                    r_ver = s_ession.get(lst[6])                        
-                if lst[7] == "POST":
-                    r_ver = s_ession.post(lst[6],data=json.loads(lst[8]))
-                if lst[7] == "DELETE":
-                    r_ver = s_ession.delete(lst[6])
-                if lst[7] == "PUT":
-                    r_ver = s_ession.put(lst[6],data=json.loads(lst[8]))
+                if lst[8] == "GET":
+                    r_ver = s_ession.get(lst[7])                        
+                if lst[8] == "POST":
+                    r_ver = s_ession.post(lst[7],data=json.loads(lst[9]))
+                if lst[8] == "DELETE":
+                    r_ver = s_ession.delete(lst[7])
+                if lst[8] == "PUT":
+                    r_ver = s_ession.put(lst[7],data=json.loads(lst[9]))
                 '''
                 ver_point = ast.literal_eval(lst[5])
                 r_ver_content=deepcopy(r_ver.content)
@@ -488,7 +488,7 @@ class testObject(object):
                 #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
                 #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
                 '''
-                ver_point=deepcopy(json.loads(lst[5]))
+                ver_point=deepcopy(json.loads(lst[6]))
                 r_ver_content=deepcopy(json.loads(r_ver.content))
                 
                 error_message=self.searchDict2(ver_point,r_ver_content,"")
@@ -514,17 +514,17 @@ class testObject(object):
     def cleaner(self,lst,tc,ts,s_ession):
         try:
             r_clr=None
-            if lst[10]==u"":
+            if lst[12]==u"":
                 self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
-                if lst[9] == "GET":
-                    r_clr = s_ession.get(lst[10])                        
-                if lst[9] == "POST":
-                    r_clr = s_ession.post(lst[10],data=json.loads(lst[11]))
-                if lst[9] == "DELETE":
-                    r_clr = s_ession.delete(lst[10])
-                if lst[9] == "PUT":
-                    r_clr = s_ession.put(lst[10],data=json.loads(lst[11]))
+                if lst[11] == "GET":
+                    r_clr = s_ession.get(lst[12])                        
+                if lst[11] == "POST":
+                    r_clr = s_ession.post(lst[12],data=json.loads(lst[13]))
+                if lst[11] == "DELETE":
+                    r_clr = s_ession.delete(lst[12])
+                if lst[11] == "PUT":
+                    r_clr = s_ession.put(lst[12],data=json.loads(lst[13]))
                 '''    
                 if int(lst[12])==r_clr.status_code:              
                     self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
@@ -533,10 +533,10 @@ class testObject(object):
                     #self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                 '''
         
-                if r_clr.status_code != int(lst[12]):
+                if r_clr.status_code != int(lst[14]):
                     raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                
                 else:
-                    if (lst[13] != u'' ):
+                    if (lst[15] != u'' ):
                         '''
                         ver_point = ast.literal_eval(lst[13])
                         r_ver_content=deepcopy(r_clr.content)
@@ -544,7 +544,7 @@ class testObject(object):
                         r2= r1.replace("false","\"false\"")    
                         r_ver_content=ast.literal_eval(r2)
                         '''
-                        ver_point=deepcopy(json.loads(lst[13]))
+                        ver_point=deepcopy(json.loads(lst[15]))
                         r_ver_content=deepcopy(json.loads(r_clr.content))
                         
                         error_message=self.searchDict2(ver_point,r_ver_content,"")

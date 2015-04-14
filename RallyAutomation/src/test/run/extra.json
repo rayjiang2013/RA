@@ -40,6 +40,19 @@
         "ControllerUsername": "lei.jiang@spirent.com",
 		"ChassisIP":"10.47.79.68"
     },
+	"accounts":{
+		"admin_email":"admin@spirent.com",
+		"admin_password":"spirent",
+		"admin_firstname":"admin",
+		"admin_lastname":"admin",
+		"standard_username":"standard@spirent.com",
+		"standard_password":"spirent",
+		"standard_firstname":"standard",
+		"standard_lastname":"standard",
+		"nonexist_email":"nonexist@spirent.com",
+		"nonexist_password":"spirent",
+		"wrong_password":"wrongpassword"
+	},
     "ssh": {
         "ip": "127.0.0.1",
         "password": "Jag6413682",
@@ -110,5 +123,9 @@
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    }
+    },
+	"apits":{
+		"FormattedID":"TS1103"
+	}
+	
 }
