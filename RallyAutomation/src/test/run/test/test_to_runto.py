@@ -28,7 +28,7 @@ class TestTOrunTO:
             data_to_runto['ts']['FormattedID']=request.param
             
             ts_obj=testSet(rally,data_to_runto)
-            ts=ts_obj.getTSByID()[0]
+            ts=ts_obj.getTSByID(data_to_runto['ts']['FormattedID'])[0]
                         
             to_obj=testObject(rally,data_to_runto)
             #ts_new=to_obj.copyTS()
@@ -75,7 +75,7 @@ class TestTOrunTO:
             
             #new ts with block tcr
             ts_obj=testSet(to_obj.rally,new_self_block_data)
-            ts_with_block=ts_obj.getTSByID()[0]
+            ts_with_block=ts_obj.getTSByID(new_self_block_data['ts']['FormattedID'])[0]
             
             #new to_obj
             to_obj_after_add_block_tcr=testObject(to_obj.rally,new_self_block_data)
@@ -117,9 +117,9 @@ class TestTOrunTO:
     
     def test_testobject_runto_state_in_process(self,config_class):
         print 'test_testobject_runto_state_in_process  <============================ actual test code'
-        (ts,to_obj,ts_obj)=config_class[0:3]
+        (ts,to_obj,ts_obj,data_to_runto)=config_class[0:4]
         to_obj.runTO(ts)[1]
-        ts_after_runTO=ts_obj.getTSByID()[0]
+        ts_after_runTO=ts_obj.getTSByID(data_to_runto['ts']['FormattedID'])[0]
         assert ts_after_runTO.ScheduleState=="In-Progress"
         
         

@@ -25,10 +25,10 @@ class testSet(object):
     
            
     #Show a TestSet identified by the FormattedID value
-    def getTSByID(self):
+    def getTSByID(self,fid):
         try:
             
-            query_criteria = 'FormattedID = "%s"' % str(self.data['ts']['FormattedID'])
+            query_criteria = 'FormattedID = "%s"' % fid
             response = self.rally.get('TestSet', fetch=True, query=query_criteria)
             dic={}
             for ts in response:
