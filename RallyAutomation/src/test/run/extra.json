@@ -45,7 +45,7 @@
 		"standard_firstname":"standard",
 		"standard_lastname":"standard",
 		"nonexist_email":"nonexist@spirent.com",
-		"nonexist_password":"spirent",
+		"nonexist_password":"nonexistpassword",
 		"wrong_password":"wrongpassword"
 	},
     "ssh": {
