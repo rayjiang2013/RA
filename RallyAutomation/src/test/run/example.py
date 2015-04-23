@@ -3,21 +3,30 @@ Created on Oct 28, 2014
 
 @author: ljiang
 '''
+import inspect
 import sys
 
 from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
 import json
 from testObject import testObject
 from rallyLogger import *
-import inspect
+
+import os
+from buildDefinition import buildDefinition
+from build import build
+from copy import deepcopy
+
+from extractAPI import extractAPI
+
 #The main function    
 if __name__ == '__main__':
     #Setup
     try:
         #logConfig("logging.json")
-        setup("logging.json")
+        setup(sys.argv[3])
         logger = logging.getLogger(__name__)
         logger.propagate=False
+                
         options = [opt for opt in sys.argv[1:] if opt.startswith('--')]
         server, user, password, apikey, workspace, project = rallyWorkset(options) #apikey can be obtained from https://rally1.rallydev.com/login/
         #print "--------------------------------------------------------------------\nRally project info is as below:"
@@ -40,27 +49,42 @@ if __name__ == '__main__':
         '''
         
         # Read other configuration parameters from the extra.json
-        with open('extra.json') as data_file:    
+        with open(sys.argv[2]) as data_file:    
             data = json.load(data_file)
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
-            #print "--------------------------------------------------------------------"    
+   
+        #api_obj=extractAPI(rally,data)
+
+        
+        to=testObject(rally,data)
+        
+        if to.sanityCheck():
+            to.getLastBuildInfoFromJenkins()
+            to.updateBuildInfo()
+            to.getLatestBuild()
+            ts_ut,tcs_objs=to.copyTS()
+            (verd,newdt)=to.runTO(ts_ut,tcs_objs)
+            test_results=to.runTS(verd,newdt,tcs_objs)    
+            report=to.genReport(test_results)
+            to.sendNotification(report)
+        
+        else: raise Exception('Environment sanity check failed')            
+        
+        
+        
     except Exception,details:
         #x=inspect.stack()
-        if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+        #print ('test_' in x[1][3])
+        if ('test_' in inspect.stack()[1][3]) or ('test_' in inspect.stack()[2][3]):
             raise
         else:
             #print Exception,details
             logger.error('ERROR: %s \n' % details,exc_info=True)
             sys.exit(1)
 
-    to=testObject(rally,data)
-    ts_ut,tcs_objs=to.copyTS()
-    (verd,newdt)=to.runTO(ts_ut,tcs_objs)
-    test_results=to.runTS(verd,newdt,tcs_objs)    
-    report=to.genReport(test_results)
-    to.sendNotification(report)
-    
+
+
 
     
 

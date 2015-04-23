@@ -53,6 +53,28 @@ class testSet(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
 
+    #Get all test sets under some criteria
+    def getAllTSs(self,query_criteria):
+        try:
+            
+            #query_criteria = 'FormattedID = "%s"' % str(self.data['ts']['FormattedID'])
+            response = self.rally.get('TestSet', fetch=True, query=query_criteria)
+            tss=[]
+            for ts in response:
+                tss.append(ts)
+                #print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
+                self.logger.debug("Test set obtained, ObjectID: %s  FormattedID: %s" % (ts.oid,ts.FormattedID))    
+            return tss
+        except Exception, details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+
+
     #Fetch all the test cases of specific test set
     def allTCofTS(self,ts):
         try:
@@ -107,9 +129,12 @@ class testSet(object):
     def updateSS(self,state):
         try:
             dic={}
+            dic['ts']={key: value for key, value in self.data['ts'].iteritems() if ((key == u'ScheduleState') or (key == u'FormattedID'))}
+            '''
             dic['ts']=self.data['ts'].copy()
             dic['ts'].pop('Build',None)
             dic['ts'].pop('Blocked',None)
+            '''
             if state == 0:
                 dic['ts']['ScheduleState']="In-Progress"
             if state == 1:        
@@ -118,8 +143,9 @@ class testSet(object):
                 dic['ts']['ScheduleState']="Completed"
             #ts_obj=testSet(self.rally,dic)
             #ts_obj.updateTS()
-            self.data=dic.copy()
-            self.updateTS()
+            #self.data=dic.copy()
+            #self.updateTS()
+            self.rally.post('TestSet', dic['ts'])  
             self.logger.debug("ScheduleState is successfully updated to %s" % dic['ts']['ScheduleState'])
         except Exception,details:
             #x=inspect.stack()
@@ -163,7 +189,7 @@ class testSet(object):
         
         return ts  
     
-    #Add test cases to test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
+    #Add test cases from original test set to destination test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
     #. _ref is like http://xyc/abc/12345) as reference to an object when needed. 
     #Ex: http://stackoverflow.com/questions/21718491/how-to-add-new-testcases-to-an-existing-rally-folder
     def addTCs(self,ts_origin,ts_dst):
@@ -184,6 +210,28 @@ class testSet(object):
                 #tc_rank_dic={'FormattedID':new_tc.FormattedID,'DragAndDropRank':rank[i]}
                 #tc_rank=self.rally.post('TestCase', tc_rank_dic)
                 #i+=1
+            return new_ts
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+
+    #Add specific test cases to destination test set
+    def addSpecificTCs(self,tcs,ts_dst):
+        try: 
+            dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[] }    
+            #rank=[]
+            for tc in tcs:
+                dic['TestCases'].append({'_ref' : str(tc._ref)}) 
+                #rank.append(tc.DragAndDropRank)     
+                self.logger.debug("Test case %s is added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
+            new_ts=self.rally.post('TestSet', dic) 
+            self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
             return new_ts
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)

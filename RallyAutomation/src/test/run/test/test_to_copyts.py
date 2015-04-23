@@ -14,24 +14,30 @@ from test_fixture_base import test_config_module
 
 #Test testObject/copyTS
 class TestTOCopyTS:
-    @pytest.fixture(scope="class")
+    
+    @pytest.fixture(scope="class",params=["TS541","541"])
+    #@pytest.mark.parametrize("fid_to_copy",['TS484'])
     def config_class(self,test_config_module,request):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
             #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (to_obj,rally,data)=test_config_module
+            rally,data=test_config_module
             
-            ts_obj=testSet(rally,data)
+            data_to_copy=deepcopy(data)
+            data_to_copy['ts']['FormattedID']=request.param
+                        
+            ts_obj=testSet(rally,data_to_copy)
             ts=ts_obj.getTSByID()[0]
             tcs=ts_obj.allTCofTS(ts)
     
             fids=[]
             for tc in tcs:
                 fids.append(tc.FormattedID)
-            
+                        
+            to_obj=testObject(rally,data_to_copy)
             ts_new=to_obj.copyTS()[0]
             #global new_self_data
-            new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+            new_self_data=deepcopy(data_to_copy) #use deepcopy instead of shallow one to create two separate object
             new_self_data['ts']['FormattedID']=ts_new.FormattedID
             
             def fin():
@@ -53,48 +59,6 @@ class TestTOCopyTS:
             print details
             sys.exit(1)            
 
-
-    @pytest.fixture(scope="function")
-    def config_test_testobject_copyts_non_existed_ts_negative(self,test_config_module,request):
-        try:
-            print ("setup_function    function:%s" % inspect.stack()[0][3])
-            #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (rally,data)=test_config_module[1:3]
-            
-            ts_obj=testSet(rally,data)
-            ts=ts_obj.getTSByID()[0]
-            tcs=ts_obj.allTCofTS(ts)
-    
-            fids=[]
-            for tc in tcs:
-                fids.append(tc.FormattedID)
-            '''
-            ts_new=to_obj.copyTS()
-            #global new_self_data
-            new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-            new_self_data['ts']['FormattedID']=ts_new.FormattedID
-            '''
-            def fin():
-                try:
-                    print ("teardown_function function:%s" % inspect.stack()[0][3])
-                    '''
-                    ts_new_obj=testSet(rally,new_self_data)
-                    ts_new_obj.delTS()
-                    '''
-                except Exception,details:
-                    
-                    print details
-                    sys.exit(1)    
-                    
-            request.addfinalizer(fin)
-            
-            return (ts,fids)
-        except Exception,details:
-            
-            print details
-            sys.exit(1)            
-
- 
     def test_testobject_copyts_same_tc_order(self,config_class):
         print 'test_testobject_copyts_same_tc_order  <============================ actual test code'
         (ts_new,fids)=(config_class[0],config_class[2])
@@ -112,11 +76,11 @@ class TestTOCopyTS:
         ts_new=config_class[0]
         assert ts_new.ScheduleState=="Defined"
 
-    @pytest.mark.parametrize("FormattedID", ['TS10000000','TS0'])        
-    def test_testobject_copyts_non_existed_ts_negative(self,config_test_testobject_copyts_non_existed_ts_negative,test_config_module,FormattedID):
+    @pytest.mark.parametrize("FormattedID", ['TS10000000','TS0','xyz','!@#','TS-1'])        
+    def test_testobject_copyts_non_existed_ts_negative(self,test_config_module,FormattedID):
         print 'test_testobject_copyts_non_existed_ts_negative  <============================ actual test code'
-        rally=test_config_module[1]
-        new_data_with_non_existed_ts=deepcopy(test_config_module[2])
+        rally=test_config_module[0]
+        new_data_with_non_existed_ts=deepcopy(test_config_module[1])
         new_data_with_non_existed_ts['ts']['FormattedID']=FormattedID
         to_obj=testObject(rally,new_data_with_non_existed_ts)
         

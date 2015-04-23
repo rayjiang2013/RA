@@ -1,4 +1,18 @@
 {
+    "jenkins": {
+    	"url": "http://10.10.2.59:8080",
+		"username": "lei",
+		"password": "spirent"
+    },
+	"build": {
+        "BuildDefinition": "",
+        "Number": "14",
+		"Status": "SUCCESS"
+    },
+    "builddf": {
+        "Name": "RallyTestAutomation",
+        "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223"
+    },
     "df": {
         "FormattedID": "DE3803",
         "FoundInBuild": "6666",
@@ -19,6 +33,31 @@
         "EMAIL_SMTP_PORT": 25,
         "EMAIL_SUBJECT": "Test Report",
         "TEXT_SUBTYPE": "plain"
+    },
+    "env": {
+        "ControllerPassword": "Jag6413682",
+        "ControllerURL": "http://10.10.2.166",
+        "ControllerUsername": "lei.jiang@spirent.com",
+		"ChassisIP":"10.47.79.68"
+    },
+	"accounts":{
+		"admin_email":"admin@spirent.com",
+		"admin_password":"spirent",
+		"admin_firstname":"admin",
+		"admin_lastname":"admin",
+		"standard_username":"standard@spirent.com",
+		"standard_password":"spirent",
+		"standard_firstname":"standard",
+		"standard_lastname":"standard",
+		"nonexist_email":"nonexist@spirent.com",
+		"nonexist_password":"spirent",
+		"wrong_password":"wrongpassword"
+	},
+    "ssh": {
+        "ip": "127.0.0.1",
+        "password": "Jag6413682",
+        "port": 22,
+        "username": "ljiang"
     },
     "tc": {
         "Description": "Test",
@@ -68,10 +107,10 @@
     "ts": {
         "Blocked": "",
         "BlockedReason": "",
-        "Build": "7003",
+        "Build": "19",
         "Description": "",
         "Expedite": "",
-        "FormattedID": "TS185",
+        "FormattedID": "TS541",
         "Iteration": "",
         "Name": "New test set",
         "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
@@ -81,14 +120,17 @@
         "Release": "",
         "ScheduleState": "Defined",
         "TestCases": [
-            "TC1023",
-            "TC1079",
-            "TC1027",
-            "TC1026"
+            "TC1851",
+            "TC1763",
+            "TC1543"
         ],
         "__collection_ref_for_TestCases": ""
     },
     "user": {
         "UserName": "lei.jiang@spirent.com"
-    }
+    },
+	"apits":{
+		"FormattedID":"TS1103"
+	}
+	
 }

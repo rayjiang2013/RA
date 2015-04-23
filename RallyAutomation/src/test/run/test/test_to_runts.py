@@ -8,40 +8,40 @@ import pytest
 from src.test.run.testSet import testSet
 from copy import deepcopy
 import sys
-import inspect
-from src.test.run.testCaseResult import testCaseResult
-import datetime
+#import inspect
+#from src.test.run.testCaseResult import testCaseResult
+from src.test.run.testObject import testObject
+#import datetime
+
 
 from test_fixture_base import test_config_module    
         
 #Test testObject/runTO
 class TestTOrunTS:
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope="class",params=['TS541'])#unit test not working yet need update
     def config_class(self,test_config_module,request):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
             #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (to_obj,rally,data)=test_config_module
-            ts_obj=testSet(rally,data)
-            ts=ts_obj.getTSByID()[0]
-            tcs=ts_obj.allTCofTS(ts)
-    
-            fids=[]
-            for tc in tcs:
-                fids.append(tc.FormattedID)
+            (rally,data)=test_config_module
+            data_to_runts=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+            data_to_runts['ts']['FormattedID']=request.param
+            #create to_obj
+            to_obj=testObject(rally,data_to_runts)
             
             ts_new,tcs_objs=to_obj.copyTS()
+
             #(verd,new_self_data)=to_obj.runTO(ts_new)
             #(verd,new_data)=config_module[0].runTO(ts_new)
             #global new_self_data
-            new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-            new_self_data['ts']['FormattedID']=ts_new.FormattedID
+            #new_self_data=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+            #new_self_data['ts']['FormattedID']=ts_new.FormattedID
             
             def fin():
                 try:
                     print ("teardown_class class:%s" % self.__class__.__name__)
-                    ts_new_obj=testSet(rally,new_self_data)
-                    ts_new_obj.delTS()
+                    #ts_new_obj=testSet(rally,new_self_data)
+                    #ts_new_obj.delTS()
             
                 except Exception,details:
                     
@@ -49,19 +49,20 @@ class TestTOrunTS:
                     sys.exit(1)    
                     
             request.addfinalizer(fin)
-            
-            return (ts_new,ts,fids,new_self_data,tcs_objs)#verd,new_data)
+
+            return (data_to_runts,tcs_objs,to_obj)
+
         except Exception,details:
             
             print details
             sys.exit(1)            
             
-    @pytest.mark.parametrize("verd", [[(0,'Failure: failure reason 1'),(1,'Success: success reason 1'),(2,'Blocked: blocked reason 1'),(3,"")]])  
+    @pytest.mark.parametrize("verd", [[(0,'Failure: failure reason 1'),(1,'Success: success reason 1'),(2,'Blocked: blocked reason 1')]])  
     def test_testobject_runts_same_verdicts(self,config_class,test_config_module,verd):
-        print 'test_testobject_runts_other_verdicts_negative  <============================ actual test code'
-        to_obj=test_config_module[0]
-        new_self_data,tcs_objs=config_class[3],config_class[4]
-        trs=to_obj.runTS(verd,new_self_data,tcs_objs) 
+        print 'test_testobject_runts_same_verdicts  <============================ actual test code'
+        data_to_runts,tcs_objs,to_obj=config_class
+        trs=to_obj.runTS(verd,data_to_runts,tcs_objs) 
+
         for tr,v in zip(trs,verd):
             if v[0]==0:
                 assert tr.Verdict=='Fail'
