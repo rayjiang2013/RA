@@ -202,12 +202,12 @@ class testObject(object):
             if lst[12]!= u'':
                 lst[12]=self.data['env']['ControllerURL']+lst[12]
             '''
-            if lst[17]!=u'':
-                lst[17]=self.data['env']['ControllerURL']+lst[17]            
+            if lst[18]!=u'':
+                lst[18]=self.data['env']['ControllerURL']+lst[18]            
             
             verdict=None
             r_stp=None
-            if lst[16]==u"":
+            if lst[17]==u"":
                 self.logger.debug("As not enough setup information is provided, the test setup for test case %s build %s  test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
                 '''
@@ -236,14 +236,14 @@ class testObject(object):
                             self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))    
                             return False,lst,variable_value_dict                            
                         
-                if lst[16] == "GET":
-                    r_stp = s_ession.get(lst[17])                        
-                elif lst[16] == "POST":
-                    r_stp = s_ession.post(lst[17],data=json.loads(lst[18]))
-                elif lst[16] == "DELETE":
-                    r_stp = s_ession.delete(lst[17])
-                elif lst[16] == "PUT":
-                    r_stp = s_ession.put(lst[17],data=json.loads(lst[18]))
+                if lst[17] == "GET":
+                    r_stp = s_ession.get(lst[18])                        
+                elif lst[17] == "POST":
+                    r_stp = s_ession.post(lst[18],data=json.loads(lst[19]))
+                elif lst[17] == "DELETE":
+                    r_stp = s_ession.delete(lst[18])
+                elif lst[17] == "PUT":
+                    r_stp = s_ession.put(lst[18],data=json.loads(lst[19]))
                 else:
                     #check if lst[16] is api level test case, if it does run api level test case
                     apits_id=self.data['apits']['FormattedID']
@@ -252,19 +252,19 @@ class testObject(object):
                     
                     
                     for tc_api in ts_api.TestCases:
-                        if tc_api.Name==lst[16]:
-                            verdict,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_SUP_EXE_FLC_VER,variable_value_dict,s_ession,lst[18])
+                        if tc_api.Name==lst[17]:
+                            verdict,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_SUP_EXE_FLC_VER,variable_value_dict,s_ession,lst[19])
                             break
                     else:
                         self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the api call is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
                         return False,lst,variable_value_dict 
                         
                 if r_stp!=None:
-                    if r_stp.status_code != int(lst[19]):
+                    if r_stp.status_code != int(lst[20]):
                         self.logger.debug("The test case %s for build %s in test set %s is failed to setup because status code is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
                         return False,lst,variable_value_dict          
                     else:
-                        if (lst[20] != u'' ):
+                        if (lst[21] != u'' ):
                             '''
                             ver_point = ast.literal_eval(lst[18])
                             r_ver_content=deepcopy(r_stp.content)
@@ -272,7 +272,7 @@ class testObject(object):
                             r2= r1.replace("false","\"false\"")    
                             r_ver_content=ast.literal_eval(r2)
                             '''
-                            ver_point=deepcopy(json.loads(lst[20]))
+                            ver_point=deepcopy(json.loads(lst[21]))
                             r_ver_content=deepcopy(json.loads(r_stp.content))
                             
                             error_message=self.searchDict2(ver_point,r_ver_content,"")
@@ -467,7 +467,7 @@ class testObject(object):
                         #return False,lst  
                         
                         
-            if not(lst[3].isdigit()) or r.status_code != int(lst[3]):
+            if not(lst[4].isdigit()) or r.status_code != int(lst[4]):
                 #Run Env Sanity Check
                 #to_obj=testObject(self.rally,self.data)       
                 if self.sanityCheck():
@@ -480,8 +480,8 @@ class testObject(object):
             else:
                 r_ver_content=deepcopy(json.loads(r.content))
 
-                if (lst[4] != u'' ):# and (r.content==str(lst[4])):
-                    ver_point=deepcopy(json.loads(lst[4]))
+                if (lst[5] != u'' ):# and (r.content==str(lst[4])):
+                    ver_point=deepcopy(json.loads(lst[5]))
                     error_message=self.searchDict2(ver_point,r_ver_content,"")
                     if error_message=='':
                         #First level check succeed
@@ -503,8 +503,8 @@ class testObject(object):
          
                 #save values in response into variables
                 variable_list=[]
-                if lst[5]!="":
-                    variable_list=lst[5].split(';')
+                if lst[6]!="":
+                    variable_list=lst[6].split(';')
                     #variable_value_dict={}
                     for varb in variable_list:
                         values=self.searchKeyInDic(r_ver_content, varb)
@@ -539,8 +539,8 @@ class testObject(object):
     #Test verification:
     def verificator(self,lst,r,verdict,tc,s_ession,variable_value_dict):
         try:
-            if lst[7]!= u'':
-                lst[7]=self.data['env']['ControllerURL']+lst[7]
+            if lst[8]!= u'':
+                lst[8]=self.data['env']['ControllerURL']+lst[8]
             #Verification
             for idx in constants.INDEXES_VER:
                 if '$' in lst[idx]:
@@ -550,19 +550,19 @@ class testObject(object):
                         #self.logger.debug("The test case %s for build %s is failed to execute because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],varbs[-1]))    
                         #return False,lst  
                         
-            if (lst[8]==u""): #or lst[6]==u"" or lst[7]==u""):
+            if (lst[9]==u""): #or lst[6]==u"" or lst[7]==u""):
                 self.logger.debug("As not enough verification information is provided, the test execution for test case %s, build %s is not verified" % (tc.FormattedID,self.data["ts"]["Build"]))
                 verdict[-1]=(verdict[-1][0],verdict[-1][1]+' No verification is done.')
             else:
                 r_ver=None    
-                if lst[8] == "GET":
-                    r_ver = s_ession.get(lst[7])                        
-                if lst[8] == "POST":
-                    r_ver = s_ession.post(lst[7],data=json.loads(lst[9]))
-                if lst[8] == "DELETE":
-                    r_ver = s_ession.delete(lst[7])
-                if lst[8] == "PUT":
-                    r_ver = s_ession.put(lst[7],data=json.loads(lst[9]))
+                if lst[9] == "GET":
+                    r_ver = s_ession.get(lst[8])                        
+                if lst[9] == "POST":
+                    r_ver = s_ession.post(lst[8],data=json.loads(lst[10]))
+                if lst[9] == "DELETE":
+                    r_ver = s_ession.delete(lst[8])
+                if lst[9] == "PUT":
+                    r_ver = s_ession.put(lst[8],data=json.loads(lst[10]))
                 '''
                 ver_point = ast.literal_eval(lst[5])
                 r_ver_content=deepcopy(r_ver.content)
@@ -579,12 +579,12 @@ class testObject(object):
                 
                 verdict_api=None
                 for tc_api in ts_api.TestCases:
-                    if tc_api.Name==lst[8]:
-                        verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[9])
+                    if tc_api.Name==lst[9]:
+                        verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[10])
                         break
                 
                 if r_ver!=None:
-                    ver_point=deepcopy(json.loads(lst[6]))
+                    ver_point=deepcopy(json.loads(lst[7]))
                     r_ver_content=deepcopy(json.loads(r_ver.content))
                     
                     error_message=self.searchDict2(ver_point,r_ver_content,"")
@@ -617,8 +617,8 @@ class testObject(object):
     #Cleanup
     def cleaner(self,lst,tc,ts,s_ession,variable_value_dict):
         try:
-            if lst[12]!= u'':
-                lst[12]=self.data['env']['ControllerURL']+lst[12]
+            if lst[13]!= u'':
+                lst[13]=self.data['env']['ControllerURL']+lst[13]
                 
             for idx in constants.INDEXES_CLU:
                 if '$' in lst[idx]:
@@ -629,17 +629,17 @@ class testObject(object):
                         #return False,lst           
                            
             r_clr=None
-            if lst[12]==u"":
+            if lst[13]==u"":
                 self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
-                if lst[11] == "GET":
-                    r_clr = s_ession.get(lst[12])                        
-                if lst[11] == "POST":
-                    r_clr = s_ession.post(lst[12],data=json.loads(lst[13]))
-                if lst[11] == "DELETE":
-                    r_clr = s_ession.delete(lst[12])
-                if lst[11] == "PUT":
-                    r_clr = s_ession.put(lst[12],data=json.loads(lst[13]))
+                if lst[12] == "GET":
+                    r_clr = s_ession.get(lst[13])                        
+                if lst[12] == "POST":
+                    r_clr = s_ession.post(lst[13],data=json.loads(lst[14]))
+                if lst[12] == "DELETE":
+                    r_clr = s_ession.delete(lst[13])
+                if lst[12] == "PUT":
+                    r_clr = s_ession.put(lst[13],data=json.loads(lst[14]))
                 '''    
                 if int(lst[12])==r_clr.status_code:              
                     self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
@@ -648,10 +648,10 @@ class testObject(object):
                     #self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                 '''
         
-                if r_clr.status_code != int(lst[14]):
+                if r_clr.status_code != int(lst[15]):
                     raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                
                 else:
-                    if (lst[15] != u'' ):
+                    if (lst[16] != u'' ):
                         '''
                         ver_point = ast.literal_eval(lst[13])
                         r_ver_content=deepcopy(r_clr.content)
@@ -659,7 +659,7 @@ class testObject(object):
                         r2= r1.replace("false","\"false\"")    
                         r_ver_content=ast.literal_eval(r2)
                         '''
-                        ver_point=deepcopy(json.loads(lst[15]))
+                        ver_point=deepcopy(json.loads(lst[16]))
                         r_ver_content=deepcopy(json.loads(r_clr.content))
                         
                         error_message=self.searchDict2(ver_point,r_ver_content,"")

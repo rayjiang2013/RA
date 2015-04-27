@@ -145,18 +145,18 @@ class TestTOrunTO:
             print details
             sys.exit(1)    
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['DELETE|/logout||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/nonexist||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'NONEXIST|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||'])    
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['DELETE|/logout|||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||'])    
     def test_testobject_runtc_logout(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module):
         print 'test_testobject_runtc_logout  <============================ actual test code'      
         rally=test_config_module[0]
@@ -182,29 +182,29 @@ class TestTOrunTO:
         s = requests.session()
         verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         pass
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict == [(constants.SUCCESS,'Success: status code expected and first level check succeed. No verification is done.')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||':
             assert verdict==[(constants.SUCCESS,'Success: status code expected and first level check succeed. No verification is done.')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict == [(constants.BLOCKED, 'Blocked: the test case is blocked because the test setup failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.BLOCKED, 'Blocked: the test case is blocked because the test setup failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.BLOCKED, 'Blocked: the test case is blocked because the test setup failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.BLOCKED, 'Blocked: the test case is blocked because the test setup failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.BLOCKED, 'Blocked: the test case is blocked because the test setup failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.FAILED, u"Failure: status code expected but first level check failed. Error: 'okay' : True in content of response is different from the expected.")]
-        if c_QATCPARAMSTEXT=='NONEXIST|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.FAILED, 'Failed: the test case failed because execution step failed')]
-        if c_QATCPARAMSTEXT=='DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.SUCCESS,'Success: status code expected and first level check succeed. No verification is done.')]
-        if c_QATCPARAMSTEXT=='DELETE|/nonexist||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.FAILED, 'Failure: status code unexpected. The unexpected status code of the response is 404')]              
-        if c_QATCPARAMSTEXT=='DELETE|/logout||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
+        if c_QATCPARAMSTEXT=='DELETE|/logout|||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.FAILED, 'Failure: status code unexpected. The unexpected status code of the response is 200')]           
     
     

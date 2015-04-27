@@ -1,1 +1,2 @@
-logout|DELETE|/logout||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||
+logout|DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||
+login|POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}||200|{"okay":true,"current_user":{"email":"$admin_email","role":"admin"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||
