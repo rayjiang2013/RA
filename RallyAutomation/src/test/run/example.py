@@ -57,18 +57,17 @@ if __name__ == '__main__':
         #api_obj=extractAPI(rally,data)
 
         
-        to=testObject(rally,data)
+        to_obj=testObject(rally,data)
         
-        if to.sanityCheck():
-            to.getLastBuildInfoFromJenkins()
-            to.updateBuildInfo()
-            to.getLatestBuild()
-            ts_ut=to.copyTS()
-            (verd,newdt)=to.runTO(ts_ut)
-            test_results=to.runTS(verd,newdt)    
-            report=to.genReport(test_results)
-            to.sendNotification(report)
-        
+        if to_obj.sanityCheck():
+            to_obj.updateBuildInfo()
+            to_obj.getLatestBuild()
+            ts_ut=to_obj.copyTS()
+            (verd,newdt)=to_obj.runTO(ts_ut)
+            test_results=to_obj.runTS(verd,newdt)    
+            report=to_obj.genReport(test_results)
+            to_obj.sendNotification(report)
+
         else: raise Exception('Environment sanity check failed')            
         
         

@@ -27,7 +27,7 @@ class TestTOCopyTS:
             data_to_copy['ts']['FormattedID']=request.param
                         
             ts_obj=testSet(rally,data_to_copy)
-            ts=ts_obj.getTSByID()[0]
+            ts=ts_obj.getTSByID(data_to_copy['ts']['FormattedID'])[0]
             tcs=ts_obj.allTCofTS(ts)
     
             fids=[]

@@ -49,7 +49,7 @@ class TestTOCopyTS:
             global ts_obj,ts,tcs,fids,new_self_data,ts_new
             
             ts_obj=testSet(rally,data)
-            ts=ts_obj.getTSByID()[0]
+            ts=ts_obj.getTSByID(data['ts']['FormattedID'])[0]
             tcs=ts_obj.allTCofTS(ts)
     
             fids=[]
