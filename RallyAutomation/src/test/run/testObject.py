@@ -201,14 +201,6 @@ class testObject(object):
     #Setup
     def setup(self,lst,tc,ts,s_ession,variable_value_dict):
         try:
-            '''
-            if lst[constants.INDEXES_EXE[1]]!= u'':
-                lst[constants.INDEXES_EXE[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_EXE[1]]
-            if lst[constants.INDEXES_VER[0]]!= u'':
-                lst[constants.INDEXES_VER[0]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_VER[0]]
-            if lst[constants.INDEXES_CLU[0]]!= u'':
-                lst[constants.INDEXES_CLU[0]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_CLU[0]]
-            '''
             if lst[constants.INDEXES_SUP[1]]!=u'':
                 lst[constants.INDEXES_SUP[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_SUP[1]]            
             
@@ -217,24 +209,6 @@ class testObject(object):
             if lst[constants.INDEXES_SUP[0]]==u"":
                 self.logger.debug("As not enough setup information is provided, the test setup for test case %s build %s  test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
-                '''
-                if '$' in lst[constants.INDEXES_EXE[1]]:
-                    rep_status,lst[constants.INDEXES_EXE[1]]=self.rep(lst[constants.INDEXES_EXE[1]],tc,ts)
-                    if rep_status==False:
-                        return False,lst
-                if '$' in lst[constants.INDEXES_VER[0]]:
-                    rep_status,lst[constants.INDEXES_VER[0]]=self.rep(lst[constants.INDEXES_VER[0]],tc,ts)
-                    if rep_status==False:
-                        return False,lst                                       
-                if '$' in lst[constants.INDEXES_CLU[0]]:
-                    rep_status,lst[constants.INDEXES_CLU[0]]=self.rep(lst[constants.INDEXES_CLU[0]],tc,ts)
-                    if rep_status==False:
-                        return False,lst
-                if '$' in lst[constants.INDEXES_SUP[0]]:
-                    rep_status,lst[constants.INDEXES_SUP[0]]=self.rep(lst[constants.INDEXES_SUP[0]],tc,ts)
-                    if rep_status==False:
-                        return False,lst
-                '''
                 missing_varbs_string=""
                 for idx in constants.INDEXES_SUP:
                     if '$' in lst[idx]:
@@ -280,13 +254,6 @@ class testObject(object):
                         return False,lst,variable_value_dict          
                     else:
                         if (lst[constants.INDEXES_SUP[4]] != u'' ):
-                            '''
-                            ver_point = ast.literal_eval(lst[constants.INDEXES_SUP[1]])
-                            r_ver_content=deepcopy(r_stp.content)
-                            r1= r_ver_content.replace("true","\"true\"")
-                            r2= r1.replace("false","\"false\"")    
-                            r_ver_content=ast.literal_eval(r2)
-                            '''
                             ver_point=deepcopy(json.loads(lst[constants.INDEXES_SUP[4]]))
                             r_ver_content=deepcopy(json.loads(r_stp.content))
                             
@@ -319,18 +286,9 @@ class testObject(object):
     
 
     #Test execution
-    def executor(self,lst,tc,s_ession,variable_value_dict,request_to_sub):
+    def executor(self,lst,tc,s_ession,variable_value_dict,request_to_sub,verdict):
         try:
-            #lst=tc.c_QATCPARAMSSTRING.split('|')
-            '''
-            if lst[constants.INDEXES_EXE[1]]!= u'':
-                lst[constants.INDEXES_EXE[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_EXE[1]]
-            if lst[constants.INDEXES_FLC[2]]!= u'':
-                lst[constants.INDEXES_FLC[2]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_FLC[2]]
-            if lst[constants.INDEXES_VER[3]]!= u'':
-                lst[constants.INDEXES_VER[3]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_VER[3]]
-            '''          
-              
+                    
             if lst[constants.INDEXES_EXE[1]]!= u'':
                 lst[constants.INDEXES_EXE[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_EXE[1]]            
 
@@ -349,8 +307,8 @@ class testObject(object):
                             if missing_varbs.index(i)>0:
                                 missing_varbs_string=missing_varbs_string+", "+i
                         #raise Exception("The test case %s for build %s is failed to execute because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],varbs[-1]))
-                        self.logger.debug("The test case %s for build %s is failed to execute because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],missing_varbs_string))    
-                        return False,lst,variable_value_dict  
+                        self.logger.debug("The test case %s for build %s is blocked because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],missing_varbs_string))    
+                        return constants.BLOCKED,lst,variable_value_dict,None  
             
             json_request={}      
             if lst[constants.INDEXES_EXE[1]] !="":                                     
@@ -363,7 +321,7 @@ class testObject(object):
                         r = s_ession.post(lst[constants.INDEXES_EXE[1]],data=json_request,verify=False)
                     #except Exception,details:
                     else:
-                        return False,lst,variable_value_dict 
+                        return constants.BLOCKED,lst,variable_value_dict,None 
                 elif lst[constants.INDEXES_EXE[0]] == "DELETE":
                     r = s_ession.delete(lst[constants.INDEXES_EXE[1]])
                 elif lst[constants.INDEXES_EXE[0]] == "PUT":#only support http for now, verify = false
@@ -371,14 +329,41 @@ class testObject(object):
                         json_request=json.loads(lst[constants.INDEXES_EXE[2]])                
                         r = s_ession.put(lst[constants.INDEXES_EXE[1]],data=json_request,verify=False)
                     else:
-                        return False,lst,variable_value_dict                       
+                        return constants.BLOCKED,lst,variable_value_dict,None                       
                 else:
                     #raise Exception("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
                     self.logger.debug("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])    
-                    return False,lst,variable_value_dict  
+                    return constants.BLOCKED,lst,variable_value_dict,None  
             else:
                 self.logger.debug("No path is provided")    
-                return False,lst,variable_value_dict
+                return constants.BLOCKED,lst,variable_value_dict,None
+            
+            if r.content!="":
+                r_ver_content=deepcopy(json.loads(r.content))
+    
+                if lst[constants.INDEXES_FLC[2]]!="":
+                    variable_list=lst[constants.INDEXES_FLC[2]].split(';')
+                    #variable_value_dict={}
+                    for varb in variable_list:
+                        values=self.searchKeyInDic(r_ver_content, varb)
+                        i=0
+                        if len(values)==0:
+                            if len(verdict)!=0:
+                                verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as the variable: %s cannot be found in the response content' % varb)
+                            self.logger.debug("Failed to save values in response content to varaible %s as it cannot be found in response content" % varb)                          
+                        elif len(values)>1:
+                            while i < len(values):
+                                if values[i]!=values[i+1]:
+                                    if len(verdict)!=0:
+                                        verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as there are multiple different values for variable: %s' % varb)
+                                    self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
+                                    break                             
+                                i+=1
+                        else:
+                            variable_value_dict[varb]=values[0] 
+                            self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+            else:
+                r_ver_content=""
             
             #save values in json request into variables
             if len(json_request)!=0:
@@ -391,18 +376,22 @@ class testObject(object):
                         i=0
                         if len(values)==0:
                             self.logger.debug("Failed to save values in requested json object to varaible %s as it cannot be found in the requested json object" % varb)       
-                            return False,lst,variable_value_dict                   
-                        while i < len(values) and len(values)>1:
-                            if values[i]!=values[i+1]:                            
-                                self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
-                                return False,lst,variable_value_dict                             
-                            i+=1
+                            return constants.FAILED,lst,variable_value_dict,r_ver_content                   
+                        elif len(values)>1:
+                            while i < len(values):
+                                if values[i]!=values[i+1]:                            
+                                    self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
+                                    return constants.FAILED,lst,variable_value_dict,r_ver_content                             
+                                i+=1
                         else:
                             variable_value_dict[varb]=values[0] 
                             self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+                            
+
+
                                
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))       
-            return (r,lst,variable_value_dict) 
+            return (r,lst,variable_value_dict,r_ver_content) 
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
@@ -506,10 +495,72 @@ class testObject(object):
     
         return fields_found
     
-    
+
+    #save values in response into variables; to do!!!!!!!!
+    def saveVar(self,r_ver_content,verdict,variable_value_dict,variable_list):
+        #As in firstlevelcheck()
+        for varb in variable_list:
+            values=self.searchKeyInDic(r_ver_content, varb)
+            i=0
+            if len(values)==0:
+                verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as the variable: %s cannot be found in the response content' % varb)
+                self.logger.debug("Failed to save values in response content to varaible %s as it cannot be found in response content" % varb)                          
+            while i < len(values) and len(values)>1:
+                if values[i]!=values[i+1]:
+                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as there are multiple different values for variable: %s' % varb)
+                    self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
+                    break                             
+                i+=1
+            else:
+                variable_value_dict[varb]=values[0] 
+                self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+                
+                
+            '''
+            #this is just to show what it is like in executor()
+            for varb in variable_list:
+                values=self.searchKeyInDic(json_request, varb)
+                i=0
+                if len(values)==0:
+                    self.logger.debug("Failed to save values in requested json object to varaible %s as it cannot be found in the requested json object" % varb)       
+                    return False,lst,variable_value_dict                   
+                while i < len(values) and len(values)>1:
+                    if values[i]!=values[i+1]:                            
+                        self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
+                        return False,lst,variable_value_dict                             
+                    i+=1
+                else:
+                    variable_value_dict[varb]=values[0] 
+                    self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+            '''
+        return verdict,variable_value_dict
+            
     #First level check
-    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict):
+    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content):
         try: 
+            '''
+            r_ver_content=deepcopy(json.loads(r.content))
+            #save values in response into variables
+            variable_list=[]
+            if lst[constants.INDEXES_FLC[2]]!="":
+                variable_list=lst[constants.INDEXES_FLC[2]].split(';')
+                #variable_value_dict={}
+                for varb in variable_list:
+                    values=self.searchKeyInDic(r_ver_content, varb)
+                    i=0
+                    if len(values)==0:
+                        verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as the variable: %s cannot be found in the response content' % varb)
+                        self.logger.debug("Failed to save values in response content to varaible %s as it cannot be found in response content" % varb)                          
+                    while i < len(values) and len(values)>1:
+                        if values[i]!=values[i+1]:
+                            verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as there are multiple different values for variable: %s' % varb)
+                            self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
+                            break                             
+                        i+=1
+                    else:
+                        variable_value_dict[varb]=values[0] 
+                        self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+            '''
             #ver_point = ast.literal_eval(lst[constants.INDEXES_FLC[0]])
 
             #r1= r_ver_content.replace("true","\"true\"")
@@ -548,7 +599,7 @@ class testObject(object):
                     raise Exception('Environment sanity check failed')
                     #verdict.append((0,'Failure: sanity check of environment failed'))            
             else:
-                r_ver_content=deepcopy(json.loads(r.content))
+                
 
                 if (lst[constants.INDEXES_FLC[1]] != u'' ):# and (r.content==str(lst[constants.INDEXES_FLC[0]])):
                     ver_point=deepcopy(json.loads(lst[constants.INDEXES_FLC[1]]))
@@ -571,26 +622,7 @@ class testObject(object):
                     verdict.append((constants.SUCCESS,'Success: status code expected without first level check.'))
                     self.logger.debug("Test case %s, build %s is successful without first level check." % (tc.FormattedID,self.data["ts"]["Build"]))
          
-                #save values in response into variables
-                variable_list=[]
-                if lst[constants.INDEXES_FLC[2]]!="":
-                    variable_list=lst[constants.INDEXES_FLC[2]].split(';')
-                    #variable_value_dict={}
-                    for varb in variable_list:
-                        values=self.searchKeyInDic(r_ver_content, varb)
-                        i=0
-                        if len(values)==0:
-                            verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as the variable: %s cannot be found in the response content' % varb)
-                            self.logger.debug("Failed to save values in response content to varaible %s as it cannot be found in response content" % varb)                          
-                        while i < len(values) and len(values)>1:
-                            if values[i]!=values[i+1]:
-                                verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as there are multiple different values for variable: %s' % varb)
-                                self.logger.debug("Failed to save values in response content to varaible %s as there are multiple different values for it in response" % varb)  
-                                break                             
-                            i+=1
-                        else:
-                            variable_value_dict[varb]=values[0] 
-                            self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
+
 
             
             return verdict,variable_value_dict
@@ -655,15 +687,6 @@ class testObject(object):
                         self.logger.debug("The test execution for test case %s, build %s is verified to be failed. Error: %s" % (tc.FormattedID,self.data["ts"]["Build"],error_message))   
                         
                 else:
-                    '''
-                    ver_point = ast.literal_eval(lst[constants.INDEXES_FLC[1]])
-                    r_ver_content=deepcopy(r_ver.content)
-                    r1= r_ver_content.replace("true","\"true\"")
-                    r2= r1.replace("false","\"false\"")    
-                    r_ver_content=ast.literal_eval(r2)
-                    #keys_ver_point,values_ver_point=ver_point.keys(),ver_point.values()
-                    #keys_r_ver_content,values_r_ver_content=r_ver_content.keys(),r_ver_content.values()
-                    '''
                     #check if lst[constants.INDEXES_VER[1]] is api level test case, if it does run api level test case
                     apits_id=self.data['apits']['FormattedID']
                     ts_obj=testSet(self.rally,self.data)
@@ -731,25 +754,12 @@ class testObject(object):
                     r_clr = s_ession.delete(lst[constants.INDEXES_CLU[1]])
                 if lst[constants.INDEXES_CLU[0]] == "PUT":
                     r_clr = s_ession.put(lst[constants.INDEXES_CLU[1]],data=json.loads(lst[constants.INDEXES_CLU[2]]))
-                '''    
-                if int(lst[constants.INDEXES_CLU[0]])==r_clr.status_code:              
-                    self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
-                else: 
-                    raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
-                    #self.logger.debug("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
-                '''
+
                 if r_clr!=None:
                     if r_clr.status_code != int(lst[constants.INDEXES_CLU[3]]):
                         raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                
                     else:
                         if (lst[constants.INDEXES_CLU[4]] != u'' ):
-                            '''
-                            ver_point = ast.literal_eval(lst[constants.INDEXES_CLU[1]])
-                            r_ver_content=deepcopy(r_clr.content)
-                            r1= r_ver_content.replace("true","\"true\"")
-                            r2= r1.replace("false","\"false\"")    
-                            r_ver_content=ast.literal_eval(r2)
-                            '''
                             ver_point=deepcopy(json.loads(lst[constants.INDEXES_CLU[4]]))
                             r_ver_content=deepcopy(json.loads(r_clr.content))
                             
@@ -767,24 +777,25 @@ class testObject(object):
                     ts_api=ts_obj.getTSByID(apits_id)[0]
                     
                     verdict_api=None
-                    for tc_api in ts_api.TestCases:
-                        if tc_api.Name==lst[constants.INDEXES_CLU[0]]:
-                            verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]])
-                            break
+                    api_tc_lst=lst[constants.INDEXES_CLU[0]].split(';')
+                    for api_tc in api_tc_lst:                           
+                        for tc_api in ts_api.TestCases:
+                            if tc_api.Name==api_tc:
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]])
+                                break
                     
-                    if verdict_api!=None:
-                        if verdict_api[0][0]==1:
-                            #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                            self.logger.debug("The test cleanup of test case %s for build %s is successfully." % (tc.FormattedID,self.data["ts"]["Build"]))       
+                        if verdict_api!=None:
+                            if verdict_api[0][0]==1:
+                                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                                self.logger.debug("The test cleanup of test case %s for build %s is successfully." % (tc.FormattedID,self.data["ts"]["Build"]))       
+                            else:
+                                #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
+                                raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
+                                #return False,lst                
                         else:
-                            #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
-                            raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
-                            #return False,lst                
-                    else:
-                        #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
-                        raise Exception("The test case %s for build %s is failed to clean up because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],lst[constants.INDEXES_CLU[0]],apits_id))   
-        
-                 
+                            #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
+                            raise Exception("The test case %s for build %s is failed to clean up because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],lst[constants.INDEXES_CLU[0]],apits_id))   
+                             
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
@@ -801,13 +812,16 @@ class testObject(object):
             #s = requests.session()
             setup_result,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict)
             if setup_result==True:
-                (response,lst_of_par,variable_value_dict)=self.executor(lst,tc,s,variable_value_dict,request_to_sub)
-                if response==False:
+                (response,lst_of_par,variable_value_dict,r_ver_content)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict)
+                if response==constants.FAILED:
                     verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
                     self.logger.debug("The test case %s failed for build %s in execution step, will do test cleanup directly." % (tc.FormattedID,self.data["ts"]["Build"]))
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict)
+                elif response==constants.BLOCKED:
+                    verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the restful api call failed to run'))
+                    self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content)
                     if verdict[-1][0]==1:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict)
@@ -815,15 +829,24 @@ class testObject(object):
                 verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
             return verdict,variable_value_dict                        
+       
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER: #run only setup, execution, firstlevelcheck and verification
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
             setup_result,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict)
             if setup_result==True:
-                (response,lst_of_par,variable_value_dict)=self.executor(lst,tc,s,variable_value_dict,request_to_sub)
-                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict)
-                if verdict[-1][0]==1:
-                    verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
+                (response,lst_of_par,variable_value_dict,r_ver_content)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict)
+                if response==constants.FAILED:
+                    verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
+                    self.logger.debug("The test case %s failed for build %s in execution step, will do test cleanup directly." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict)
+                elif response==constants.BLOCKED:
+                    verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
+                    self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))  
+                else:
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content)
+                    if verdict[-1][0]==1:
+                        verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
             else:
                 verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
@@ -835,17 +858,25 @@ class testObject(object):
             #s = requests.session()
             #setup_result,lst=self.setup(lst, tc, testset_under_test, s)
             #if setup_result==True:
-            (response,lst_of_par,variable_value_dict)=self.executor(lst,tc,s,variable_value_dict,request_to_sub)
-            verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict)
-            if verdict[-1][0]==1:
-                verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
-                #self.cleaner(lst_of_par, tc,testset_under_test,s)
+            (response,lst_of_par,variable_value_dict,r_ver_content)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict)
+            if response==constants.FAILED:
+                verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
+                self.logger.debug("The test case %s failed for build %s in execution step, will do test cleanup directly." % (tc.FormattedID,self.data["ts"]["Build"]))
+                self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict)
+            elif response==constants.BLOCKED:
+                verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
+                self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))  
             else:
-                #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
-                if verdict[-1][0]==constants.BLOCKED:
-                    self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
-                if verdict[-1][0]==constants.FAILED:
-                    self.logger.debug("The test case %s failed for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
+                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content)
+                if verdict[-1][0]==1:
+                    verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
+                    #self.cleaner(lst_of_par, tc,testset_under_test,s)
+                else:
+                    #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
+                    if verdict[-1][0]==constants.BLOCKED:
+                        self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
+                    if verdict[-1][0]==constants.FAILED:
+                        self.logger.debug("The test case %s failed for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
             return verdict,variable_value_dict    
                                     
     #run all tests in a test set     
@@ -866,40 +897,11 @@ class testObject(object):
                             self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
                             break
                         else:
-                            
-                            '''
-                            lst=tc.c_QATCPARAMSTEXT.split('|')
-                            
-                            setup_result,lst=self.setup(lst, tc, testset_under_test, s)
-                            if setup_result==True:
-                                (response,lst_of_par)=self.executor(lst,tc,s)
-                                verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
-                                if verdict[-1][0]!=0:
-                                    verdict=self.verificator(lst_of_par, response, verdict, tc,s)
-                                self.cleaner(lst_of_par, tc,testset_under_test,s)
-                            else:
-                                verdict.append((2,'Blocked: the test case is blocked because the test setup failed'))
-                                self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
-                            '''
                             s = requests.session()
                             verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,{},s,"")
                             break
                                                         
                 else:
-                    '''
-                    lst=tc.c_QATCPARAMSTEXT.split('|')
-                    s = requests.session()
-                    setup_result,lst=self.setup(lst, tc, testset_under_test, s)
-                    if setup_result==True:
-                        (response,lst_of_par)=self.executor(lst,tc,s)
-                        verdict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s)
-                        if verdict[-1][0]!=0:
-                            verdict=self.verificator(lst_of_par, response, verdict, tc,s)
-                        self.cleaner(lst_of_par, tc,testset_under_test,s)
-                    else:
-                        verdict.append((2,'Blocked: the test case is blocked because the test setup failed'))
-                        self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
-                    '''
                     s = requests.session()
                     verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,{},s,"")
             
