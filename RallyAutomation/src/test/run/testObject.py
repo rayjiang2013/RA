@@ -199,12 +199,12 @@ class testObject(object):
         return verd,strg,varbs,missing_varbs
     
     #Setup
-    def setup(self,lst,tc,ts,s_ession,variable_value_dict):
+    def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict):
         try:
             if lst[constants.INDEXES_SUP[1]]!=u'':
                 lst[constants.INDEXES_SUP[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_SUP[1]]            
             
-            verdict=None
+            #verdict=None
             r_stp=None
             if lst[constants.INDEXES_SUP[0]]==u"":
                 self.logger.debug("As not enough setup information is provided, the test setup for test case %s build %s  test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
@@ -223,7 +223,8 @@ class testObject(object):
                             #raise Exception("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))
                             if len(missing_varbs)==1:
                                 self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
-                            return False,lst,variable_value_dict                            
+                                verdict.append((constants.BLOCKED,"Blocked: %s is/are not defined in extra.json or pre-defined local variables." % missing_varbs_string))
+                            return verdict,lst,variable_value_dict                            
                         
                 if lst[constants.INDEXES_SUP[0]] == "GET":
                     r_stp = s_ession.get(lst[constants.INDEXES_SUP[1]])                        
@@ -242,16 +243,18 @@ class testObject(object):
                     
                     for tc_api in ts_api.TestCases:
                         if tc_api.Name==lst[constants.INDEXES_SUP[0]]:
-                            verdict,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_SUP_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_SUP[2]])
+                            verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_SUP_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_SUP[2]])
                             break
                     else:
                         self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the api call is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
-                        return False,lst,variable_value_dict 
+                        verdict.append((constants.BLOCKED,"Blocked: the api call is unexpected."))                
+                        return verdict,lst,variable_value_dict 
                         
                 if r_stp!=None:
                     if r_stp.status_code != int(lst[constants.INDEXES_SUP[3]]):
                         self.logger.debug("The test case %s for build %s in test set %s is failed to setup because status code is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
-                        return False,lst,variable_value_dict          
+                        verdict.append((constants.BLOCKED,"Blocked: status code is unexpected.")) 
+                        return verdict,lst,variable_value_dict          
                     else:
                         if (lst[constants.INDEXES_SUP[4]] != u'' ):
                             ver_point=deepcopy(json.loads(lst[constants.INDEXES_SUP[4]]))
@@ -262,18 +265,20 @@ class testObject(object):
                                 self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
                             else:
                                 self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the content of response body is unexpected" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))   
-                                return False,lst,variable_value_dict
+                                verdict.append((constants.BLOCKED,"Blocked: the content of response body is unexpected"))
+                                return verdict,lst,variable_value_dict
                         else:
                             self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
             
-                if verdict != None:
-                    if verdict[0][0]==1:
+                if verdict_api != None:
+                    if verdict_api[0][0]==1:
                         self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
                     else:
-                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the restful api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,tc_api.FormattedID,tc_api.Name,verdict[0][1]))   
-                        return False,lst,variable_value_dict                            
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the restful api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
+                        verdict.append((constants.BLOCKED,"Blocked: the restful api level test case %s (%s) failed: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])))
+                        return verdict,lst,variable_value_dict                            
                     
-            return True,lst,variable_value_dict 
+            return verdict,lst,variable_value_dict 
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
@@ -810,8 +815,8 @@ class testObject(object):
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU: #1 means run through all steps
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
-            setup_result,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict)
-            if setup_result==True:
+            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict)
+            if len(verdict)==0:
                 (response,lst_of_par,variable_value_dict,r_ver_content)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict)
                 if response==constants.FAILED:
                     verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
@@ -826,15 +831,15 @@ class testObject(object):
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict)
             else:
-                verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
+                #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
             return verdict,variable_value_dict                        
        
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER: #run only setup, execution, firstlevelcheck and verification
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
-            setup_result,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict)
-            if setup_result==True:
+            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict)
+            if len(verdict)==0:
                 (response,lst_of_par,variable_value_dict,r_ver_content)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict)
                 if response==constants.FAILED:
                     verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
@@ -849,7 +854,7 @@ class testObject(object):
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
             else:
-                verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
+                #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
             return verdict,variable_value_dict                 
 
