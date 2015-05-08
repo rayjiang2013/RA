@@ -9,14 +9,14 @@
         "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223"
     },
     "df": {
-        "FormattedID": "DE3803",
-        "FoundInBuild": "6666",
-        "Name": "Error found in TC766: Sixth Test Case (automatically created with rally api) - updated",
+        "FormattedID": "",
+        "FoundInBuild": "",
+        "Name": "",
         "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
         "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
         "ScheduleState": "Defined",
         "State": "Submitted",
-        "TestCase": "https://rally1.rallydev.com/slm/webservice/v2.0/testcase/24801567446",
+        "TestCase": "",
         "TestCaseResult": ""
     },
     "email": {

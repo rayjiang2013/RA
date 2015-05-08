@@ -984,11 +984,11 @@ class testObject(object):
                             s = requests.session()
                             verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,{},s,"")
                             if verdict[-1][0]==constants.BLOCKED:
-                                verdict[-1][1]="Blocked: "+verdict[-1][1]
+                                verdict[-1]=(verdict[-1][0],"Blocked: "+verdict[-1][1])
                             if verdict[-1][0]==constants.SUCCESS:
-                                verdict[-1][1]="Success: "+verdict[-1][1]       
+                                verdict[-1]=(verdict[-1][0],"Success: "+verdict[-1][1])       
                             if verdict[-1][0]==constants.FAILED:
-                                verdict[-1][1]="Failed: "+verdict[-1][1]                               
+                                verdict[-1]=(verdict[-1][0],"Failed: "+verdict[-1][1])                               
                             break
                                                         
                 else:
@@ -1109,7 +1109,11 @@ class testObject(object):
                                 update_df['df']= {"FormattedID":df.FormattedID,"Notes":df.Notes+"<br>The defect is reproduced in build %s, test set %s, test case %s.<br />" % (new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)}
                                 self.logger.debug("The defect %s is reproduced in build %s, test set %s, test case %s. Will update it with repro info" % (df.FormattedID,new_data['ts']['Build'],ts.FormattedID,tc.FormattedID)) 
                             df_obj=defect(self.rally,update_df)
-                            df_obj.updateDF()   
+                            if len(update_df['df']['Notes'])>constants.MAX_NOTE_LENGTH:
+                                #need to add more logic here!!!
+                                raise Exception("Length of notes in defect %s is more than the limit of %s" % (df.FormattedID,constants.MAX_NOTE_LENGTH))
+                            else:
+                                df_obj.updateDF()   
 
                             #update test case result
                             tcr=testCaseResult(self.rally,dic)                
