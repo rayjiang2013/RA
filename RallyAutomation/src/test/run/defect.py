@@ -125,3 +125,21 @@ class defect:
                 sys.exit(1)
         #print "Test Case %s updated" % tc.FormattedID
         return df
+    
+    #Delete defect
+    def delDF(self):
+        df_id = self.data['df']['FormattedID']
+        try: 
+            delete_success_or_not = self.rally.delete('Defect', df_id)
+            self.logger.debug("Defect %s deleted" % self.data['df']['FormattedID'])          
+        except Exception, details:
+            #sys.stderr.write('ERROR: %s \n' % details)
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+        #print "Test Case %s updated" % tc.FormattedID
+        return delete_success_or_not        
