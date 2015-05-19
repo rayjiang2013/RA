@@ -1,6 +1,7 @@
 # RallyAutomation2
 
-You need: 
+You need:
+
 1. create a file named as config.cfg with content below:
 SERVER = rally1.rallydev.com
 USER = your username
