@@ -18,6 +18,7 @@ from src.test.run.testCase import testCase
 import src.test.run.constants as constants
 import requests
  
+import re
 #import logging
 #from src.test.run.rallyLogger import *
 
@@ -146,15 +147,15 @@ class TestTOrunTO:
             print details
             sys.exit(1)    
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',#this case is expected to fail
+                                                  'NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
+                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
-                                                  'NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',                                                                                                                                                                                                        
                                                   'DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
                                                   'DELETE|/logout|||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',
@@ -183,7 +184,14 @@ class TestTOrunTO:
         new_ts=ts_obj.addSpecificTCs([tc],ts)
         
         s = requests.session()
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
+        
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)        
+        
+        #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         pass
         if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict == [(constants.BLOCKED,'fail to setup as nonexist is/are not defined in extra.json or pre-defined local variables')]
@@ -194,7 +202,7 @@ class TestTOrunTO:
         if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||':
             assert verdict == [(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]
         if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
-            assert verdict==[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]
+            assert verdict==[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]  #expected to fail
         if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||':
             assert verdict==[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]
         if c_QATCPARAMSTEXT=='DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||':
@@ -213,18 +221,18 @@ class TestTOrunTO:
             assert verdict==[(constants.BLOCKED, 'the test case is setup successfully; execution is successful; status code is expected to be digits instead of something else: UNEXPECTED')]           
 
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['POST|/nonexist|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
+                                                  'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}||200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$nonexist_email"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"UNEXPECTED":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":false,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|UNEXPECTED|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
-                                                  'POST|/nonexist|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'NONEXIST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||UNEXPECTED|||logout|||||||||||||||||||||||||||||||||||||',
-                                                  'POST|/login|{"wrong_key":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
+                                                  'POST|/login|{"wrong_key":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',  #This is expected fail
                                                   'POST||{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   '|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',
                                                   'POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]||{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',                                                  
@@ -255,7 +263,14 @@ class TestTOrunTO:
         new_ts=ts_obj.addSpecificTCs([tc],ts)
         
         s = requests.session()
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
+        
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)            
+
+        #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         #pass
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]||{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict == [(constants.BLOCKED,u'as not enough setup information is provided, the test setup is skipped; execution is successful; status code is expected to be digits instead of something else: ')]
@@ -272,11 +287,11 @@ class TestTOrunTO:
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict == [(constants.FAILED,'fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')] 
         if c_QATCPARAMSTEXT=='POST|/login|{"wrong_key":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.FAILED,'fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]
+            assert verdict == [(constants.FAILED,'fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]  #expected to fail
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||UNEXPECTED|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict == [(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case name UNEXPECTED cannot be found in API test set TS1103')]
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.FAILED,"as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case GetCurrentUser failed: execution is successful; id, email, role is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'id' : 74989ff155b0f5ec2bd7b0a72ccfb7a9 in content of response is different from the expected. 'role' : admin in content of response is different from the expected. 'email' : admin@spirent.com in content of response is different from the expected.")]
+            assert verdict[0][0] == constants.FAILED and re.match(r"as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case GetCurrentUser failed: execution is successful; id, email, role is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'id' : \w+ in content of response is different from the expected. 'role' : admin in content of response is different from the expected. 'email' : admin@spirent.com in content of response is different from the expected.", verdict[0][1])
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict == [(constants.FAILED,"as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case GetCurrentUser failed: execution is successful; role is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'role' : admin in content of response is different from the expected.")]
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}||200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
@@ -321,8 +336,15 @@ class TestTOrunTO:
         new_ts=ts_obj.addSpecificTCs([tc],ts)
         
         s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)    
+
         with pytest.raises(Exception) as excinfo:
-            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
+            #to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
+            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||UNEXPECTED|||||||||||||||||||||||||||||||||||||':
             assert "failed to clean up because the api level test case name UNEXPECTED cannot be found in API test set" in excinfo.value.message     
         
@@ -354,7 +376,14 @@ class TestTOrunTO:
         new_ts=ts_obj.addSpecificTCs([tc],ts)
         
         s = requests.session()
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
+
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)            
+    
+        #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         #pass
         if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];UNEXPECTED;user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
             assert verdict == [(constants.FAILED,"the test case is setup successfully; execution is successful, UNEXPECTED cannot be found in the requested json object; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]
@@ -366,6 +395,114 @@ class TestTOrunTO:
             assert verdict == [(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; verification is successful.')]
 
 
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/users/$id[1]|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_DeleteUser(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_DeleteUser  <============================ actual test code'      
+        rally=test_config_module[0]
+        ts,data_to_runtc,ts_obj=config_test_testobject_runtc  
+        data_to_runtc['tc']={
+            "Description": "Test Case Dummy",
+            "Expedite": "false",
+            "FormattedID": "",
+            "LastBuild": "",
+            "Method": "Automated",
+            "Name": "Test Case Dummy",
+            "Objective": "",
+            "TestFolder": "",
+            "Type": "Acceptance",
+            "c_QATCPARAMSTEXT":c_QATCPARAMSTEXT}
+                   
+        to_obj=testObject(rally,data_to_runtc)           
+        #runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s)
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.createTC()
+        new_ts=ts_obj.addSpecificTCs([tc],ts)
+        
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
+        #pass
+        #if c_QATCPARAMSTEXT=='DELETE|/users/$id|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||':
+        assert verdict == expected
+
+
+
+
+    @pytest.mark.parametrize("search_path_list,variable_value_dict,local_variable_dict,current_api_call,return_value", [(["Test Case Dummy","login","GetCurrentUser"],{"Test Case Dummy":{"login":{"GetCurrentUser":{"whatever":"whatever"}}}},{"whatever":"whatever"},"login",{'Test Case Dummy': {'login': {'GetCurrentUser': {'login': {'whatever': 'whatever'}, 'whatever': 'whatever'}}}})])
+    def test_testobject_append_local_variable_dict_to_variable_value_dict(self,config_class,search_path_list,variable_value_dict,local_variable_dict,current_api_call,return_value):
+        print 'test_testobject_list_to_dict  <============================ actual test code'                         
+        (ts,to_obj,ts_obj,data_to_runto)=config_class
+        verdict=to_obj.append_local_variable_dict_to_variable_value_dict(search_path_list,variable_value_dict,local_variable_dict,current_api_call)
+        assert verdict == return_value
+
+
+
+    @pytest.mark.parametrize("d1,d2,error_message", [({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'l' : r is missing from content of response. 'p' : q is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":[{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"},{"s":"t"}]},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]}}," 's' : t is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'p' : q is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response. 'n' : o is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":{"l":"m"}},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":['f','g'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":[{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"},{"s":"t"}]},{"i":"j","c":"d","a":"b","e":[{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]},{"s":"t"}]},""),                                                     
+                                                     ({"a":"b","c":"d","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"}},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]}},""),
+                                                     ({"a":"b","c":"d","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"}},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":"m"},{"l":"r"},{"p":"q"}]}},""),
+                                                     ({"a":"b","c":"d","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"}},{"i":"j","a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"},{"l":"r"},{"p":"q"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","i":"j","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g"}},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"},{"l":"r"},{"p":"q"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"},{"l":"r"},{"p":"q"}]}}," 'i' : j is missing from content of response."),                                                     
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},"p",{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'p' is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":{"l":"m"}},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":"l"}}," 'i' : j is missing from content of response. 'k' : l in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":"l"},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":"l"}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g"},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":"l"}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":"l"},"i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response. 'k' : l is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":{"f":"g"},"i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response. 'e' : {'f': 'g'} in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response. 'g' in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response. 'g' in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":['f','g'],"i":"j"},{"a":"b","c":"d","e":['f','g','h']}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":[],"i":"j"},{"a":"b","c":"d","e":[]}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","e":[]}," 'i' : j is missing from content of response. 'e' : [] in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","e":["f","k"]}," 'i' : j is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","g":"h"}," 'i' : j is missing from content of response. 'e' : f is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":"f"},{"a":"b","c":"d","g":"h"}," 'e' : f is missing from content of response."),
+                                                     ({"a":"b","c":"d"},{"a":"b","c":"d","e":"f"},""),({"a":"b","c":"d"},{"a":"b","c":"d"},""),
+                                                     ({"a":"b","c":"d"},{"a":"b"}," 'c' : d is missing from content of response."),
+                                                     ({},{},""),
+                                                     ({"a":"b"},{"a":"b"},"")])
+    def test_testobject_searchDict3(self,config_class,d1,d2,error_message):
+        print 'test_testobject_runtc_searchDict3  <============================ actual test code'                         
+        (ts,to_obj,ts_obj,data_to_runto)=config_class
+        verdict=to_obj.searchDict3(d1, d2, "")
+        assert verdict == error_message
+
+    @pytest.mark.parametrize("lst,return_value", [([{'i': 'j', 'k': [{'n': 'o'}, {'l': ['m', 'r']}, {'p': 'q'}], 'f': 'g'}, {'s': 't'}],{'1': {'i': 'j', 'k': {'1': {'n': 'o'}, '0': {'l': {'1': 'r', '0': 'm'}}, '2': {'p': 'q'}}, 'f': 'g'}, '0': {'s': 't'}})])
+    def test_testobject_list_to_dict(self,config_class,lst,return_value):
+        print 'test_testobject_list_to_dict  <============================ actual test code'                         
+        (ts,to_obj,ts_obj,data_to_runto)=config_class
+        verdict=to_obj.list_to_dict(lst)
+        assert verdict == return_value
+
+
+    @pytest.mark.parametrize("dt,return_value", [({'0':{}},{}),
+                                                 ({'1': {'i': 'j', 'k': {'1': {'n': 'o'}, '0': {'l': {'1': 'r', '0': 'm'}}, '2': {'p': 'q'}}, 'f': 'g'}, '0': {'s': 't'}},{'f': 'g', 'i': 'j', 'k': {'p': 'q', 'l': {'1': 'r', '0': 'm'}, 'n': 'o'}, 's': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'},'2':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm', 's'], 'n': 'o', 'p': {'q': ['u','u'], 'v': 'w'}, '5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 'm'}},{'l': ['r', 'm','m'], 'p': 'q', 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm', 's'], 'n': 'o', 'p': {'q': 'u', 'v': 'w'}, '5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'q':'u'}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': 'q', 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}, '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': 'q', 'n': 'o'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}},{'l': ['r', 'm'], 'p': 'q', 'n': 'o'})])
+    def test_testobject_remove_number_key_of_dict(self,config_class,dt,return_value):
+        print 'test_testobject_remove_number_key_of_dict  <============================ actual test code'                         
+        (ts,to_obj,ts_obj,data_to_runto)=config_class
+        verdict=to_obj.remove_number_key_of_dict(dt)
+        assert verdict == return_value
    
     def test_testobject_runto_equal_formattedid(self,config_class):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
