@@ -6,7 +6,8 @@ Created on Oct 28, 2014
 import inspect
 import sys
 
-from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
+from pyral import Rally,rallyWorkset #The bugs  https://github.com/RallyTools/RallyRestToolkitForPython/issues/37 and https://github.com/RallyTools/RallyRestToolkitForPython/issues/40 should be fixed according comments from the po. Switch back to Pyral from now on. 
+#from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
 import json
 from testObject import testObject
 from rallyLogger import *
@@ -33,7 +34,7 @@ if __name__ == '__main__':
         logger.debug("Rally project info is as below:\n %s" % " ".join(['|%s|' % opt for opt in [server, user, password, apikey, workspace, project]]))
         #print " ".join(['|%s|' % opt for opt in [server, user, password, apikey, workspace, project]])
         #print "--------------------------------------------------------------------"
-        rally = Rally(server, user, password, workspace=workspace, project=project)
+        rally = Rally(server, user, password, apikey=apikey,workspace=workspace, project=project)#include apikey=apikey to workaround http://stackoverflow.com/questions/30495164/getting-error-rallyrestapierror-422-not-authorized-to-perform-action-invalid and http://stackoverflow.com/questions/30492008/net-rally-restapi-error-not-authorized-to-perform-action-invalid-key-when-cr
         rally.enableLogging('rally.example.log', attrget=True, append=True)
         #tstep,tcid,tcoption,tf=sys.argv[-4:]
         '''
