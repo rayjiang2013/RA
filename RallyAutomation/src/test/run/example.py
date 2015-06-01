@@ -61,6 +61,7 @@ if __name__ == '__main__':
         to_obj=testObject(rally,data)
         
         if to_obj.sanityCheck():
+            to_obj.getLastBuildInfoFromJenkins()
             to_obj.updateBuildInfo()
             to_obj.getLatestBuild()
             ts_ut=to_obj.copyTS()
