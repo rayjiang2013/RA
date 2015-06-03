@@ -216,11 +216,13 @@ class testObject(object):
                 sys.exit(1)
 
     #Replace variable
-    def rep(self,strg,variable_value_dict,api_call,parrent_tc_name):
+    def rep(self,strg,variable_value_dict,api_call,parrent_tc_name,steps_type,search_path,setup_calls):
         varbs=[]
         i=0
         verd=True
         missing_varbs=[]
+        search_path_list=search_path.split('/')
+        search_path_list_copy=deepcopy(search_path_list)
         while True:
         #for i in xrange(0,len(strg)):
             if strg[i]=='$':
@@ -231,23 +233,33 @@ class testObject(object):
                     strg=strg.replace('$'+varbs[-1],self.data['env'][varbs[-1]])
                 elif varbs[-1] in self.data['accounts']:
                     strg=strg.replace('$'+varbs[-1],self.data['accounts'][varbs[-1]])
-                elif re.match(r'\w+\[\d+\]',varb):
+                elif re.match(r'\w+\[\d+\]',varb) and steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
                     indx=int(re.match(r'\w+\[(\d+)\]', varb).group(1))
                     variable_name=re.match(r'(\w+)\[\d+\]', varb).group(1)
                     fields_found=[]
-                    fields_list=self.searchKeyInDic(variable_value_dict, api_call)
+                    search_path_copy=deepcopy(search_path)
+                    
+                    search_path_copy=search_path_copy+'/'+setup_calls[indx]
+                    search_path_list_copy=search_path_copy.split('/')
+
+                    fields_found=self.searchKeyInDicForReplace(variable_value_dict, variable_name,search_path_list_copy)
+                    if len(fields_found)==0:
+                        verd=False
+                        missing_varbs.append(varb)   
+                    '''
+                    fields_list=self.searchKeyInDicForReplace(variable_value_dict, api_call,search_path_list_copy)
                     fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
                     if type(fields_dict)==dict and len(fields_dict)>0:
-                        fields_found=self.searchKeyInDic(fields_dict, variable_name)
+                        fields_found=self.searchKeyInDicForReplace(fields_dict, variable_name,search_path_list_copy)
                         if len(fields_found)==0:
                             verd=False
                             missing_varbs.append(varb)        
                     if type(fields_dict)==dict and len(fields_dict)==0:
                         #need implement recursively searchKeyInDic for parrent api name
-                        fields_list=self.searchKeyInDic(variable_value_dict, parrent_tc_name)
+                        fields_list=self.searchKeyInDicForReplace(variable_value_dict, parrent_tc_name,search_path_list_copy)
                         fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
                         if type(fields_dict)==dict and len(fields_dict)>0:
-                            fields_found=self.searchKeyInDic(fields_dict, variable_name)      
+                            fields_found=self.searchKeyInDicForReplace(fields_dict, variable_name,search_path_list_copy)      
                             if len(fields_found)==0:
                                 verd=False
                                 missing_varbs.append(varb)     
@@ -255,35 +267,93 @@ class testObject(object):
                             verd=False
                             missing_varbs.append(varb)                      
                     if type(fields_dict)==list:
-                        '''
-                        for j in fields_dict:
-                            if type(j)==dict:
-                                fields_found=self.searchKeyInDic(j, varbs[-1])
-                        '''
+                        
+                        #for j in fields_dict:
+                            #if type(j)==dict:
+                                #fields_found=self.searchKeyInDic(j, varbs[-1])
+                        
                         raise Exception("Should covert the list to dict first")
+                    '''
                     if len(fields_found)>0:
-                        strg=strg.replace('$'+varbs[-1],fields_found[indx]) #temporary solution; will not work if there are more than one element in the list under the api call.                    
+                        strg=strg.replace('$'+varbs[-1],fields_found[0])                     
                 #elif varbs[-1] in variable_value_dict:                    
                     #strg=strg.replace('$'+varbs[-1],variable_value_dict[varbs[-1]])
                 #elif True:#len(self.searchKeyInDic(variable_value_dict, api_call)) >0:
-                #api_call in  variable_value_dict:
+                #api_call in  variable_value_dict:             
+
+                elif re.match(r'\w+\[\d+\]',varb) and steps_type==constants.STEPS_EXE_FLC_VER:
+                    #indx=int(re.match(r'\w+\[(\d+)\]', varb).group(1))
+                    variable_name=re.match(r'(\w+)\[\d+\]', varb).group(1)
+                    fields_found=[]
+                    
+                    search_path_list_copy=deepcopy(search_path_list)
+                    fields_found=self.searchKeyInDicForReplace(variable_value_dict, variable_name,search_path_list_copy)
+                    if len(fields_found)==0:
+                        search_path_list_copy=deepcopy(search_path_list)
+                        search_path_list_copy.pop(len(search_path_list)-1)
+                        fields_found=self.searchKeyInDicForReplace(variable_value_dict, variable_name,search_path_list_copy)
+                        if len(fields_found)==0:
+                            verd=False
+                            missing_varbs.append(varb)    
+                    '''
+                    fields_list=self.searchKeyInDicForReplace(variable_value_dict, api_call,search_path_list_copy)
+                    fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
+                    if type(fields_dict)==dict and len(fields_dict)>0:
+                        fields_found=self.searchKeyInDicForReplace(fields_dict, variable_name,search_path_list_copy)
+                        if len(fields_found)==0:
+                            verd=False
+                            missing_varbs.append(varb)        
+                    if type(fields_dict)==dict and len(fields_dict)==0:
+                        #need implement recursively searchKeyInDic for parrent api name
+                        fields_list=self.searchKeyInDicForReplace(variable_value_dict, parrent_tc_name,search_path_list_copy)
+                        fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
+                        if type(fields_dict)==dict and len(fields_dict)>0:
+                            fields_found=self.searchKeyInDicForReplace(fields_dict, variable_name,search_path_list_copy)      
+                            if len(fields_found)==0:
+                                verd=False
+                                missing_varbs.append(varb)     
+                        if len(fields_dict)==0:
+                            verd=False
+                            missing_varbs.append(varb)                      
+                    if type(fields_dict)==list:
+                        
+                        #for j in fields_dict:
+                            #if type(j)==dict:
+                                #fields_found=self.searchKeyInDic(j, varbs[-1])
+                        
+                        raise Exception("Should covert the list to dict first")
+                    '''
+                    if len(fields_found)>0:
+                        strg=strg.replace('$'+varbs[-1],fields_found[0])                     
+                    
+                
                 elif not re.match(r'\w+\[\d+\]',varb):
                     fields_found=[]
-                    fields_list=self.searchKeyInDic(variable_value_dict, api_call)
+                    search_path_list_copy=deepcopy(search_path_list)
+                    fields_found=self.searchKeyInDicForReplace(variable_value_dict, varbs[-1],search_path_list_copy)
+                    if len(fields_found)==0:
+                        search_path_list_copy=deepcopy(search_path_list)
+                        search_path_list_copy.pop(len(search_path_list)-1)
+                        fields_found=self.searchKeyInDicForReplace(variable_value_dict, varbs[-1],search_path_list_copy)
+                        if len(fields_found)==0:
+                            verd=False
+                            missing_varbs.append(varb)    
+                    '''
+                    fields_list=self.searchKeyInDicForReplace(variable_value_dict, api_call,search_path_list)
                     fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
                         
                     if type(fields_dict)==dict and len(fields_dict)>0:
-                        fields_found=self.searchKeyInDic(fields_dict, varbs[-1])
+                        fields_found=self.searchKeyInDicForReplace(fields_dict, varbs[-1],search_path_list)
                         if len(fields_found)==0:
                             verd=False
                             missing_varbs.append(varb)     
      
                     if type(fields_dict)==dict and len(fields_dict)==0:
                         #need implement recursively searchKeyInDic for parrent api name
-                        fields_list=self.searchKeyInDic(variable_value_dict, parrent_tc_name)
+                        fields_list=self.searchKeyInDicForReplace(variable_value_dict, parrent_tc_name,search_path_list)
                         fields_dict=self.remove_number_key_of_dict(self.list_to_dict(fields_list))
                         if type(fields_dict)==dict and len(fields_dict)>0:
-                            fields_found=self.searchKeyInDic(fields_dict, varbs[-1])    
+                            fields_found=self.searchKeyInDicForReplace(fields_dict, varbs[-1],search_path_list)    
                             if len(fields_found)==0:
                                 verd=False
                                 missing_varbs.append(varb)    
@@ -291,14 +361,15 @@ class testObject(object):
                             verd=False
                             missing_varbs.append(varb)                                              
                     if type(fields_dict)==list:
-                        '''
-                        for j in fields_dict:
-                            if type(j)==dict:
-                                fields_found=self.searchKeyInDic(j, varbs[-1])
-                        '''
+                        
+                        #for j in fields_dict:
+                            #if type(j)==dict:
+                                #fields_found=self.searchKeyInDic(j, varbs[-1])
+                        
                         raise Exception("Should covert the list to dict first")
+                    '''
                     if len(fields_found)>0:
-                        strg=strg.replace('$'+varbs[-1],fields_found[-1]) #temporary solution; will not work if there are more than one element in the list under the api call.
+                        strg=strg.replace('$'+varbs[-1],fields_found[0]) 
                 else:
                     verd=False
                     missing_varbs.append(varb)
@@ -310,11 +381,11 @@ class testObject(object):
         return verd,strg,varbs,missing_varbs
     
     #Setup
-    def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict,search_path,parrent_tc):
+    def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict,search_path,parrent_tc,steps_type):
         try:
             verdict_api_list=[]
             tc_api_list=[]
-            
+            setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             if lst[constants.INDEXES_SUP[1]]!=u'':
                 lst[constants.INDEXES_SUP[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_SUP[1]]            
             
@@ -328,9 +399,9 @@ class testObject(object):
                 for idx in constants.INDEXES_SUP:
                     if '$' in lst[idx]:
                         if parrent_tc!=None:
-                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name)
+                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls)
                         if parrent_tc==None:
-                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"")
+                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls)
                         if rep_status==False:
                             missing_varbs_string=missing_varbs[0]
                             for i in missing_varbs:
@@ -360,7 +431,26 @@ class testObject(object):
                     
                     api_list=lst[constants.INDEXES_SUP[0]].split(';')
                     api_json_requst_lst=lst[constants.INDEXES_SUP[2]].split(';')
-
+                    
+                    if len(api_list)>len(api_json_requst_lst):
+                        append_num=len(api_list)-len(api_json_requst_lst)
+                        append_num_indx=0
+                        while append_num_indx<append_num:
+                            api_json_requst_lst.append('')
+                            append_num_indx+=1             
+                    #if len(api_list)==len(api_json_requst_lst)+1:
+                        #api_json_requst_lst.append('')
+                    if len(api_list)<len(api_json_requst_lst):    
+                        #raise Exception("The test case %s for build %s is failed to cleanup because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
+                        verdict.append((constants.BLOCKED,"fail to setup as there are more number of request content than that of api call"))                
+                        return verdict,lst,variable_value_dict
+                    #if len(api_list)>len(api_json_requst_lst)+1:    
+                        #raise Exception("The test case %s for build %s is failed to cleanup because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))
+                        #self.logger.debug("The test case %s for build %s in test set %s is failed to setup because there are more number of api calls than that of request content" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
+                        #verdict.append((constants.BLOCKED,"fail to setup as there are more number of api calls than that of request content"))                
+                        #return verdict,lst,variable_value_dict                    
+                         
                     for api_call,api_json_request in zip(api_list,api_json_requst_lst):                        
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_call:
@@ -447,6 +537,12 @@ class testObject(object):
             variable_value_dict.setdefault(current_api_call,[]).append(local_variable_dict) 
             variable_value_dict[current_api_call]=self.remove_number_key_of_dict(self.list_to_dict(variable_value_dict[current_api_call])) 
 
+        if len(search_path_list)==1 and search_path_list[0]==current_api_call:
+            for key in local_variable_dict.keys():
+                variable_value_dict.setdefault(current_api_call,{})[key]=local_variable_dict[key] 
+            #variable_value_dict[current_api_call]=self.remove_number_key_of_dict(self.list_to_dict(variable_value_dict[current_api_call]))             
+            i+=1
+            
         while i < len(search_path_list):
             #if ky in variable_value_dict:
             temp=variable_value_dict[search_path_list[i]]
@@ -462,6 +558,7 @@ class testObject(object):
     #Test execution
     def executor(self,lst,tc,s_ession,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path):
         try:
+            setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             local_variable_dict={}
             if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
                 verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful')  
@@ -478,9 +575,9 @@ class testObject(object):
             for idx in constants.INDEXES_EXE:
                 if '$' in lst[idx]:
                     if parrent_tc!=None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name)
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls)
                     if parrent_tc==None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"")
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls)
                     if rep_status==False:
                         missing_varbs_string=missing_varbs[0]
                         for i in missing_varbs:
@@ -558,7 +655,7 @@ class testObject(object):
                     #variable_value_dict={}
                     j=0
                     for varb in variable_list:
-                        values=self.searchKeyInDic(r_ver_content, varb)
+                        values=self.searchKeyInDic(r_ver_content, varb,search_path)
                         i=0
                         
                         if len(values)==0:
@@ -602,7 +699,7 @@ class testObject(object):
                     variable_list=lst[constants.INDEXES_EXE[3]].split(';')
                     j=0
                     for varb in variable_list:
-                        values=self.searchKeyInDic(json_request, varb)
+                        values=self.searchKeyInDic(json_request, varb,search_path)
                         i=0
                         
                         if len(values)==0:
@@ -636,12 +733,16 @@ class testObject(object):
             #variable_value_dict.setdefault(parrent_tc.Name,[]).append({})
 
             #check_dict={}
-            search_path_list=search_path.split("/")  
+            if search_path=='':
+                search_path_list=[]
+            else:
+                search_path_list=search_path.split("/")  
             variable_value_dict=self.append_local_variable_dict_to_variable_value_dict(search_path_list,variable_value_dict,local_variable_dict,tc.Name)
             
             #variable_value_dict[parrent_tc.Name].setdefault(tc.Name,[]).append(local_variable_dict)
             #variable_value_dict[parrent_tc.Name][tc.Name]=self.remove_number_key_of_dict(self.list_to_dict(variable_value_dict[parrent_tc.Name][tc.Name])) 
-            search_path=search_path+"/"+tc.Name
+            if search_path!=tc.Name:
+                search_path=search_path+"/"+tc.Name
             search_path_list=search_path.split("/")            
             
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))     
@@ -917,19 +1018,59 @@ class testObject(object):
         return error_message
 
 
-    def searchKeyInDic(self,search_dict, field):
+    def searchKeyInDic(self,search_dict, field,search_path):
         """
         Takes a dict with nested lists and dicts,
         and searches all dicts for a key of the field
         provided.
         """
         fields_found = []
-    
+        search_path_list=search_path.split("/")
+        #for item in search_path_list:
         for key, value in search_dict.iteritems():
     
             if key == field:
                 fields_found.append(value)
+                               
+            elif isinstance(value, dict):
+                results = self.searchKeyInDic(value, field,search_path)
+                for result in results:
+                    fields_found.append(result)
     
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        more_results = self.searchKeyInDic(item, field,search_path)
+                        for another_result in more_results:
+                            fields_found.append(another_result)
+            
+        return fields_found
+    
+
+    def searchKeyInDicForReplace(self,search_dict, field,search_path_list):
+        """
+        Takes a dict with nested lists and dicts,
+        and searches all dicts for a key of the field
+        provided.
+        """
+        fields_found = []
+        #search_path_list=search_path.split("/")
+        if len(search_path_list)==0:
+            if field in search_dict.keys():
+                fields_found.append(search_dict[field])
+        else:
+            #search_path_list_copy=deepcopy(search_path_list)
+            for item in search_path_list:
+                if item in search_dict.keys():                    
+                    search_path_list.remove(item)
+                    fields_found=self.searchKeyInDicForReplace(search_dict[item], field,search_path_list)
+                
+        return fields_found                
+        '''        
+        for key, value in search_dict.iteritems():
+    
+            if key == field:
+                fields_found.append(value)
             elif isinstance(value, dict):
                 results = self.searchKeyInDic(value, field)
                 for result in results:
@@ -941,15 +1082,39 @@ class testObject(object):
                         more_results = self.searchKeyInDic(item, field)
                         for another_result in more_results:
                             fields_found.append(another_result)
-    
-        return fields_found
-    
+        '''
+    '''
+    def append_local_variable_dict_to_variable_value_dict(self,search_path_list,variable_value_dict,local_variable_dict,current_api_call):
+        i=0
+        if len(search_path_list)==0:
+            variable_value_dict.setdefault(current_api_call,[]).append(local_variable_dict) 
+            variable_value_dict[current_api_call]=self.remove_number_key_of_dict(self.list_to_dict(variable_value_dict[current_api_call])) 
+
+        if len(search_path_list)==1 and search_path_list[0]==current_api_call:
+            for key in local_variable_dict.keys():
+                variable_value_dict.setdefault(current_api_call,{})[key]=local_variable_dict[key] 
+            #variable_value_dict[current_api_call]=self.remove_number_key_of_dict(self.list_to_dict(variable_value_dict[current_api_call]))             
+            i+=1
+            
+        while i < len(search_path_list):
+            #if ky in variable_value_dict:
+            temp=variable_value_dict[search_path_list[i]]
+            #i+=1
+            search_path_list.pop(i)
+            if type(temp)==dict:
+                self.append_local_variable_dict_to_variable_value_dict(search_path_list,temp,local_variable_dict,current_api_call)
+            i+=1
+        
+        return variable_value_dict
+    '''
+
+
 
     #save values in response into variables; to do!!!!!!!!
-    def saveVar(self,r_ver_content,verdict,variable_value_dict,variable_list):
+    def saveVar(self,r_ver_content,verdict,variable_value_dict,variable_list,search_path):
         #As in firstlevelcheck()
         for varb in variable_list:
-            values=self.searchKeyInDic(r_ver_content, varb)
+            values=self.searchKeyInDic(r_ver_content, varb,search_path)
             i=0
             if len(values)==0:
                 verdict[-1]=(verdict[-1][0],verdict[-1][1]+' but failed to save values in response content to varaibles as the variable: %s cannot be found in the response content' % varb)
@@ -985,8 +1150,9 @@ class testObject(object):
         return verdict,variable_value_dict
             
     #First level check
-    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc):
+    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path):
         try: 
+            setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             '''
             r_ver_content=deepcopy(json.loads(r.content))
             #save values in response into variables
@@ -1019,9 +1185,9 @@ class testObject(object):
             for idx in constants.INDEXES_FLC:
                 if '$' in lst[idx]:
                     if parrent_tc!=None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name)
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls)
                     if parrent_tc==None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"")
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls)
                     if rep_status==False:
                         missing_varbs_string=missing_varbs[0]
                         for i in missing_varbs:
@@ -1091,8 +1257,9 @@ class testObject(object):
 
     
     #Test verification:
-    def verificator(self,lst,r,verdict,tc,s_ession,variable_value_dict,search_path,parrent_tc):
+    def verificator(self,lst,r,verdict,tc,s_ession,variable_value_dict,search_path,parrent_tc,steps_type):
         try:
+            setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             if lst[constants.INDEXES_VER[1]]!= u'':
                 lst[constants.INDEXES_VER[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_VER[1]]
             
@@ -1100,9 +1267,9 @@ class testObject(object):
             for idx in constants.INDEXES_VER:
                 if '$' in lst[idx]:
                     if parrent_tc!=None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name)
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls)
                     if parrent_tc==None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"")
+                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls)
                     if rep_status==False:
                         missing_varbs_string=missing_varbs[0]
                         for i in missing_varbs:
@@ -1177,41 +1344,90 @@ class testObject(object):
                 sys.exit(1)                       
         
     #Cleanup
-    def cleaner(self,lst,tc,ts,s_ession,variable_value_dict,search_path,parrent_tc):
-        try:
+    def cleaner(self,lst,tc,ts,s_ession,variable_value_dict,search_path,parrent_tc,steps_type):
+        try:                       
+            setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             if lst[constants.INDEXES_CLU[1]]!= u'':
                 lst[constants.INDEXES_CLU[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_CLU[1]]
-            
-            missing_varbs_string=""    
-            for idx in constants.INDEXES_CLU:
-                if '$' in lst[idx]:
-                    if parrent_tc!=None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name)
-                    if parrent_tc==None:
-                        rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"")
-                    if rep_status==False:
-                        missing_varbs_string=missing_varbs[0]
-                        for i in missing_varbs:
-                            if len(missing_varbs)==1:                                    
-                                break
-                            if missing_varbs.index(i)>0:
-                                missing_varbs_string=missing_varbs_string+", "+i
-                        raise Exception("The test case %s for build %s is failed to clean up because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],missing_varbs_string))
-                        #self.logger.debug("The test case %s for build %s is failed to execute because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],varbs[-1]))    
-                        #return False,lst           
-                           
+                                        
             r_clr=None
             if lst[constants.INDEXES_CLU[0]]==u"":
                 self.logger.debug("As not enough cleanup information is provided, the test cleanup for test case %s, build %s, test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
             else: 
+                missing_varbs_string=""    
+                for idx in constants.INDEXES_CLU:
+                    if '$' in lst[idx]:
+                        if parrent_tc!=None:
+                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls)
+                        if parrent_tc==None:
+                            rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls)
+                        if rep_status==False:
+                            missing_varbs_string=missing_varbs[0]
+                            for i in missing_varbs:
+                                if len(missing_varbs)==1:                                    
+                                    break
+                                if missing_varbs.index(i)>0:
+                                    missing_varbs_string=missing_varbs_string+", "+i
+                            raise Exception("The test case %s for build %s is failed to clean up because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],missing_varbs_string))
+                            #self.logger.debug("The test case %s for build %s is failed to execute because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],varbs[-1]))    
+                            #return False,lst            
+
                 if lst[constants.INDEXES_CLU[0]] == "GET":
                     r_clr = s_ession.get(lst[constants.INDEXES_CLU[1]])                        
-                if lst[constants.INDEXES_CLU[0]] == "POST":
+                elif lst[constants.INDEXES_CLU[0]] == "POST":
                     r_clr = s_ession.post(lst[constants.INDEXES_CLU[1]],data=json.loads(lst[constants.INDEXES_CLU[2]]))
-                if lst[constants.INDEXES_CLU[0]] == "DELETE":
+                elif lst[constants.INDEXES_CLU[0]] == "DELETE":
                     r_clr = s_ession.delete(lst[constants.INDEXES_CLU[1]])
-                if lst[constants.INDEXES_CLU[0]] == "PUT":
+                elif lst[constants.INDEXES_CLU[0]] == "PUT":
                     r_clr = s_ession.put(lst[constants.INDEXES_CLU[1]],data=json.loads(lst[constants.INDEXES_CLU[2]]))
+
+                else:        
+                    #check if lst[constants.INDEXES_CLU[0]] is api level test case, if it does run api level test case
+                    apits_id=self.data['apits']['FormattedID']
+                    ts_obj=testSet(self.rally,self.data)
+                    ts_api=ts_obj.getTSByID(apits_id)[0]
+                    
+                    verdict_api=None
+                    api_tc_lst=lst[constants.INDEXES_CLU[0]].split(';')
+                    api_json_requst_lst=lst[constants.INDEXES_CLU[2]].split(';')
+                    
+                    if len(api_tc_lst)>len(api_json_requst_lst):
+                        append_num=len(api_tc_lst)-len(api_json_requst_lst)
+                        append_num_indx=0
+                        while append_num_indx<append_num:
+                            api_json_requst_lst.append('')
+                            append_num_indx+=1             
+                    #if len(api_tc_lst)==len(api_json_requst_lst)+1:
+                        #api_json_requst_lst.append('')
+                    if len(api_tc_lst)<len(api_json_requst_lst):    
+                        raise Exception("The test case %s for build %s is failed to cleanup because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))
+                    #if len(api_tc_lst)>len(api_json_requst_lst)+1:    
+                        #raise Exception("The test case %s for build %s is failed to cleanup because there are more number of api calls than that of request content" % (tc.FormattedID,self.data["ts"]["Build"]))
+                        #self.logger.debug("The test case %s for build %s in test set %s is failed to setup because there are more number of api calls than that of request content" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
+                        #verdict.append((constants.BLOCKED,"fail to setup as there are more number of api calls than that of request content"))                
+                        #return verdict,lst,variable_value_dict                      
+                    
+                    for api_tc,api_json_request in zip(api_tc_lst,api_json_requst_lst):   
+                        #check if the api call has search path as parameter
+                        if re.match(r'\w+\(\/\w+\)',api_tc):
+                            search_path_append=re.match(r'\w+\((\/\w+)\)', api_tc).group(1)
+                            search_path=search_path+search_path_append
+                            api_tc=re.match(r'(\w+)\(\/\w+\)', api_tc).group(1)                     
+                        for tc_api in ts_api.TestCases:
+                            if tc_api.Name==api_tc:
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path)
+                                if verdict_api!=None:
+                                    if verdict_api[0][0]==constants.SUCCESS:
+                                        #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                                        self.logger.debug("The test cleanup of test case %s for build %s is successfully." % (tc.FormattedID,self.data["ts"]["Build"]))       
+                                    else:
+                                        #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
+                                        raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
+                                        #return False,lst                                    
+                                break         
+                        else:
+                            #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
+                            raise Exception("The test case %s for build %s is failed to clean up because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],api_tc,apits_id))   
 
                 if r_clr!=None:
                     if r_clr.status_code != int(lst[constants.INDEXES_CLU[3]]):
@@ -1228,31 +1444,6 @@ class testObject(object):
                                 raise Exception("The test case %s for build %s in test set %s is failed to clean up." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))                    
                         else:
                             self.logger.debug("The test case %s for build %s in test set %s is cleaned up successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))       
-                else:        
-                    #check if lst[constants.INDEXES_CLU[0]] is api level test case, if it does run api level test case
-                    apits_id=self.data['apits']['FormattedID']
-                    ts_obj=testSet(self.rally,self.data)
-                    ts_api=ts_obj.getTSByID(apits_id)[0]
-                    
-                    verdict_api=None
-                    api_tc_lst=lst[constants.INDEXES_CLU[0]].split(';')
-                    for api_tc in api_tc_lst:                           
-                        for tc_api in ts_api.TestCases:
-                            if tc_api.Name==api_tc:
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path)
-                                break
-                    
-                        if verdict_api!=None:
-                            if verdict_api[0][0]==constants.SUCCESS:
-                                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                                self.logger.debug("The test cleanup of test case %s for build %s is successfully." % (tc.FormattedID,self.data["ts"]["Build"]))       
-                            else:
-                                #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
-                                raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
-                                #return False,lst                
-                        else:
-                            #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
-                            raise Exception("The test case %s for build %s is failed to clean up because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],lst[constants.INDEXES_CLU[0]],apits_id))   
                              
         except Exception, details:
             #x=inspect.stack()
@@ -1268,7 +1459,7 @@ class testObject(object):
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU: #1 means run through all steps
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
-            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc)
+            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc,steps_type)
             if verdict[-1][0]==constants.SUCCESS:
                 (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path)
                 '''
@@ -1282,10 +1473,10 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path)
                     if verdict[-1][0]==constants.SUCCESS:
-                        verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc)
-                    self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict,search_path,parrent_tc)
+                        verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type)
+                    self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict,search_path,parrent_tc,steps_type)
             else:
                 #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))
@@ -1294,7 +1485,7 @@ class testObject(object):
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER: #run only setup, execution, firstlevelcheck and verification
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
-            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc)
+            verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc,steps_type)
             if verdict[-1][0]==constants.SUCCESS:
                 (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path)
                 '''
@@ -1308,9 +1499,9 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path)
                     if verdict[-1][0]==constants.SUCCESS:
-                        verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc)
+                        verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
             else:
                 #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))
@@ -1334,9 +1525,9 @@ class testObject(object):
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
             #elif verdict[-1][0]==constants.SUCCESS:
             else:
-                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc)
+                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path)
                 if verdict[-1][0]==constants.SUCCESS:
-                    verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc)
+                    verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type)
                     #self.cleaner(lst_of_par, tc,testset_under_test,s)
                 else:
                     #verdict.append((constants.BLOCKED,'Blocked: the test case is blocked because the test setup failed'))

@@ -125,7 +125,7 @@ class TestTOrunTO:
             def fin():
                 try:
                     
-                    print ("teardown_method method: %s" % inspect.stack()[0][3])    
+                    print ("teardown_method method: config_test_testobject_runtc")    
                     #print ("teardown_method method: %s" % inspect.stack()[0][3])
                     ts=ts_obj.getTSByID(request.param)[0]
                     tcs=ts_obj.allTCofTS(ts)
@@ -349,11 +349,11 @@ class TestTOrunTO:
             assert "failed to clean up because the api level test case name UNEXPECTED cannot be found in API test set" in excinfo.value.message     
         
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT", ['POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];UNEXPECTED;user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',
-                                                  'POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',
-                                                  'POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',
-                                                  'POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[firstname];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||'])  
-    def test_testobject_runtc_CreateUser(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module):
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',[(constants.FAILED,u"the test case is setup successfully; execution is successful; user[firstname], user[lastname], user[email] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected. 'lastname' : standard in content of response is different from the expected. 'email' : standard@spirent.com in content of response is different from the expected.")]),
+                                                  ('POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[firstname];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; verification is successful.')]),
+                                                  ('POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];UNEXPECTED;user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',[(constants.FAILED,"the test case is setup successfully; execution is successful, UNEXPECTED cannot be found in the requested json object; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]),
+                                                  ('POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||',[(constants.FAILED,"the test case is setup successfully; execution is successful; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")])])  
+    def test_testobject_runtc_CreateUser(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_CreateUser  <============================ actual test code'      
         rally=test_config_module[0]
         ts,data_to_runtc,ts_obj=config_test_testobject_runtc  
@@ -385,14 +385,15 @@ class TestTOrunTO:
     
         #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         #pass
-        if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];UNEXPECTED;user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.FAILED,"the test case is setup successfully; execution is successful, UNEXPECTED cannot be found in the requested json object; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]
-        if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.FAILED,u"the test case is setup successfully; execution is successful; user[firstname], user[lastname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected. 'lastname' : standard in content of response is different from the expected. 'email' : standard@spirent.com in content of response is different from the expected.")]
-        if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.FAILED,"the test case is setup successfully; execution is successful; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]
-        if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[firstname];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
-            assert verdict == [(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; verification is successful.')]
+        assert verdict == expected
+        #if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];UNEXPECTED;user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
+            #assert verdict == [(constants.FAILED,"the test case is setup successfully; execution is successful, UNEXPECTED cannot be found in the requested json object; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]
+        #if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
+            #assert verdict == [(constants.FAILED,u"the test case is setup successfully; execution is successful; user[firstname], user[lastname], user[email] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected. 'lastname' : standard in content of response is different from the expected. 'email' : standard@spirent.com in content of response is different from the expected.")]
+        #if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
+            #assert verdict == [(constants.FAILED,"the test case is setup successfully; execution is successful; user[firstname] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'firstname' : standard in content of response is different from the expected.")]
+        #if c_QATCPARAMSTEXT=='POST|/users|{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|user[email];user[firstname];user[lastname]|200|{"firstname":"$user[firstname]","lastname":"$user[lastname]","email":"$user[email]"}|id;role;firstname;lastname;email|||GetUser|||DeleteUser;logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||':
+            #assert verdict == [(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; verification is successful.')]
 
 
     @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/users/$id[1]|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
@@ -429,6 +430,38 @@ class TestTOrunTO:
         assert verdict == expected
 
 
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/users/$id[1]|||200|{"id":"$id[1]","firstname":"$firstname[1]","lastname":"$lastname[1]","email":"$email[1]","role":"$role[1]"}|||||||DeleteUser(/CreateUser);logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}|||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_GetUser(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_GetUser  <============================ actual test code'      
+        rally=test_config_module[0]
+        ts,data_to_runtc,ts_obj=config_test_testobject_runtc  
+        data_to_runtc['tc']={
+            "Description": "Test Case Dummy",
+            "Expedite": "false",
+            "FormattedID": "",
+            "LastBuild": "",
+            "Method": "Automated",
+            "Name": "Test Case Dummy",
+            "Objective": "",
+            "TestFolder": "",
+            "Type": "Acceptance",
+            "c_QATCPARAMSTEXT":c_QATCPARAMSTEXT}
+                   
+        to_obj=testObject(rally,data_to_runtc)           
+        #runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s)
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.createTC()
+        new_ts=ts_obj.addSpecificTCs([tc],ts)
+        
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
+        #pass
+        #if c_QATCPARAMSTEXT=='DELETE|/users/$id|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||':
+        assert verdict == expected
 
 
     @pytest.mark.parametrize("search_path_list,variable_value_dict,local_variable_dict,current_api_call,return_value", [(["Test Case Dummy","login","GetCurrentUser"],{"Test Case Dummy":{"login":{"GetCurrentUser":{"whatever":"whatever"}}}},{"whatever":"whatever"},"login",{'Test Case Dummy': {'login': {'GetCurrentUser': {'login': {'whatever': 'whatever'}, 'whatever': 'whatever'}}}})])
