@@ -189,7 +189,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)        
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)        
         
         #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         pass
@@ -268,7 +268,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)            
 
         #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         #pass
@@ -344,7 +344,7 @@ class TestTOrunTO:
 
         with pytest.raises(Exception) as excinfo:
             #to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
-            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
+            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||UNEXPECTED|||||||||||||||||||||||||||||||||||||':
             assert "failed to clean up because the api level test case name UNEXPECTED cannot be found in API test set" in excinfo.value.message     
         
@@ -381,7 +381,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)            
     
         #verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, {}, s,[])
         #pass
@@ -424,7 +424,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
         #pass
         #if c_QATCPARAMSTEXT=='DELETE|/users/$id|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||':
         assert verdict == expected
@@ -458,7 +458,41 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        #pass
+        #if c_QATCPARAMSTEXT=='DELETE|/users/$id|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||':
+        assert verdict == expected
+
+
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/users|||200|{"id":"$id[1]","firstname":"$firstname[1]","lastname":"$lastname[1]","email":"$email[1]","role":"$role[1]"};{"id":"$id[2]","firstname":"$firstname[2]","lastname":"$lastname[2]","email":"$email[2]","role":"$role[2]"}|||||||DeleteUser(/CreateUser[0]);DeleteUser(/CreateUser[1]);logout|||||login;CreateUser;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"};{"user[email]":"$standard_email_2","user[firstname]":"$standard_firstname_2","user[lastname]":"$standard_lastname_2","user[role]":"$standard_role_2","user[password]":"$standard_password_2"}|||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_GetUsers(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_GetUsers  <============================ actual test code'      
+        rally=test_config_module[0]
+        ts,data_to_runtc,ts_obj=config_test_testobject_runtc  
+        data_to_runtc['tc']={
+            "Description": "Test Case Dummy",
+            "Expedite": "false",
+            "FormattedID": "",
+            "LastBuild": "",
+            "Method": "Automated",
+            "Name": "Test Case Dummy",
+            "Objective": "",
+            "TestFolder": "",
+            "Type": "Acceptance",
+            "c_QATCPARAMSTEXT":c_QATCPARAMSTEXT}
+                   
+        to_obj=testObject(rally,data_to_runtc)           
+        #runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s)
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.createTC()
+        new_ts=ts_obj.addSpecificTCs([tc],ts)
+        
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=to_obj.remove_number_key_of_dict(to_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
         #pass
         #if c_QATCPARAMSTEXT=='DELETE|/users/$id|||200|{"okay":true}|||||||logout|||||login;CreateUser||{"user[email]":"$admin_email","user[password]":"$admin_password"};{"user[email]":"$standard_email","user[firstname]":"$standard_firstname","user[lastname]":"$standard_lastname","user[role]":"$standard_role","user[password]":"$standard_password"}||||||||||||||||||||||||||||||':
         assert verdict == expected
@@ -513,7 +547,7 @@ class TestTOrunTO:
         verdict=to_obj.searchDict3(d1, d2, "")
         assert verdict == error_message
 
-    @pytest.mark.parametrize("lst,return_value", [([{'i': 'j', 'k': [{'n': 'o'}, {'l': ['m', 'r']}, {'p': 'q'}], 'f': 'g'}, {'s': 't'}],{'1': {'i': 'j', 'k': {'1': {'n': 'o'}, '0': {'l': {'1': 'r', '0': 'm'}}, '2': {'p': 'q'}}, 'f': 'g'}, '0': {'s': 't'}})])
+    @pytest.mark.parametrize("lst,return_value", [([{'i': 'j', 'k': [{'n': 'o'}, {'l': ['m', 'r']}, {'p': 'q'}], 'f': 'g'}, {'s': 't'}],{'1': {'s': 't'}, '0': {'i': 'j', 'k': {'1': {'l': {'1': 'r', '0': 'm'}}, '0': {'n': 'o'}, '2': {'p': 'q'}}, 'f': 'g'}})])
     def test_testobject_list_to_dict(self,config_class,lst,return_value):
         print 'test_testobject_list_to_dict  <============================ actual test code'                         
         (ts,to_obj,ts_obj,data_to_runto)=config_class
@@ -523,14 +557,14 @@ class TestTOrunTO:
 
     @pytest.mark.parametrize("dt,return_value", [({'0':{}},{}),
                                                  ({'1': {'i': 'j', 'k': {'1': {'n': 'o'}, '0': {'l': {'1': 'r', '0': 'm'}}, '2': {'p': 'q'}}, 'f': 'g'}, '0': {'s': 't'}},{'f': 'g', 'i': 'j', 'k': {'p': 'q', 'l': {'1': 'r', '0': 'm'}, 'n': 'o'}, 's': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'},'2':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm', 's'], 'n': 'o', 'p': {'q': ['u','u'], 'v': 'w'}, '5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 'm'}},{'l': ['r', 'm','m'], 'p': 'q', 'n': 'o','5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm', 's'], 'n': 'o', 'p': {'q': 'u', 'v': 'w'}, '5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'q':'u'}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': 'q', 'n': 'o','5': 't'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}, '4': {'l': 's'}},{'l': ['r', 'm','s'], 'p': 'q', 'n': 'o'}),
-                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}},{'l': ['r', 'm'], 'p': 'q', 'n': 'o'})])
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'},'2':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r', 's'], 'n': 'o', 'p': {'q': ['u','u'], 'v': 'w'}, '5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 'm'}},{'l': ['m', 'r','m'], 'p': 'q', 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r', 's'], 'n': 'o', 'p': {'q': 'u', 'v': 'w'}, '5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'q':'u'}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r','s'], 'p': {'q':'u'}, 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r','s'], 'p': 'q', 'n': 'o','5': 't'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}, '4': {'l': 's'}},{'l': ['m', 'r','s'], 'p': 'q', 'n': 'o'}),
+                                                 ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'}},{'l': ['m', 'r'], 'p': 'q', 'n': 'o'})])
     def test_testobject_remove_number_key_of_dict(self,config_class,dt,return_value):
         print 'test_testobject_remove_number_key_of_dict  <============================ actual test code'                         
         (ts,to_obj,ts_obj,data_to_runto)=config_class
