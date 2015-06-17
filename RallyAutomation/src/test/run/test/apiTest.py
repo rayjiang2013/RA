@@ -46,10 +46,10 @@ r2=s.get(url+'av_chassis/'+ChassisIP).content
 
 r2_dict=json.loads(r2)
 print r2_dict
-
+'''
 r6=s.post(url+"av_queues/",data=json.loads(payload3),verify=False)
 print r6.content
-'''
+
 r4=s.get(url+'current_user').content
 print r4
 
@@ -58,10 +58,10 @@ print r5.content
 dict_user=json.loads(r5.content)
 r6=s.delete(url+'users/'+dict_user['id'])
 print r6.content
-
+'''
 r3= s.delete(url+'logout')
 print r3.content
 pass
-'''
+
 
 
