@@ -375,9 +375,11 @@ class testObject(object):
             setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             local_variable_dict={}
             if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful')  
+                pass 
+                #verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful')  
             elif steps_type==constants.STEPS_EXE_FLC_VER:
-                verdict.append((constants.SUCCESS,"execution is successful"))   
+                verdict.append((constants.SUCCESS,""))   
+                #verdict.append((constants.SUCCESS,"execution is successful"))   
                     
             if lst[constants.INDEXES_EXE[1]]!= u'':
                 lst[constants.INDEXES_EXE[1]]=self.data['env']['ControllerURL']+lst[constants.INDEXES_EXE[1]]            
@@ -402,12 +404,13 @@ class testObject(object):
                         #raise Exception("The test case %s for build %s is failed to execute because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],varbs[-1]))
                         self.logger.debug("The test case %s for build %s is blocked because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],missing_varbs_string))    
                         #if len(verdict)==0:
-                        #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                        verdict[-1]=(constants.BLOCKED,"fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string)
-                        #if steps_type==constants.STEPS_EXE_FLC_VER:
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string)
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string)
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
                         return verdict,lst,variable_value_dict,None,False,search_path  
-            
+           
             json_request={}      
             if lst[constants.INDEXES_EXE[1]] !="":                                     
                 if lst[constants.INDEXES_EXE[0]] == "GET":
@@ -420,9 +423,10 @@ class testObject(object):
                     #except Exception,details:
                     else:
                         self.logger.debug("The test case %s for build %s is blocked because JSON object to make POST request is missing" % (tc.FormattedID,self.data["ts"]["Build"]))
-                        #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                        verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make POST request is missing")
-                        #if steps_type==constants.STEPS_EXE_FLC_VER:
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as JSON object to make POST request is missing")
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make POST request is missing")
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make POST request is missing"))
                         return verdict,lst,variable_value_dict,None,False,search_path 
                 elif lst[constants.INDEXES_EXE[0]] == "DELETE":
@@ -433,34 +437,40 @@ class testObject(object):
                         r = s_ession.put(lst[constants.INDEXES_EXE[1]],data=json_request,verify=False)
                     else:
                         self.logger.debug("The test case %s for build %s is blocked because JSON object to make PUT request is missing" % (tc.FormattedID,self.data["ts"]["Build"]))
-                        #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                        verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make PUT request is missing")
-                        #if steps_type==constants.STEPS_EXE_FLC_VER:
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as JSON object to make PUT request is missing")
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make PUT request is missing")
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))
                         return verdict,lst,variable_value_dict,None,False,search_path                   
                 else:
                     #raise Exception("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
                     if lst[constants.INDEXES_EXE[0]]=="":
                         self.logger.debug("No execution method is provided")  
-                        #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                        verdict[-1]=(constants.BLOCKED,"fail to execute as no execution method is provided")
-                        #if steps_type==constants.STEPS_EXE_FLC_VER:
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as no execution method is provided")
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as no execution method is provided")
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as no execution method is provided"))                        
                     else:
                         self.logger.debug("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])    
-                        #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                        verdict[-1]=(constants.BLOCKED,"fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
-                        #if steps_type==constants.STEPS_EXE_FLC_VER:
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]]))
                     return verdict,lst,variable_value_dict,None,False,search_path  
             else:
                 self.logger.debug("No path is provided")    
-                #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                verdict[-1]=(constants.BLOCKED,"fail to execute as no path is provided")
-                #if steps_type==constants.STEPS_EXE_FLC_VER:
+                if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                    verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as no path is provided")
+                if steps_type==constants.STEPS_EXE_FLC_VER:
+                    verdict[-1]=(constants.BLOCKED,"fail to execute as no path is provided")
                     #verdict.append((constants.BLOCKED,"Blocked: fail to execute as no path is provided"))
                 return verdict,lst,variable_value_dict,None,False,search_path  
-            
+
+            #variables to save     
+                               
             if r.content!="":
                 r_ver_content=deepcopy(json.loads(r.content))
     
@@ -469,29 +479,87 @@ class testObject(object):
                     #variable_value_dict={}
                     j=0
                     for varb in variable_list:
-                        values=self.helper_obj.searchKeyInDic(r_ver_content, varb,search_path)
+
+                        if re.match(r'\w+\=\w+\(\/.*',varb):
+                            search_path_in_response=re.match(r'\w+\=\w+\(\/(.*)\)', varb).group(1) 
+                            varb_to_pass=re.match(r'(\w+)\=\w+\(\/.*\)', varb).group(1)
+                            varb=re.match(r'\w+\=(\w+)\(\/.*\)', varb).group(1) 
+                            
+                            search_path_in_response_list=search_path_in_response.split("/")   
+                            index_dict=json.loads(lst[constants.INDEXES_FLC[3]])
+                            if lst[constants.INDEXES_FLC[3]] !="" and type(index_dict) is dict:
+                                
+                                match_count=0
+                                for index,search_path_in_response_list_item in enumerate(search_path_in_response_list):
+                                    if re.match(r'\$\w+',search_path_in_response_list_item):
+                                        search_path_in_response_list_item_index=re.match(r'\$(\w+)',search_path_in_response_list_item).group(1)
+                                        if search_path_in_response_list_item_index in index_dict:
+                                            search_path_in_response_list_item_index=index_dict[search_path_in_response_list_item_index]
+                                            search_path_in_response_list[index]=search_path_in_response_list_item_index
+                                            match_count+=1
+                                        else:
+                                            self.logger.debug("No index value range provided for %s" % search_path_in_response_list_item_index)  
+                                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                                verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as no index value range provided for %s" % search_path_in_response_list_item_index)
+                                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                                verdict[-1]=(constants.FAILED,'fail to execute as no index value range provided for %s' % search_path_in_response_list_item_index)
+                                            break                                             
+                                            
+                                else:
+                                    if match_count<len(index_dict):
+                                        self.logger.debug("More index provided than needed")  
+                                           
+                            elif lst[constants.INDEXES_FLC[3]]=="":
+                                self.logger.debug("No index value range provided")  
+                                if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as no index value range provided")
+                                if steps_type==constants.STEPS_EXE_FLC_VER:
+                                    verdict[-1]=(constants.FAILED,'fail to execute as no index value range provided')
+                                break
+                            elif type(index_dict)!=dict:
+                                self.logger.debug("The format of index value is incorrect")  
+                                if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as the format of index value is incorrect")
+                                if steps_type==constants.STEPS_EXE_FLC_VER:
+                                    verdict[-1]=(constants.FAILED,'fail to execute as the format of index value is incorrect')     
+                                break                
+                        else: 
+                            search_path_in_response=""
+                            search_path_in_response_list=[]
+                            varb_to_pass=varb
+                        
+                        if search_path_in_response=="":
+                            values=self.helper_obj.searchKeyInDicNoSearchPath(r_ver_content, varb)    
+                        else:
+                            values=self.helper_obj.searchKeyInDic(r_ver_content, varb,search_path_in_response_list)
                         i=0
                         
                         if len(values)==0:
                             #if len(verdict)!=0:
-                            #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                            if j==0:
-                                verdict[-1]=(constants.FAILED,'fail to execute as unable to save values in response content to variables as the variable: %s cannot be found in the response content' % varb)
-                            else:
-                                verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the response content' % varb)
-                            #if steps_type==constants.STEPS_EXE_FLC_VER:
-                                #if j==0:
+                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                if j==0:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+'; fail to execute as unable to save values in response content to variables as the variable: %s cannot be found in the response content' % varb)
+                                else:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the response content' % varb)
+                                
+                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                if j==0:
+                                    verdict[-1]=(constants.FAILED,'fail to execute as unable to save values in response content to variables as the variable: %s cannot be found in the response content' % varb)
                                     #verdict.append((constants.FAILED,'Failed: fail to execute as unable to save values in response content to variables as the variable: %s cannot be found in the response content' % varb))
-                                #else:
+                                else:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the response content' % varb)
                                     #verdict.append((constants.FAILED,verdict[-1][1]+', %s cannot be found in the response content' % varb))
-                            self.logger.debug("Failed to save values in response content to variable %s as it cannot be found in response content" % varb)                          
+                            self.logger.debug("Failed to save values in response content to variable %s as it cannot be found in response content" % varb)     
+                                                 
                         elif len(values)>1:
                             while i < len(values):
                                 if values[i]!=values[i+1]:
                                     if i ==0:
-                                    #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                                        verdict[-1]=(constants.FAILED,'fail to execute as unable to save values in response content to variables as there are multiple different values for variable: %s' % varb)
-                                    #if steps_type==constants.STEPS_EXE_FLC_VER:
+                                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                            verdict[-1]=(constants.FAILED,verdict[-1][1]+'; fail to execute as unable to save values in response content to variables as there are multiple different values for variable: %s' % varb)
+                                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                                            verdict[-1]=(constants.FAILED,'fail to execute as unable to save values in response content to variables as there are multiple different values for variable: %s' % varb)
+                                            
                                         #verdict.append((constants.FAILED,'Failed: fail to execute as unable to save values in response content to variables as there are multiple different values for variable: %s' % varb))
                                     else:
                                         verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s' % varb)
@@ -499,7 +567,7 @@ class testObject(object):
                                     #break                             
                                 i+=1
                         else:
-                            local_variable_dict[varb]=values[0] 
+                            local_variable_dict[varb_to_pass]=values[0] 
                             self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
                         j+=1
                     #variable_value_dict.setdefault(tc.Name,[]).append(local_variable_dict)
@@ -513,36 +581,42 @@ class testObject(object):
                     variable_list=lst[constants.INDEXES_EXE[3]].split(';')
                     j=0
                     for varb in variable_list:
-                        values=self.helper_obj.searchKeyInDic(json_request, varb,search_path)
+                        values=self.helper_obj.searchKeyInDicNoSearchPath(json_request, varb)
                         i=0
                         
                         if len(values)==0:
                             self.logger.debug("Failed to save values in requested json object to variable %s as it cannot be found in the requested json object" % varb)   
-                            #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                            if j==0:
-                                verdict[-1]=(constants.FAILED,"fail to execute as unable to save values in requested json object to variables as %s cannot be found in the requested json object" % varb)
-                            else:
-                                verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the requested json object' % varb)
-                            #if steps_type==constants.STEPS_EXE_FLC_VER:
+                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                if j==0:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as unable to save values in requested json object to variables as %s cannot be found in the requested json object" % varb)
+                                else:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the requested json object' % varb)
+                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                if j==0:
+                                    verdict[-1]=(constants.FAILED,"fail to execute as unable to save values in requested json object to variables as %s cannot be found in the requested json object" % varb)
+                                else:
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s cannot be found in the requested json object' % varb)
+                            j+=1
                                 #verdict.append((constants.FAILED,"Failed: fail to execute as unable to save values in requested json object to variable %s as it cannot be found in the requested json object" % varb))
                             #return verdict,lst,variable_value_dict,r_ver_content,r                   
                         elif len(values)>1:
                             while i < len(values):
                                 if values[i]!=values[i+1]:                            
-                                    self.logger.debug("Failed to save values in response content to variable %s as there are multiple different values for it in response" % varb)  
-                                    #if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                    self.logger.debug("Failed to save values in requested json object to variable %s as there are multiple different values for it in the requested json object" % varb)                                      
                                     if i==0:
-                                        verdict[-1]=(constants.FAILED,"fail to execute as unable to save values in response content to variables as there are multiple different values for %s" % varb)
+                                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                            verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as unable to save values in requested json object to variables as there are multiple different values for %s" % varb)
+                                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                                            verdict[-1]=(constants.FAILED,"fail to execute as unable to save values in requested json object to variables as there are multiple different values for %s" % varb)
                                     else:
                                         verdict[-1]=(constants.FAILED,verdict[-1][1]+', %s' % varb)
-                                    #if steps_type==constants.STEPS_EXE_FLC_VER:
                                         #verdict.append((constants.FAILED,"Failed: fail to execute as unable to save values in response content to variable %s as there are multiple different values for it in response" % varb))
                                     #return verdict,lst,variable_value_dict,r_ver_content,r                             
                                 i+=1
                         else:
                             local_variable_dict[varb]=values[0] 
-                            self.logger.debug("Successfully save values in response content to variable: %s" % varb)  
-                        j+=1
+                            self.logger.debug("Successfully save values in requested json object to variable: %s" % varb)  
+                        
             
             #variable_value_dict.setdefault(parrent_tc.Name,[]).append({})
 
@@ -560,11 +634,21 @@ class testObject(object):
             search_path_list=search_path.split("/")            
             
             self.logger.debug("The test case %s for build %s is executed." % (tc.FormattedID,self.data["ts"]["Build"]))     
+            
+            if verdict[-1][0]==constants.SUCCESS:
+                if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful') 
+                    #verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful')  
+                elif steps_type==constants.STEPS_EXE_FLC_VER:
+                    verdict[-1]=(verdict[-1][0],'execution is successful') 
+                  
+                self.logger.debug("The test case %s for build %s is successfully executed." % (tc.FormattedID,self.data["ts"]["Build"]))     
                
             return (verdict,lst,variable_value_dict,r_ver_content,r,search_path) 
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                print Exception,details
                 raise
             else:
                 print Exception,details
@@ -605,7 +689,7 @@ class testObject(object):
             #r2= r1.replace("false","\"false\"")    
             #r_ver_content=ast.literal_eval(r2)            
             missing_varbs_string=""
-            for idx in constants.INDEXES_FLC:
+            for idx in constants.INDEXES_FLC[0:2]:
                 if '$' in lst[idx]:
                     if parrent_tc!=None:
                         rep_status,lst[idx],varbs,missing_varbs=self.helper_obj.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)

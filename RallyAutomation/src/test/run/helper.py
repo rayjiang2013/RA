@@ -525,14 +525,38 @@ class helper:
         return error_message
 
 
-    def searchKeyInDic(self,search_dict, field,search_path):
+    def searchKeyInDic(self,search_dict, field,search_path_list):
         """
         Takes a dict with nested lists and dicts,
         and searches all dicts for a key of the field
         provided.
         """
+        
+        #Need continue work on this 
         fields_found = []
-        search_path_list=search_path.split("/")
+        #search_path_list=search_path.split("/")
+        if len(search_path_list)==0:
+            if field in search_dict.keys():
+                fields_found.append(search_dict[field])
+        else:
+            #search_path_list_copy=deepcopy(search_path_list)
+            for item in search_path_list:
+                if type(search_dict)==dict:
+                    if item in search_dict.keys():                    
+                        search_path_list.remove(item)
+                        fields_found=self.searchKeyInDic(search_dict[item], field,search_path_list)
+                elif type(search_dict)==list:
+                    if type(item)==list:
+                        search_path_list.remove(item)
+                        for idx in item:
+                            fields_found.append(self.searchKeyInDic(search_dict[idx], field,search_path_list))
+                                       
+        return fields_found  
+        
+    def searchKeyInDicNoSearchPath(self,search_dict, field):        
+        
+        fields_found = []
+
         #for item in search_path_list:
         for key, value in search_dict.iteritems():
     
@@ -540,19 +564,19 @@ class helper:
                 fields_found.append(value)
                                
             elif isinstance(value, dict):
-                results = self.searchKeyInDic(value, field,search_path)
+                results = self.searchKeyInDicNoSearchPath(value, field)
                 for result in results:
                     fields_found.append(result)
     
             elif isinstance(value, list):
                 for item in value:
                     if isinstance(item, dict):
-                        more_results = self.searchKeyInDic(item, field,search_path)
+                        more_results = self.searchKeyInDicNoSearchPath(item, field)
                         for another_result in more_results:
                             fields_found.append(another_result)
             
         return fields_found
-    
+        
 
     def searchKeyInDicForReplace(self,search_dict, field,search_path_list):
         """
