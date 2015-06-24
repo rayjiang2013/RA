@@ -27,3 +27,4 @@ fi
 fname="${1%.*}"
 
 sudo tshark -i utun0 -O http -f "host 10.10.2.93" -l > $fname.txt
+
