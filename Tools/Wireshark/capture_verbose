@@ -27,3 +27,4 @@ fi
 fname="${1%.*}"
 
 sudo tshark -i utun0 -V -f "host 10.10.2.93" -l -q -w "$fname".cap 1>/dev/null
+
