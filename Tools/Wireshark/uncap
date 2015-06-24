@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# convert PCAP binary format file to text format file.
+# echo Summary from simple grep of generated text file.
+# 
+# Wireshark's CLI application: tshark
+#
+# 	-i <network interface>
+#		VPN: utun0, Ethernet: en3, WiFi: en0 ?
+# 	-O <protocols>
+# 	-f <capture filter>
+#		"host <Controller_IP>"
+# 	-l flush standard output after each packet
+# 	-V add output of packet tree (Packet Details)
+# 	-w <outfile>
+# 	-q minimize foreground stdout
+#	-Y <display filter>
+#
+
+echo
+if [ $# -lt 1 ]
+then
+	echo "Usage: $0 <outputfile[.cap]>"
+	echo
+	exit 1
+fi
+
+# strip any '.*' file extension
+fname="${1%.*}"
+
+sudo tshark -V -r "$fname".cap  -Y 'http>0' > "$fname".txt
+echo
+echo "REST SUMMARY"
+echo
+grep -n "Full request URI" "$fname".txt | grep -v "\.js"
+echo
+
