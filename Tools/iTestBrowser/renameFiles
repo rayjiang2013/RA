@@ -1,0 +1,17 @@
+#!/bin/bash
+
+DEST=itest_actions
+SRC=itest_actions
+
+for fname in $(find $SRC -name '*.fftc'); do
+    folder=`echo $fname | cut -d "/" -f 2`
+    filename=`echo $fname | rev | cut -d "/" -f 1 | rev`
+	is_file=`echo $folder | grep "\."`
+    destPath=$DEST/$folder
+ 	file_name=`echo $fname | cut -c 1-`
+ 	destFile=$file_name
+	echo "renaming: $destFile $destFile.txt"
+
+	mv $destFile $destFile.txt
+
+done
