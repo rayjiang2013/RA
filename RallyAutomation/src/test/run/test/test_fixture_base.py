@@ -3,8 +3,8 @@ import pytest
 import sys
 
 
-from pyral import Rally,rallyWorkset #The bugs  https://github.com/RallyTools/RallyRestToolkitForPython/issues/37 and https://github.com/RallyTools/RallyRestToolkitForPython/issues/40 should be fixed according comments from the po. Switch back to Pyral from now on.
-#from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
+#from pyral import Rally,rallyWorkset #The bugs  https://github.com/RallyTools/RallyRestToolkitForPython/issues/37 and https://github.com/RallyTools/RallyRestToolkitForPython/issues/40 should be fixed according comments from the po. Switch back to Pyral from now on.
+from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37; have to switch to my personal package again for https://github.com/jay6413682/RallyRestToolkitForPython/comit/7dbec761a924ada0bdfe379b385a2b00e9875b21
 import json
 
 import os
