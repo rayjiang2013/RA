@@ -1135,8 +1135,18 @@
         <hashTree>
           <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-            <stringProp name="RegexExtractor.refname">id</stringProp>
-            <stringProp name="RegexExtractor.regex">\[\{&quot;id&quot;:&quot;(.*?)&quot;</stringProp>
+            <stringProp name="RegexExtractor.refname">id_A</stringProp>
+            <stringProp name="RegexExtractor.regex">.*\&quot;id\&quot;\:\&quot;(.*)\&quot;,\&quot;name\&quot;\:\&quot;A\&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default"></stringProp>
+            <stringProp name="RegexExtractor.match_number">0</stringProp>
+            <stringProp name="Scope.variable"></stringProp>
+          </RegexExtractor>
+          <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">id_B</stringProp>
+            <stringProp name="RegexExtractor.regex">.*\&quot;id\&quot;\:\&quot;(.*)\&quot;,\&quot;name\&quot;\:\&quot;B\&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
             <stringProp name="RegexExtractor.default"></stringProp>
             <stringProp name="RegexExtractor.match_number">0</stringProp>
@@ -1154,7 +1164,7 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/av_queues/0fb326d9fe232d3b79f1987a5f4ae44f/add_test</stringProp>
+          <stringProp name="HTTPSampler.path">/av_queues/${id_A}/add_test</stringProp>
           <stringProp name="HTTPSampler.method">PUT</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1162,8 +1172,8 @@
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/Users/ljiang/Documents/team_doc/test_config.json" elementType="HTTPFileArg">
-                <stringProp name="File.path">/Users/ljiang/Documents/team_doc/test_config.json</stringProp>
+              <elementProp name="/Users/ljiang/Documents/team_doc/test_config_1g.json" elementType="HTTPFileArg">
+                <stringProp name="File.path">/Users/ljiang/Documents/team_doc/test_config_1g.json</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -1193,7 +1203,7 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/av_queues/0fb326d9fe232d3b79f1987a5f4adfd7/add_test</stringProp>
+          <stringProp name="HTTPSampler.path">/av_queues/${id_B}/add_test</stringProp>
           <stringProp name="HTTPSampler.method">PUT</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1201,8 +1211,8 @@
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/Users/ljiang/Documents/team_doc/test_config_2.json" elementType="HTTPFileArg">
-                <stringProp name="File.path">/Users/ljiang/Documents/team_doc/test_config_2.json</stringProp>
+              <elementProp name="/Users/ljiang/Documents/team_doc/test_config_1g_2.json" elementType="HTTPFileArg">
+                <stringProp name="File.path">/Users/ljiang/Documents/team_doc/test_config_1g_2.json</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
