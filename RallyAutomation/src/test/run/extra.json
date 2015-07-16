@@ -38,7 +38,8 @@
         "ControllerPassword": "Jag6413682",
         "ControllerURL": "http://10.10.2.166",
         "ControllerUsername": "lei.jiang@spirent.com",
-		"ChassisIP":"10.10.3.240"
+		"ChassisIP":"10.10.3.240",
+		"queue_name":"test"
     },
 	"accounts":{
 		"admin_email":"admin@spirent.com",

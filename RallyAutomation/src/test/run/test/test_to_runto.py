@@ -411,9 +411,9 @@ class TestTOrunTO:
         assert verdict == expected
 
 
-
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":$queue_name,"queue[port_groups][]":[$port_group_id[1][0]]}||200||id|||GetQueues;GetQueue|||logout;DeleteQueue|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
-    def test_testobject_runtc_CreateQueues(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+    
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}||200||id|||GetQueues;GetQueue|||logout;DeleteQueue|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_CreateQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_CreateQueues  <============================ actual test code'      
 
         rally=test_config_module[0]
@@ -431,8 +431,8 @@ class TestTOrunTO:
         verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
         
         assert verdict == expected
-
-   
+    
+    
     def test_testobject_runto_equal_formattedid(self,config_class):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
         (ts,to_obj)=config_class[0:2]

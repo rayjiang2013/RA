@@ -27,6 +27,8 @@ class helper:
         #for i in xrange(0,len(strg)):
             if strg[i]=='$':
                 varb=re.split('[^a-zA-Z0-9_\[\]]+',strg[i:].partition('$')[-1])[0]
+                if "]]" in varb:
+                    varb=varb.replace(']]',']')     
                 varbs.append(varb)#partition('[\n\/\\\b\&\?\;\=\,\"]')[0])
                 
                 if varbs[-1] in self.data['env'].keys():
@@ -38,12 +40,16 @@ class helper:
                         #if varb==key:
                     strg=strg.replace('$'+varbs[-1],self.data['accounts'][varbs[-1]],1)
                 elif re.match(r'\w+\[\d+\]',varb) and steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
-                    indx=int(re.match(r'\w+\[(\d+)\]', varb).group(1))
+                    #indx=int(re.match(r'\w+\[(\d+)\]', varb).group(1))
+                    indx_list=re.findall("\[(\d+)\]", varb)
                     variable_name=re.match(r'(\w+)\[\d+\]', varb).group(1)
                     fields_found=[]
                     search_path_copy=deepcopy(search_path)
-                    
-                    search_path_copy=search_path_copy+'/'+setup_calls[indx]
+                    for i in xrange(len(indx_list)):
+                        if i==0:
+                            search_path_copy=search_path_copy+'/'+setup_calls[int(indx_list[0])]
+                        else:
+                            search_path_copy=search_path_copy+'/'+indx_list[i]
                     search_path_list_copy=search_path_copy.split('/')
 
                     fields_found=self.searchKeyInDicForReplace(variable_value_dict, variable_name,search_path_list_copy)
@@ -81,8 +87,8 @@ class helper:
                     if len(fields_found)>0:
                         counter=0
                         sub_indx=0
-                        while counter<indx:
-                            if setup_calls[indx]==setup_calls[counter]:
+                        while counter<int(indx_list[0]):
+                            if setup_calls[int(indx_list[0])]==setup_calls[counter]:
                                 sub_indx+=1
                             counter+=1
                         if type(fields_found[0])==dict:
@@ -318,16 +324,24 @@ class helper:
         for i in sorted(dt.keys()):
             if i.isdigit():
                 if type(dt[i])==dict:
+                    #dt[i]=self.remove_number_key_of_dict(dt[i])
+                    
                     for j in dt[i].keys():
                         if i in dt.keys():
                             if len(dt[i])==1:
                                 if type(dt[i][j])!=dict:
                                     if j in dt.keys() and type(dt[j]) != list:
-                                        dt[j]=[dt[j],dt[i][j]]
-                                        del dt[i]
+                                        if type(dt[j])==str or type(dt[j])==unicode:
+                                            dt[j]=[dt[j],dt[i][j]]
+                                            del dt[i]
+                                        elif type(dt[j])==dict:
+                                            #dt[j]=self.remove_number_key_of_dict(dt[j])
+                                            #pass
+                                            if i==j:
+                                                dt[i]=dt[i][j]
                                     elif j in dt.keys() and type(dt[j]) == list:
                                         dt[j].append(dt[i][j])
-                                        del dt[i]                         
+                                        del dt[i]                 
                                     else:
                                         dt[j]=dt[i][j]
                                         del dt[i]
@@ -353,12 +367,17 @@ class helper:
                                 del dt[i]
                     if i in dt and len(dt[i])==0:
                         del dt[i]
+                    
                 else:
                     continue
             elif type(dt[i])!=list and type(dt[i])!=dict:
                 pass
             elif type(dt[i])==dict:
                 dt[i]=self.remove_number_key_of_dict(dt[i])
+        if len(dt)==1:
+            for k in dt:
+                if k.isdigit():
+                    dt=dt[k]
         return dt
             
     #convert list to dictionary
@@ -414,11 +433,12 @@ class helper:
                         d2[k]=self.list_to_dict(d2[k])
                         d2[k]=self.remove_number_key_of_dict(d2[k])   
                     
-                    if type(d2[k])!=list and type(d2[k])!=dict:
-                        for item in d1[k].values():
-                            if d2[k]!=item:
-                                error_message+=" '"+k+"' : "+str(item)+" is missing from content of response."
-                                continue
+                    if type(d2[k])==str or type(d2[k])==unicode:
+                        if type(d1[k])==list or type(d1[k])==dict:
+                            for item in d1[k].values():
+                                if d2[k]!=item:
+                                    error_message+=" '"+k+"' : "+str(item)+" is missing from content of response."
+                                    continue
                     '''
                     elif type(d2[k])==dict:
                         for x in d1[k].keys():
@@ -589,9 +609,14 @@ class helper:
         if len(search_path_list)==0:
             if field in search_dict.keys():
                 fields_found.append(search_dict[field])
+        elif len(search_path_list)==1 and search_path_list[-1].isdigit():
+            fields_found.append(search_dict[field][int(search_path_list[-1])])
         else:
             #search_path_list_copy=deepcopy(search_path_list)
             for item in search_path_list:
+                if item.isdigit():
+                    #search_path_list.remove(item)
+                    fields_found=self.searchKeyInDicForReplace(search_dict, field,search_path_list)
                 if item in search_dict.keys():                    
                     search_path_list.remove(item)
                     fields_found=self.searchKeyInDicForReplace(search_dict[item], field,search_path_list)

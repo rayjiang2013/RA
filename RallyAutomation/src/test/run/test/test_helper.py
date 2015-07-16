@@ -50,13 +50,15 @@ class TestHelper:
 
 
 
-    @pytest.mark.parametrize("d1,d2,error_message", [({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'l' : r is missing from content of response. 'p' : q is missing from content of response."),
+    @pytest.mark.parametrize("d1,d2,error_message", [({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'e' : g in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'e' : g in content of response is different from the expected."),
+                                                     ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'l' : r is missing from content of response. 'p' : q is missing from content of response."),
                                                      ({"a":"b","c":"d","e":[{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"},{"s":"t"}]},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]}}," 's' : t is missing from content of response."),
                                                      ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"p":"q"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"n":"o"},{"l":"m"}]}}," 'i' : j is missing from content of response. 'p' : q is missing from content of response."),
                                                      ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"},{"n":"o"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response. 'n' : o is missing from content of response."),
                                                      ({"a":"b","c":"d","e":{"f":"g","k":{"l":"m"}},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response."),
                                                      ({"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]},"i":"j"},{"a":"b","c":"d","e":{"f":"g","k":[{"l":"m"}]}}," 'i' : j is missing from content of response."),
-                                                     ({"a":"b","c":"d","e":['f','g'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response."),
+                                                     ({"a":"b","c":"d","e":['f','g'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'e' : f is missing from content of response."),
                                                      ({"a":"b","c":"d","e":[{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"},{"s":"t"}]},{"i":"j","c":"d","a":"b","e":[{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]},{"s":"t"}]},""),                                                     
                                                      ({"a":"b","c":"d","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"}},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":["m","r"]},{"p":"q"}]}},""),
                                                      ({"a":"b","c":"d","e":{"k":[{"l":"m"},{"l":"r"},{"p":"q"},{"n":"o"}],"f":"g","i":"j"}},{"i":"j","a":"b","c":"d","e":{"f":"g","i":"j","k":[{"n":"o"},{"l":"m"},{"l":"r"},{"p":"q"}]}},""),
@@ -72,8 +74,6 @@ class TestHelper:
                                                      ({"a":"b","c":"d","e":{"f":"g","k":"l"},"i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response. 'k' : l is missing from content of response."),
                                                      ({"a":"b","c":"d","e":{"f":"g"},"i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response."),
                                                      ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","e":{"f":"g"}}," 'i' : j is missing from content of response. 'e' : {'f': 'g'} in content of response is different from the expected."),
-                                                     ({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response. 'g' in content of response is different from the expected."),
-                                                     ({"a":"b","c":"d","e":['f'],"i":"j"},{"a":"b","c":"d","e":['g']}," 'i' : j is missing from content of response. 'f' is missing from content of response. 'g' in content of response is different from the expected."),
                                                      ({"a":"b","c":"d","e":['f','g'],"i":"j"},{"a":"b","c":"d","e":['f','g','h']}," 'i' : j is missing from content of response."),
                                                      ({"a":"b","c":"d","e":[],"i":"j"},{"a":"b","c":"d","e":[]}," 'i' : j is missing from content of response."),
                                                      ({"a":"b","c":"d","e":"f","i":"j"},{"a":"b","c":"d","e":[]}," 'i' : j is missing from content of response. 'e' : [] in content of response is different from the expected."),
@@ -98,7 +98,8 @@ class TestHelper:
         assert verdict == return_value
 
 
-    @pytest.mark.parametrize("dt,return_value", [({'0':{}},{}),
+    @pytest.mark.parametrize("dt,return_value", [({'1': {'0': u'515f0d691c701cc953441c9add1e9a01'}, '0': {'0': u'515f0d691c701cc953441c9add1eb859'}, '3': {'0': u'515f0d691c701cc953441c9add1e7bb1'}, '2': {'0': u'515f0d691c701cc953441c9add1e8e8b'}},['515f0d691c701cc953441c9add1eb859','515f0d691c701cc953441c9add1e9a01','515f0d691c701cc953441c9add1e8e8b','515f0d691c701cc953441c9add1e7bb1']),
+                                                 ({'0':{}},{}),
                                                  ({'1': {'i': 'j', 'k': {'1': {'n': 'o'}, '0': {'l': {'1': 'r', '0': 'm'}}, '2': {'p': 'q'}}, 'f': 'g'}, '0': {'s': 't'}},{'f': 'g', 'i': 'j', 'k': {'p': 'q', 'l': {'1': 'r', '0': 'm'}, 'n': 'o'}, 's': 't'}),
                                                  ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': {'0':{'q':'u'},'1':{'v':'w'},'2':{'q':'u'}}}, '2': {'n': 'o'},'5': 't', '4': {'l': 's'}},{'l': ['m', 'r', 's'], 'n': 'o', 'p': {'q': ['u','u'], 'v': 'w'}, '5': 't'}),
                                                  ({'1': {'l': 'r'}, '0': {'l': 'm'}, '3': {'p': 'q'}, '2': {'n': 'o'},'5': 't', '4': {'l': 'm'}},{'l': ['m', 'r','m'], 'p': 'q', 'n': 'o','5': 't'}),
