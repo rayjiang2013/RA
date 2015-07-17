@@ -772,7 +772,7 @@ class testObject(object):
                         counter+=1
 
                 else:
-                    verdict[-1]=(constants.SUCCESS,verdict[-1][1]+'; status code expected without first level check.')
+                    verdict[-1]=(constants.SUCCESS,verdict[-1][1]+'; status code expected without first level check')
                     self.logger.debug("Test case %s, build %s is successful without first level check." % (tc.FormattedID,self.data["ts"]["Build"]))
                      
             return verdict,variable_value_dict

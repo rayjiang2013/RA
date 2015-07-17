@@ -412,7 +412,7 @@ class TestTOrunTO:
 
 
     
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}||200||id|||GetQueues;GetQueue|||logout;DeleteQueue|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}||200||id|||GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')])])
     def test_testobject_runtc_CreateQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_CreateQueues  <============================ actual test code'      
 
