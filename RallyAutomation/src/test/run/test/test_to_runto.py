@@ -175,10 +175,10 @@ class TestTOrunTO:
             print details
             sys.exit(1)    
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),#this case is expected to fail
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',[(constants.SUCCESS,u'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')]),
+                                                           ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),#this case is expected to fail
                                                   ('NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED,'the test case is setup successfully; fail to execute as unexpected execution method: NONEXIST')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED,'fail to setup as nonexist is/are not defined in extra.json or pre-defined local variables')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',[(constants.SUCCESS,u'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.SUCCESS,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; no verification is done.')]),
                                                   ('DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u'the test case is setup successfully; execution is successful; status code unexpected. The unexpected status code of the response is 404')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, u'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
@@ -410,7 +410,72 @@ class TestTOrunTO:
         
         assert verdict == expected
 
-   
+
+    
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}||200||id|||GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')])])
+    def test_testobject_runtc_CreateQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_CreateQueue <============================ actual test code'      
+
+        rally=test_config_module[0]
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        
+        assert verdict == expected
+
+
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/av_queues|||200|{"name":"$queue_name","id":"$id[2]"}|||||||DeleteQueue(/CreateQueue);logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_GetQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_GetQueue  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        
+        assert verdict == expected
+
+
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/av_queues/$id[2]|||200|{"id":"$id[2]"}|||||||logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_DeleteQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_DeleteQueue  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        
+        assert verdict == expected
+
+    
+    
     def test_testobject_runto_equal_formattedid(self,config_class):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
         (ts,to_obj)=config_class[0:2]
