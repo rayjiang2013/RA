@@ -14,7 +14,51 @@ class helper:
     def __init__(self,rally,data):
         self.rally=rally
         self.data=data
+
+
+    #Replace all fields under a step (setup/execution/...) all at once
+    def repAll(self,indexes,lst,parrent_tc,variable_value_dict,tc,steps_type,search_path,setup_calls,search_index,verdict):
+        missing_varbs_string=""
+        rep_status=True
+        missing_varbs=[]
+        varbs=[]
+        for idx in indexes:
+            if '$' in lst[idx]:
+                if parrent_tc!=None:
+                    rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)
+                if parrent_tc==None:
+                    rep_status,lst[idx],varbs,missing_varbs=self.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls,search_index)
+                if rep_status==False:
+                    missing_varbs_string=missing_varbs[0]
+                    for i in missing_varbs:
+                        if len(missing_varbs)==1:                                    
+                            break
+                        if missing_varbs.index(i)>0:
+                            missing_varbs_string=missing_varbs_string+", "+i
+        return rep_status,lst,varbs,missing_varbs,missing_varbs_string
+                   
     
+    #Replace one JSON Request
+    def repOneJSONRequest(self,api_json_request,variable_value_dict,tc,parrent_tc,steps_type,search_path,setup_calls,search_index):
+        missing_varbs_string=""
+        rep_status=True
+        missing_varbs=[]
+        varbs=[]
+        if '$' in api_json_request:
+            if parrent_tc!=None:
+                rep_status,api_json_request,varbs,missing_varbs=self.rep(api_json_request,variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)
+            if parrent_tc==None:
+                rep_status,api_json_request,varbs,missing_varbs=self.rep(api_json_request,variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls,search_index)
+            if rep_status==False:
+                missing_varbs_string=missing_varbs[0]
+                for i in missing_varbs:
+                    if len(missing_varbs)==1:                                    
+                        break
+                    if missing_varbs.index(i)>0:
+                        missing_varbs_string=missing_varbs_string+", "+i   
+        return rep_status,api_json_request,varbs,missing_varbs,missing_varbs_string
+
+
     #Replace variable
     def rep(self,strg,variable_value_dict,api_call,parrent_tc_name,steps_type,search_path,setup_calls,search_index):
         varbs=[]

@@ -234,33 +234,38 @@ class testObject(object):
                 self.logger.debug("As not enough setup information is provided, the test setup for test case %s build %s  test set %s is skipped" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))
                 verdict.append((constants.SUCCESS,"as not enough setup information is provided, the test setup is skipped"))
             else: 
-                missing_varbs_string=""
-                for idx in constants.INDEXES_SUP:
-                    if '$' in lst[idx]:
-                        if parrent_tc!=None:
-                            rep_status,lst[idx],varbs,missing_varbs=self.helper_obj.rep(lst[idx],variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)
-                        if parrent_tc==None:
-                            rep_status,lst[idx],varbs,missing_varbs=self.helper_obj.rep(lst[idx],variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls,search_index)
-                        if rep_status==False:
-                            missing_varbs_string=missing_varbs[0]
-                            for i in missing_varbs:
-                                if len(missing_varbs)==1:                                    
-                                    break
-                                if missing_varbs.index(i)>0:
-                                    missing_varbs_string=missing_varbs_string+", "+i
-                            #raise Exception("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))
-                            #if len(missing_varbs)==1:
-                            self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
-                            verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
-                            return verdict,lst,variable_value_dict                            
-                        
+                # The Get/POST/DELETE/PUT will not be executed as the api call should always be predefined 
                 if lst[constants.INDEXES_SUP[0]] == "GET":
+                    #The following is to replace all fields at once, which does not fit for the requirements of TA77541
+                    rep_status,lst,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repAll(constants.INDEXES_SUP, lst, parrent_tc, variable_value_dict, tc, steps_type, search_path, setup_calls, search_index, verdict)
+                    if rep_status==False:
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                        return verdict,lst,variable_value_dict    
                     r_stp = s_ession.get(lst[constants.INDEXES_SUP[1]])                        
                 elif lst[constants.INDEXES_SUP[0]] == "POST":
+                    #The following is to replace all fields at once, which does not fit for the requirements of TA77541
+                    rep_status,lst,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repAll(constants.INDEXES_SUP, lst, parrent_tc, variable_value_dict, tc, steps_type, search_path, setup_calls, search_index, verdict)
+                    if rep_status==False:
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                        return verdict,lst,variable_value_dict    
                     r_stp = s_ession.post(lst[constants.INDEXES_SUP[1]],data=json.loads(lst[constants.INDEXES_SUP[2]]))
                 elif lst[constants.INDEXES_SUP[0]] == "DELETE":
+                    #The following is to replace all fields at once, which does not fit for the requirements of TA77541
+                    rep_status,lst,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repAll(constants.INDEXES_SUP, lst, parrent_tc, variable_value_dict, tc, steps_type, search_path, setup_calls, search_index, verdict)
+                    if rep_status==False:
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                        return verdict,lst,variable_value_dict    
                     r_stp = s_ession.delete(lst[constants.INDEXES_SUP[1]])
                 elif lst[constants.INDEXES_SUP[0]] == "PUT":
+                    #The following is to replace all fields at once, which does not fit for the requirements of TA77541
+                    rep_status,lst,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repAll(constants.INDEXES_SUP, lst, parrent_tc, variable_value_dict, tc, steps_type, search_path, setup_calls, search_index, verdict)
+                    if rep_status==False:
+                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                        return verdict,lst,variable_value_dict    
                     r_stp = s_ession.put(lst[constants.INDEXES_SUP[1]],data=json.loads(lst[constants.INDEXES_SUP[2]]))
                 else:
                     #check if lst[constants.INDEXES_CLU[4]] is api level test case, if it does run api level test case
@@ -293,7 +298,32 @@ class testObject(object):
                     for api_call,api_json_request in zip(api_list,api_json_requst_lst):                        
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_call:
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index)
+                                '''
+                                if '$' in api_json_request:
+                                    if parrent_tc!=None:
+                                        rep_status,api_json_request,varbs,missing_varbs=self.helper_obj.rep(api_json_request,variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)
+                                    if parrent_tc==None:
+                                        rep_status,api_json_request,varbs,missing_varbs=self.helper_obj.rep(api_json_request,variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls,search_index)
+                                    if rep_status==False:
+                                        missing_varbs_string=missing_varbs[0]
+                                        for i in missing_varbs:
+                                            if len(missing_varbs)==1:                                    
+                                                break
+                                            if missing_varbs.index(i)>0:
+                                                missing_varbs_string=missing_varbs_string+", "+i
+                                        #raise Exception("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))
+                                        #if len(missing_varbs)==1:
+                                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                                        return verdict,lst,variable_value_dict                                                 
+                                '''     
+                                rep_status,new_api_json_request,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repOneJSONRequest(api_json_request,variable_value_dict,tc,parrent_tc,steps_type,search_path,setup_calls,search_index)
+                                lst[constants.INDEXES_SUP[2]]=lst[constants.INDEXES_SUP[2]].replace(api_json_request,new_api_json_request,1)
+                                if rep_status==False:
+                                    self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
+                                    verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
+                                    return verdict,lst,variable_value_dict         
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,new_api_json_request,tc,search_path,search_index)
                                 #variable_value_dict_dict.setdefault(api_call,[]).append(variable_value_dict)
                                 verdict_api_list.append(verdict_api)
                                 tc_api_list.append(tc_api)
