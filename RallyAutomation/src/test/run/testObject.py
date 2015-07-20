@@ -1112,6 +1112,12 @@ class testObject(object):
     def runTO(self,testset_under_test):         
         try:            
             verdict=[]
+
+            #Update ScheduleState of Test Set 
+            new_data=deepcopy(self.data) 
+            new_data['ts']['FormattedID']=testset_under_test.FormattedID
+            ts_obj=testSet(self.rally,new_data)
+            ts_obj.updateSS(constants.INPROGRESS) 
             
             for tc in testset_under_test.TestCases:
                 sorted_trs=sorted(tc.Results, key=lambda x: x.Date, reverse=True)
@@ -1154,11 +1160,6 @@ class testObject(object):
                         verdict[-1]=(verdict[-1][0],"Success: "+verdict[-1][1])       
                     if verdict[-1][0]==constants.FAILED:
                         verdict[-1]=(verdict[-1][0],"Failed: "+verdict[-1][1])                                     
-            #Update ScheduleState of Test Set 
-            new_data=deepcopy(self.data) 
-            new_data['ts']['FormattedID']=testset_under_test.FormattedID
-            ts_obj=testSet(self.rally,new_data)
-            ts_obj.updateSS(0) 
                       
             #verdict=[0,1,1]
             #verdict=[(0,"Failure reason 3"),(1,"Success reason 3"),(0,"Failure reason 4"),(1,"Success reason 4")]
@@ -1302,10 +1303,10 @@ class testObject(object):
                     trs.append(tr) 
                                  
             if num_pass == len(tc_verds):
-                ts_obj.updateSS(1) 
+                ts_obj.updateSS(constants.ACCEPTED) 
 
             else:
-                ts_obj.updateSS(2)       
+                ts_obj.updateSS(constants.COMPLETED)       
             self.logger.info("The test set %s on Rally is successfully updated with test execution information" % ts.FormattedID)     
         except Exception,details:
             #x=inspect.stack()
