@@ -323,7 +323,7 @@ class testObject(object):
                                     self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
                                     verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
                                     return verdict,lst,variable_value_dict         
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,new_api_json_request,tc,search_path,search_index)
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,new_api_json_request,tc,search_path,search_index,lst[constants.INDEXES_SUP[4]])
                                 #variable_value_dict_dict.setdefault(api_call,[]).append(variable_value_dict)
                                 verdict_api_list.append(verdict_api)
                                 tc_api_list.append(tc_api)
@@ -687,9 +687,11 @@ class testObject(object):
 
             
     #First level check
-    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index):
+    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub):
         try: 
             setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
+            if len(response_to_sub)!=0:
+                lst[constants.INDEXES_FLC[1]]=response_to_sub
             '''
             r_ver_content=deepcopy(json.loads(r.content))
             #save values in response into variables
@@ -877,7 +879,7 @@ class testObject(object):
                     verdict_api=None
                     for tc_api in ts_api.TestCases:
                         if tc_api.Name==lst[constants.INDEXES_VER[2]]:
-                            verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index)
+                            verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index,lst[constants.INDEXES_VER[0]])
                             break
                     
                     if verdict_api!=None:
@@ -986,7 +988,7 @@ class testObject(object):
                                 search_index=None                
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_tc:
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index)
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index,lst[constants.INDEXES_CLU[4]])
                                 if verdict_api!=None:
                                     if verdict_api[0][0]==constants.SUCCESS:
                                         #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
@@ -1026,7 +1028,7 @@ class testObject(object):
                 sys.exit(1)
     
     #run a single test case
-    def runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s,request_to_sub,parrent_tc,search_path,search_index):
+    def runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s,request_to_sub,parrent_tc,search_path,search_index,response_to_sub):
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU: #1 means run through all steps
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
@@ -1044,7 +1046,7 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
@@ -1070,7 +1072,7 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1096,7 +1098,7 @@ class testObject(object):
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
             #elif verdict[-1][0]==constants.SUCCESS:
             else:
-                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index)
+                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                 if verdict[-1][0]==constants.SUCCESS:
                     verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1138,7 +1140,7 @@ class testObject(object):
                             variable_value_dict.setdefault(tc.Name,[]).append({})                            
                             variable_value_dict[tc.Name]=self.helper_obj.remove_number_key_of_dict(self.helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
                             search_path=tc.Name
-                            verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None)
+                            verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"")
                             if verdict[-1][0]==constants.BLOCKED:
                                 verdict[-1]=(verdict[-1][0],"Blocked: "+verdict[-1][1])
                             if verdict[-1][0]==constants.SUCCESS:
@@ -1153,7 +1155,7 @@ class testObject(object):
                     variable_value_dict.setdefault(tc.Name,[]).append({})
                     variable_value_dict[tc.Name]=self.helper_obj.remove_number_key_of_dict(self.helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
                     search_path=tc.Name
-                    verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None)
+                    verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"")
                     if verdict[-1][0]==constants.BLOCKED:
                         verdict[-1]=(verdict[-1][0],"Blocked: "+verdict[-1][1])
                     if verdict[-1][0]==constants.SUCCESS:
