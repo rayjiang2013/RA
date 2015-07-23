@@ -22,3 +22,8 @@ BLOCKED=2
 
 #limitation
 MAX_NOTE_LENGTH=32768
+
+#ScheduleState in Rally
+INPROGRESS=0
+ACCEPTED=1
+COMPLETED=2

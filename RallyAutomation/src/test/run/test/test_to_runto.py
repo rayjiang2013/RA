@@ -223,7 +223,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)        
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")        
         '''
         def fin():
             try:                
@@ -275,7 +275,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")            
 
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict[0][0] == constants.FAILED and re.match(expected, verdict[0][1])
@@ -299,7 +299,7 @@ class TestTOrunTO:
         search_path=tc.Name
 
         with pytest.raises(Exception) as excinfo:
-            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
             
         assert expected in excinfo.value.message     
         
@@ -323,7 +323,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")            
 
         assert verdict == expected
 
@@ -343,7 +343,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
@@ -364,7 +364,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
@@ -385,7 +385,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
@@ -406,13 +406,13 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
 
     
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}||200||id|||GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')])])
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}|queue[name]|200||id|{"name":"$queue[name]","id":"$id"}||GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')])])
     def test_testobject_runtc_CreateQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_CreateQueue <============================ actual test code'      
 
@@ -428,12 +428,12 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/av_queues|||200|{"name":"$queue_name","id":"$id[2]"}|||||||DeleteQueue(/CreateQueue);logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/av_queues|||200|{"name":"$queue_name","id":"$id[2]"}|||||||DeleteQueue(/CreateQueue);logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}|||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
     def test_testobject_runtc_GetQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_GetQueue  <============================ actual test code'      
 
@@ -449,12 +449,12 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/av_queues/$id[2]|||200|{"id":"$id[2]"}|||||||logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/av_queues/$id[2]|||200|{"id":"$id[2]"}|||||||logout|||||login;GetChassis;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]}|||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
     def test_testobject_runtc_DeleteQueue(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
         print 'test_testobject_runtc_DeleteQueue  <============================ actual test code'      
 
@@ -470,10 +470,29 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,[],None,search_path,None)
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
         
         assert verdict == expected
 
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('GET|/av_queues|||200|{"name":"$queue_name","id":"$id[2]"};{"name":"$queue_name_2","id":"$id[3]"}|||||||DeleteQueue(/CreateQueue[0]);DeleteQueue(/CreateQueue[1]);logout|||||login;GetChassis;CreateQueue;CreateQueue||{"user[email]":"$admin_email","user[password]":"$admin_password"};;{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]"]};{"queue[name]":"$queue_name_2","queue[port_groups][]":["$port_group_id[1][3]"]}||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])])
+    def test_testobject_runtc_GetQueues(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_GetQueues  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        
+        assert verdict == expected
     
     
     def test_testobject_runto_equal_formattedid(self,config_class):
