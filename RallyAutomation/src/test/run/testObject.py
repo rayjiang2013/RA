@@ -298,25 +298,6 @@ class testObject(object):
                     for api_call,api_json_request in zip(api_list,api_json_requst_lst):                        
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_call:
-                                '''
-                                if '$' in api_json_request:
-                                    if parrent_tc!=None:
-                                        rep_status,api_json_request,varbs,missing_varbs=self.helper_obj.rep(api_json_request,variable_value_dict,tc.Name,parrent_tc.Name,steps_type,search_path,setup_calls,search_index)
-                                    if parrent_tc==None:
-                                        rep_status,api_json_request,varbs,missing_varbs=self.helper_obj.rep(api_json_request,variable_value_dict,tc.Name,"",steps_type,search_path,setup_calls,search_index)
-                                    if rep_status==False:
-                                        missing_varbs_string=missing_varbs[0]
-                                        for i in missing_varbs:
-                                            if len(missing_varbs)==1:                                    
-                                                break
-                                            if missing_varbs.index(i)>0:
-                                                missing_varbs_string=missing_varbs_string+", "+i
-                                        #raise Exception("The test case %s for build %s in test set %s is failed to setup because %s in extra.json is not defined." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,varbs[-1]))
-                                        #if len(missing_varbs)==1:
-                                        self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
-                                        verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
-                                        return verdict,lst,variable_value_dict                                                 
-                                '''     
                                 rep_status,new_api_json_request,varbs,missing_varbs,missing_varbs_string=self.helper_obj.repOneJSONRequest(api_json_request,variable_value_dict,tc,parrent_tc,steps_type,search_path,setup_calls,search_index)
                                 lst[constants.INDEXES_SUP[2]]=lst[constants.INDEXES_SUP[2]].replace(api_json_request,new_api_json_request,1)
                                 if rep_status==False:
@@ -329,8 +310,8 @@ class testObject(object):
                                 tc_api_list.append(tc_api)
                                 break
                         else:
-                            self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the api call is unexpected." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
-                            verdict.append((constants.BLOCKED,"fail to setup as the api call is unexpected"))                
+                            self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,api_call,apits_id))    
+                            verdict.append((constants.BLOCKED,"fail to setup because the api level test case name %s cannot be found in API test set %s" % (api_call,apits_id)))                
                             return verdict,lst,variable_value_dict 
                         
                 if r_stp!=None:
@@ -378,15 +359,6 @@ class testObject(object):
                 else:
                     self.logger.debug("The test case %s for build %s in test set %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID))    
                     verdict.append((constants.SUCCESS,"the test case is setup successfully"))                   
-                '''
-                for verdict_api in verdict_api_list:
-                    if verdict_api != None:
-                        if verdict_api[0][0]!=1:
-                            self.logger.debug("The test case %s for build %s in test set %s is failed to setup because the restful api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
-                            verdict.append((constants.BLOCKED,"fail to setup as the restful api level test case %s (%s) failed: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])))
-                            return verdict,lst,variable_value_dict  
-                '''             
-
                     
             return verdict,lst,variable_value_dict 
         except Exception, details:
@@ -875,13 +847,49 @@ class testObject(object):
                     apits_id=self.data['apits']['FormattedID']
                     ts_obj=testSet(self.rally,self.data)
                     ts_api=ts_obj.getTSByID(apits_id)[0]
+
+                    api_list=lst[constants.INDEXES_VER[2]].split(';')
+                    expected_json_list=lst[constants.INDEXES_VER[0]].split(';')
+                    
+                    if len(api_list)>len(expected_json_list):
+                        append_num=len(api_list)-len(expected_json_list)
+                        append_num_indx=0
+                        while append_num_indx<append_num:
+                            expected_json_list.append('')
+                            append_num_indx+=1             
+                    if len(api_list)<len(expected_json_list):    
+                        #raise Exception("The test case %s for build %s is failed to cleanup because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))
+                        self.logger.debug("The test case %s for build %s is failed to verify because there are more number of expected json response than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))    
+                        verdict[-1]=(constants.FAILED,verdict[-1][1]+"; verification failed, error: fail to verify as there are more number of expected json response than that of api call")            
+                        return verdict
                     
                     verdict_api=None
-                    for tc_api in ts_api.TestCases:
-                        if tc_api.Name==lst[constants.INDEXES_VER[2]]:
-                            verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index,lst[constants.INDEXES_VER[0]])
-                            break
-                    
+                    verdict_api_list=[]
+                    tc_api_list=[]
+                    missing_api_call_list=[]
+                    for api_call,expected_json in zip(api_list,expected_json_list):                       
+                        for tc_api in ts_api.TestCases:
+                            if tc_api.Name==api_call:
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index,expected_json)
+                                verdict_api_list.append(verdict_api)
+                                tc_api_list.append(tc_api)
+                                break
+                        else:
+                            missing_api_call_list.append(api_call) #append the api call that cannot be found in api level test set
+                            
+                    if len(missing_api_call_list)>0:
+                        missing_count=0
+                        for missing_api_call in missing_api_call_list:
+                            if missing_count==0:
+                                verdict[-1]=(constants.FAILED,verdict[-1][1]+'; verification failed, error: the api level test case name %s cannot be found in API test set %s' % (missing_api_call,apits_id))
+                                self.logger.debug("The test case %s for build %s is failed to verify because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],missing_api_call,apits_id))                           
+                            else:
+                                verdict[-1]=(constants.FAILED,verdict[-1][1]+', the api level test case name %s cannot be found in API test set %s' % (missing_api_call,apits_id))
+                                self.logger.debug("The test case %s for build %s is failed to verify because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],missing_api_call,apits_id))                           
+                                
+                            missing_count+=1
+                                        
+                    '''
                     if verdict_api!=None:
                         if verdict_api[0][0]==1:
                             verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; verification is successful.')
@@ -893,8 +901,37 @@ class testObject(object):
                     else:
                         verdict[-1]=(constants.FAILED,verdict[-1][1]+'; verification failed, error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
                         self.logger.debug("The test case %s for build %s is failed to verify because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],lst[constants.INDEXES_VER[2]],apits_id))   
+                    '''
+                    #check each verdict_api to update the overall verdict                   
+                    if len(verdict_api_list)>0:
+                        num=0
+                        while num < len(verdict_api_list):
+                            if num==0:
+                                #if verdict_api_list[num] != None:
+                                if verdict_api_list[num][-1][0]!=constants.SUCCESS:
+                                    self.logger.debug("The test case %s for build %s is failed to verify because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api_list[num].FormattedID,tc_api_list[num].Name,verdict_api_list[num][-1][1]))   
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+"; verification failed, error: the api level test case %s failed: %s" % (tc_api_list[num].Name,verdict_api_list[num][-1][1]))
+                                '''
+                                else:
+                                    self.logger.debug("The test case %s for build %s is setup successfully." % (tc.FormattedID,self.data["ts"]["Build"]))    
+                                    verdict.append((constants.SUCCESS,"the test case is setup successfully"))  
+                                '''
+                            else:
+                                #if verdict_api_list[num] != None:
+                                if verdict_api_list[num][-1][0]!=constants.SUCCESS:
+                                    self.logger.debug("The test case %s for build %s is failed to verify because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api_list[num].FormattedID,tc_api_list[num].Name,verdict_api_list[num][-1][1]))   
+                                    verdict[-1]=(constants.FAILED,verdict[-1][1]+", the api level test case %s failed: %s" % (tc_api_list[num].Name,verdict_api_list[num][-1][1]))
+    
+                            num+=1
+                    '''
+                    else:
+                        verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; verification is successful.')
+                        self.logger.debug("The test execution of test case %s for build %s is verified to be successfully." % (tc.FormattedID,self.data["ts"]["Build"]))     
+                    '''
+                if verdict[-1][0]==constants.SUCCESS:
+                    verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; verification is successful.')
+                    self.logger.debug("The test execution of test case %s for build %s is verified to be successfully." % (tc.FormattedID,self.data["ts"]["Build"]))      
                         
-                    
             return verdict
         except Exception, details:
             #x=inspect.stack()

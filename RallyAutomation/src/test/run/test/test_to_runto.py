@@ -183,7 +183,7 @@ class TestTOrunTO:
                                                   ('DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u'the test case is setup successfully; execution is successful; status code unexpected. The unexpected status code of the response is 404')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, u'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the api call is unexpected')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup because the api level test case name UNEXPECTED cannot be found in API test set TS1103')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
                                                   ('DELETE|/logout|||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u"the test case is setup successfully; execution is successful; status code expected but first level check failed. Error: 'okay' : True in content of response is different from the expected.")]),
                                                   ('DELETE|/logout|||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'the test case is setup successfully; execution is successful; status code is expected to be digits instead of something else: UNEXPECTED')]),
@@ -494,6 +494,29 @@ class TestTOrunTO:
         
         assert verdict == expected
     
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]", "$port_group_id[1][3]"]}|queue[name]|200||id|{"name":"$queue[name]","id":"$id"};{"name":"$queue[name]","id":"$id"}||GetQueues|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||',[(constants.FAILED,'the test case is setup successfully; execution is successful; status code expected without first level check; verification failed, error: fail to verify as there are more number of expected json response than that of api call')]),
+                                                           ('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]", "$port_group_id[1][3]"]}|queue[name]|200||id|||GetQueues;GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||',[(constants.FAILED,"the test case is setup successfully; execution is successful; status code expected without first level check; verification failed, error: the api level test case GetQueues failed: execution is successful;  'name' : {'1': u'B', '0': u'A', '2': u'test'} in content of response is different from the expected.")]),
+                                                           ('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]", "$port_group_id[1][3]"]}|queue[name]|200||id|{"name":"$queue[name]","id":"$id"}||GetQueues;GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')]),
+                                                           ('POST|/av_queues|{"queue[name]":"$queue_name","queue[port_groups][]":["$port_group_id[1][2]", "$port_group_id[1][3]"]}|queue[name]|200||id|{"name":"$queue[name]","id":"$id"};{"name":"$queue[name]","id":"$id"}||GetQueues;GetQueue|||DeleteQueue;logout|||||login;GetChassis||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected without first level check; verification is successful.')])])
+    def test_testobject_runtc_CreateQueueMultplePorts(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_CreateQueueMultplePorts  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        
+        assert verdict == expected
+
     
     def test_testobject_runto_equal_formattedid(self,config_class):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
