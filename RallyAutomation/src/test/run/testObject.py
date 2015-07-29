@@ -304,7 +304,7 @@ class testObject(object):
                                     self.logger.debug("The test case %s for build %s in test set %s is failed to setup because %s is/are not defined in extra.json or pre-defined local variables." % (tc.FormattedID,self.data["ts"]["Build"],ts.FormattedID,missing_varbs_string))    
                                     verdict.append((constants.BLOCKED,"fail to setup as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
                                     return verdict,lst,variable_value_dict         
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,new_api_json_request,tc,search_path,search_index,lst[constants.INDEXES_SUP[4]])
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,new_api_json_request,tc,search_path,search_index,lst[constants.INDEXES_SUP[4]],[])
                                 #variable_value_dict_dict.setdefault(api_call,[]).append(variable_value_dict)
                                 verdict_api_list.append(verdict_api)
                                 tc_api_list.append(tc_api)
@@ -372,10 +372,12 @@ class testObject(object):
         
             
     #Test execution
-    def executor(self,lst,tc,s_ession,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index):
+    def executor(self,lst,tc,s_ession,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index,FLC_to_sub):
         try:
+            tc_type=constants.API_LVL_TC #tc type is api by default
             setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             local_variable_dict={}
+            r=None
             if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
                 pass 
                 #verdict[-1]=(verdict[-1][0],verdict[-1][1]+'; execution is successful')  
@@ -388,6 +390,9 @@ class testObject(object):
 
             if len(request_to_sub)!=0:
                 lst[constants.INDEXES_EXE[2]]=request_to_sub
+
+            if len(FLC_to_sub)!=0:
+                lst[constants.INDEXES_FLC[0]:constants.INDEXES_FLC[len(constants.INDEXES_FLC)-1]+1]=FLC_to_sub
             
             missing_varbs_string=""
             for idx in constants.INDEXES_EXE:
@@ -411,9 +416,154 @@ class testObject(object):
                         if steps_type==constants.STEPS_EXE_FLC_VER:
                             verdict[-1]=(constants.BLOCKED,"fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string)
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as %s is/are not defined in extra.json or pre-defined local variables" % missing_varbs_string))
-                        return verdict,lst,variable_value_dict,None,False,search_path  
+                        return verdict,lst,variable_value_dict,None,False,search_path,tc_type  
            
             json_request={}      
+            if lst[constants.INDEXES_EXE[0]] !="":
+                if lst[constants.INDEXES_EXE[1]] !="":                                     
+                    if lst[constants.INDEXES_EXE[0]] == "GET":
+                        r = s_ession.get(lst[constants.INDEXES_EXE[1]])                        
+                    elif lst[constants.INDEXES_EXE[0]] == "POST":#only support http for now, verify = false
+                        if lst[constants.INDEXES_EXE[2]]!='':
+                            json_request=json.loads(lst[constants.INDEXES_EXE[2]])
+                        #try:                    
+                            r = s_ession.post(lst[constants.INDEXES_EXE[1]],data=json_request,verify=False)
+                        #except Exception,details:
+                        else:
+                            self.logger.debug("The test case %s for build %s is blocked because JSON object to make POST request is missing" % (tc.FormattedID,self.data["ts"]["Build"]))
+                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as JSON object to make POST request is missing")
+                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make POST request is missing")
+                                #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make POST request is missing"))
+                            return verdict,lst,variable_value_dict,None,False,search_path,tc_type 
+                    elif lst[constants.INDEXES_EXE[0]] == "DELETE":
+                        r = s_ession.delete(lst[constants.INDEXES_EXE[1]])
+                    elif lst[constants.INDEXES_EXE[0]] == "PUT":#only support http for now, verify = false
+                        if lst[constants.INDEXES_EXE[2]]!='':
+                            json_request=json.loads(lst[constants.INDEXES_EXE[2]])                
+                            r = s_ession.put(lst[constants.INDEXES_EXE[1]],data=json_request,verify=False)
+                        else:
+                            self.logger.debug("The test case %s for build %s is blocked because JSON object to make PUT request is missing" % (tc.FormattedID,self.data["ts"]["Build"]))
+                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as JSON object to make PUT request is missing")
+                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make PUT request is missing")
+                                #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))
+                            return verdict,lst,variable_value_dict,None,False,search_path,tc_type                
+                    else:
+                        self.logger.debug("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])    
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
+                            #verdict.append((constants.BLOCKED,"Blocked: fail to execute as unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]]))
+                        return verdict,lst,variable_value_dict,None,False,search_path,tc_type  
+                else:
+                    #check if lst[constants.INDEXES_EXE[0]] is rest method call.
+                    if lst[constants.INDEXES_EXE[0]] == "PUT" or lst[constants.INDEXES_EXE[0]] == "GET" or lst[constants.INDEXES_EXE[0]] == "POST" or lst[constants.INDEXES_EXE[0]] == "DELETE":
+                        self.logger.debug("No path is provided")    
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as no path is provided")
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as no path is provided")
+                            #verdict.append((constants.BLOCKED,"Blocked: fail to execute as no path is provided"))
+                        return verdict,lst,variable_value_dict,None,False,search_path,tc_type   
+                    #check if lst[constants.INDEXES_EXE[0]] is api level test case, if it does run api level test case
+                    tc_type=constants.FUNC_LVL_TC
+                    
+                    apits_id=self.data['apits']['FormattedID']
+                    ts_obj=testSet(self.rally,self.data)
+                    ts_api=ts_obj.getTSByID(apits_id)[0]
+                    
+                    verdict_api=None
+                    api_tc_lst=lst[constants.INDEXES_EXE[0]].split(';')
+                    api_json_requst_lst=lst[constants.INDEXES_EXE[2]].split(';')
+                    
+                    if len(api_tc_lst)>len(api_json_requst_lst):
+                        append_num=len(api_tc_lst)-len(api_json_requst_lst)
+                        append_num_indx=0
+                        while append_num_indx<append_num:
+                            api_json_requst_lst.append('')
+                            append_num_indx+=1             
+                    if len(api_tc_lst)<len(api_json_requst_lst):    
+                        #raise Exception("The test case %s for build %s is failed to execute because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))            
+                        self.logger.debug("The test case %s for build %s is blocked to execute because there are more number of request content than that of api call" % (tc.FormattedID,self.data["ts"]["Build"]))    
+                        #verdict[-1]=(constants.FAILED,verdict[-1][1]+"; verification failed, error: fail to verify as there are more number of expected json response than that of api call")            
+                        if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                            verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as there are more number of request content than that of api call")
+                        if steps_type==constants.STEPS_EXE_FLC_VER:
+                            verdict[-1]=(constants.BLOCKED,"fail to execute as there are more number of request content than that of api call")
+                            #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))                        
+                        return (verdict,lst,variable_value_dict,None,False,search_path,tc_type)                    
+                    
+                    c=0
+                    for api_tc,api_json_request in zip(api_tc_lst,api_json_requst_lst):  
+                        ''' 
+                        #check if the api call has search path as parameter
+                        if re.match(r'\w+\(\/\w+',api_tc):
+                            if re.match(r'\w+\(\/\w+\[\d+\]', api_tc):
+                                search_path_append=re.match(r'\w+\((\/\w+)\[\d+\]', api_tc).group(1)
+                                if c==0:
+                                    search_path=search_path+search_path_append
+                                    c+=1
+                                search_index=re.match(r'\w+\(\/\w+\[(\d+)\]', api_tc).group(1)
+                                api_tc=re.match(r'(\w+)\(\/\w+\[\d+\]', api_tc).group(1) 
+                            else:
+                                search_path_append=re.match(r'\w+\((\/\w+)\)', api_tc).group(1)
+                                if c==0:
+                                    search_path=search_path+search_path_append
+                                    c+=1
+                                api_tc=re.match(r'(\w+)\(\/\w+\)', api_tc).group(1)     
+                                search_index=None       
+                        '''         
+                        for tc_api in ts_api.TestCases:
+                            if tc_api.Name==api_tc:
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index,lst[constants.INDEXES_CLU[4]],lst[constants.INDEXES_FLC[0]:constants.INDEXES_FLC[len(constants.INDEXES_FLC)-1]+1])
+                                if verdict_api!=None:
+                                    if verdict_api[0][0]==constants.SUCCESS:
+                                        #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
+                                        self.logger.debug("The test execution of test case %s for build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))       
+                                    else:
+                                        if verdict_api[0][0]==constants.BLOCKED:
+                                            #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
+                                            #raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
+                                            #return False,lst    
+                                            self.logger.debug("The test case %s for build %s is blocked to execute because the api level test case %s (%s) is blocked: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))    
+                                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                                verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as the api level test case %s (%s) is blocked: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])) 
+                                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                                verdict[-1]=(constants.BLOCKED,"fail to execute as the api level test case %s (%s) is blocked: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])) 
+                                                #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))                        
+                                        elif verdict_api[0][0]==constants.FAILED:   
+                                            self.logger.debug("The test case %s for build %s failed to execute because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))    
+                                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                                verdict[-1]=(constants.FAILED,verdict[-1][1]+"; fail to execute as the api level test case %s (%s) failed: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])) 
+                                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                                verdict[-1]=(constants.FAILED,"fail to execute as the api level test case %s (%s) failed: %s" % (tc_api.FormattedID,tc_api.Name,verdict_api[0][1])) 
+                                                #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))                        
+                                        return (verdict,lst,variable_value_dict,None,False,search_path,tc_type)                                                                    
+                                break         
+                        else:
+                            #verdict[-1]=(constants.BLOCKED,'Failure: verification failed. Error: the api level test case name %s cannot be found in API test set %s' % (lst[constants.INDEXES_VER[2]],apits_id))
+                            #raise Exception("The test case %s for build %s is failed to clean up because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],api_tc,apits_id))   
+                            self.logger.debug("The test case %s for build %s is blocked to execute because the api level test case name %s cannot be found in API test set %s" % (tc.FormattedID,self.data["ts"]["Build"],api_tc,apits_id))    
+                            #verdict[-1]=(constants.FAILED,verdict[-1][1]+"; verification failed, error: fail to verify as there are more number of expected json response than that of api call")            
+                            if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                                verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as the api level test case name %s cannot be found in API test set %s" % (api_tc,apits_id))   
+                            if steps_type==constants.STEPS_EXE_FLC_VER:
+                                verdict[-1]=(constants.BLOCKED,"fail to execute as the api level test case name %s cannot be found in API test set %s" % (api_tc,apits_id))
+                                #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))                        
+                            return (verdict,lst,variable_value_dict,None,False,search_path,tc_type)                       
+            else:
+                self.logger.debug("No execution method is provided")  
+                if steps_type==constants.STEPS_SUP_EXE_FLC_VER or steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU:
+                    verdict[-1]=(constants.BLOCKED,verdict[-1][1]+"; fail to execute as no execution method is provided")
+                if steps_type==constants.STEPS_EXE_FLC_VER:
+                    verdict[-1]=(constants.BLOCKED,"fail to execute as no execution method is provided")
+                    #verdict.append((constants.BLOCKED,"Blocked: fail to execute as no execution method is provided"))               
+                return verdict,lst,variable_value_dict,None,False,search_path,tc_type 
+            '''            
             if lst[constants.INDEXES_EXE[1]] !="":                                     
                 if lst[constants.INDEXES_EXE[0]] == "GET":
                     r = s_ession.get(lst[constants.INDEXES_EXE[1]])                        
@@ -444,7 +594,7 @@ class testObject(object):
                         if steps_type==constants.STEPS_EXE_FLC_VER:
                             verdict[-1]=(constants.BLOCKED,"fail to execute as JSON object to make PUT request is missing")
                             #verdict.append((constants.BLOCKED,"Blocked: fail to execute as JSON object to make PUT request is missing"))
-                        return verdict,lst,variable_value_dict,None,False,search_path                   
+                        return verdict,lst,variable_value_dict,None,False,search_path                     
                 else:
                     #raise Exception("Unexpected execution method: %s" % lst[constants.INDEXES_EXE[0]])
                     if lst[constants.INDEXES_EXE[0]]=="":
@@ -469,11 +619,10 @@ class testObject(object):
                 if steps_type==constants.STEPS_EXE_FLC_VER:
                     verdict[-1]=(constants.BLOCKED,"fail to execute as no path is provided")
                     #verdict.append((constants.BLOCKED,"Blocked: fail to execute as no path is provided"))
-                return verdict,lst,variable_value_dict,None,False,search_path  
-
-            #variables to save     
-                               
-            if r.content!="":
+                return verdict,lst,variable_value_dict,None,False,search_path                  
+            '''    
+            #variables to save                                    
+            if r!=None and r.content!="":
                 r_ver_content=deepcopy(json.loads(r.content))
     
                 if lst[constants.INDEXES_FLC[2]]!="":
@@ -646,7 +795,7 @@ class testObject(object):
                   
                 self.logger.debug("The test case %s for build %s is successfully executed." % (tc.FormattedID,self.data["ts"]["Build"]))     
                
-            return (verdict,lst,variable_value_dict,r_ver_content,r,search_path) 
+            return (verdict,lst,variable_value_dict,r_ver_content,r,search_path,tc_type) 
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
@@ -664,6 +813,7 @@ class testObject(object):
             setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             if len(response_to_sub)!=0:
                 lst[constants.INDEXES_FLC[1]]=response_to_sub
+
             '''
             r_ver_content=deepcopy(json.loads(r.content))
             #save values in response into variables
@@ -717,11 +867,11 @@ class testObject(object):
                 self.logger.debug("The test case %s for build %s failed to pass first level check because status code is expected to be digits instead of something else: %s" % (tc.FormattedID,self.data["ts"]["Build"],lst[constants.INDEXES_FLC[0]]))    
                 #return verdict,variable_value_dict                  
             
-            elif (lst[constants.INDEXES_FLC[0]].isdigit()) and r.status_code != int(lst[constants.INDEXES_FLC[0]]):
+            elif (r!=None and lst[constants.INDEXES_FLC[0]].isdigit()) and r.status_code != int(lst[constants.INDEXES_FLC[0]]):
                 #Run Env Sanity Check
                 #to_obj=testObject(self.rally,self.data)       
                 if self.sanityCheck():
-                    verdict[-1]=(constants.FAILED,verdict[-1][1]+'; status code unexpected. The unexpected status code of the response is %s' % r.status_code) 
+                    verdict[-1]=(constants.FAILED,verdict[-1][1]+'; status code unexpected: the unexpected status code of the response is %s' % r.status_code) 
                     self.logger.debug("Test case %s, build %s failed because status code unexpected. The unexpected status code of the response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.status_code))                       
                     #return verdict
                 else:    
@@ -870,7 +1020,7 @@ class testObject(object):
                     for api_call,expected_json in zip(api_list,expected_json_list):                       
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_call:
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index,expected_json)
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,lst[constants.INDEXES_VER[3]],tc,search_path,search_index,expected_json,[])
                                 verdict_api_list.append(verdict_api)
                                 tc_api_list.append(tc_api)
                                 break
@@ -1025,11 +1175,11 @@ class testObject(object):
                                 search_index=None                
                         for tc_api in ts_api.TestCases:
                             if tc_api.Name==api_tc:
-                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index,lst[constants.INDEXES_CLU[4]])
+                                verdict_api,variable_value_dict=self.runTC(tc_api, [], ts_api,constants.STEPS_EXE_FLC_VER,variable_value_dict,s_ession,api_json_request,tc,search_path,search_index,lst[constants.INDEXES_CLU[4]],[])
                                 if verdict_api!=None:
                                     if verdict_api[0][0]==constants.SUCCESS:
                                         #verdict[-1]=(verdict[-1][0],verdict[-1][1]+' Verification is successful.')
-                                        self.logger.debug("The test cleanup of test case %s for build %s is successfully." % (tc.FormattedID,self.data["ts"]["Build"]))       
+                                        self.logger.debug("The test cleanup of test case %s for build %s is successful." % (tc.FormattedID,self.data["ts"]["Build"]))       
                                     else:
                                         #verdict[-1]=(constants.FAILED,'Failure: verification failed. Error: the api level test case %s is %s' % (tc_api.Name,verdict_api[0][1]))
                                         raise Exception("The test case %s for build %s is failed to cleanup because the api level test case %s (%s) failed: %s" % (tc.FormattedID,self.data["ts"]["Build"],tc_api.FormattedID,tc_api.Name,verdict_api[0][1]))   
@@ -1060,18 +1210,18 @@ class testObject(object):
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
-                #print Exception,details
+                print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
     
     #run a single test case
-    def runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s,request_to_sub,parrent_tc,search_path,search_index,response_to_sub):
+    def runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s,request_to_sub,parrent_tc,search_path,search_index,response_to_sub,FLC_to_sub):
         if steps_type==constants.STEPS_SUP_EXE_FLC_VER_CLU: #1 means run through all steps
             lst=tc.c_QATCPARAMSTEXT.split('|')
             #s = requests.session()
             verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc,steps_type,search_index)
             if verdict[-1][0]==constants.SUCCESS:
-                (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index)
+                (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path,tc_type)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index,FLC_to_sub)
                 '''
                 if verdict[-1][0]==constants.FAILED:
                     #verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
@@ -1083,7 +1233,10 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                    if tc_type==constants.FUNC_LVL_TC:
+                        pass
+                    else:
+                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
@@ -1097,7 +1250,7 @@ class testObject(object):
             #s = requests.session()
             verdict,lst,variable_value_dict=self.setup(lst, tc, testset_under_test, s,variable_value_dict,verdict,search_path,parrent_tc,steps_type,search_index)
             if verdict[-1][0]==constants.SUCCESS:
-                (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index)
+                (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path,tc_type)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index,FLC_to_sub)
                 '''
                 if verdict[-1][0]==constants.FAILED:
                     #verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
@@ -1109,7 +1262,10 @@ class testObject(object):
                     self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
                 #elif verdict[-1][0]==constants.SUCCESS:
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                    if tc_type==constants.FUNC_LVL_TC:
+                        pass
+                    else:
+                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1123,7 +1279,7 @@ class testObject(object):
             #s = requests.session()
             #setup_result,lst=self.setup(lst, tc, testset_under_test, s)
             #if setup_result==True:
-            (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index)
+            (verdict,lst_of_par,variable_value_dict,r_ver_content,response,search_path,tc_type)=self.executor(lst,tc,s,variable_value_dict,request_to_sub,verdict,steps_type,parrent_tc,search_path,search_index,FLC_to_sub)
             '''
             if verdict[-1][0]==constants.FAILED:
                 #verdict.append((constants.FAILED,'Failed: the test case failed because execution step failed'))
@@ -1135,7 +1291,10 @@ class testObject(object):
                 self.logger.debug("The test case %s is blocked for build %s, will skip it." % (tc.FormattedID,self.data["ts"]["Build"]))                                        
             #elif verdict[-1][0]==constants.SUCCESS:
             else:
-                verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                if tc_type==constants.FUNC_LVL_TC:
+                    pass
+                else:
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
                 if verdict[-1][0]==constants.SUCCESS:
                     verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1177,7 +1336,7 @@ class testObject(object):
                             variable_value_dict.setdefault(tc.Name,[]).append({})                            
                             variable_value_dict[tc.Name]=self.helper_obj.remove_number_key_of_dict(self.helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
                             search_path=tc.Name
-                            verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"")
+                            verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"",[])
                             if verdict[-1][0]==constants.BLOCKED:
                                 verdict[-1]=(verdict[-1][0],"Blocked: "+verdict[-1][1])
                             if verdict[-1][0]==constants.SUCCESS:
@@ -1192,7 +1351,7 @@ class testObject(object):
                     variable_value_dict.setdefault(tc.Name,[]).append({})
                     variable_value_dict[tc.Name]=self.helper_obj.remove_number_key_of_dict(self.helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
                     search_path=tc.Name
-                    verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"")
+                    verdict,variable_value_dict=self.runTC(tc, verdict, testset_under_test,constants.STEPS_SUP_EXE_FLC_VER_CLU,variable_value_dict,s,"",None,search_path,None,"",[])
                     if verdict[-1][0]==constants.BLOCKED:
                         verdict[-1]=(verdict[-1][0],"Blocked: "+verdict[-1][1])
                     if verdict[-1][0]==constants.SUCCESS:
