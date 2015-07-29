@@ -27,3 +27,7 @@ MAX_NOTE_LENGTH=32768
 INPROGRESS=0
 ACCEPTED=1
 COMPLETED=2
+
+#functional test case or api test case
+FUNC_LVL_TC=0
+API_LVL_TC=1

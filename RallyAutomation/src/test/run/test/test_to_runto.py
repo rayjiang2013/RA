@@ -175,16 +175,16 @@ class TestTOrunTO:
             print details
             sys.exit(1)    
 
-    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',[(constants.SUCCESS,u'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')]),
-                                                           ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),#this case is expected to fail
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u'the test case is setup successfully; execution is successful; status code unexpected: the unexpected status code of the response is 404')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, u'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup because the api level test case name UNEXPECTED cannot be found in API test set TS1103')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
                                                   ('NONEXIST|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED,'the test case is setup successfully; fail to execute as unexpected execution method: NONEXIST')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login|||||||||||||||||||||||||||||||||',[(constants.SUCCESS,u'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')]),
+                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"wrong_user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),#this case is expected to fail
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED,'fail to setup as nonexist is/are not defined in extra.json or pre-defined local variables')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.SUCCESS,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; no verification is done.')]),
-                                                  ('DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u'the test case is setup successfully; execution is successful; status code unexpected. The unexpected status code of the response is 404')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, u'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","wrong_key":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||UNEXPECTED||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup because the api level test case name UNEXPECTED cannot be found in API test set TS1103')]),
-                                                  ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$nonexist_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
                                                   ('DELETE|/logout|||200|{"okay":false}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u"the test case is setup successfully; execution is successful; status code expected but first level check failed. Error: 'okay' : True in content of response is different from the expected.")]),
                                                   ('DELETE|/logout|||UNEXPECTED|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, 'the test case is setup successfully; execution is successful; status code is expected to be digits instead of something else: UNEXPECTED')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.SUCCESS,'the test case is setup successfully; execution is successful; status code expected and first level check succeed; no verification is done.')])
@@ -223,7 +223,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")        
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])        
         '''
         def fin():
             try:                
@@ -240,7 +240,7 @@ class TestTOrunTO:
         assert verdict==expected
 
     @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('NONEXIST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unexpected execution method: NONEXIST')]),
-                                                    ('POST|/nonexist|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code unexpected. The unexpected status code of the response is 404')]),
+                                                    ('POST|/nonexist|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code unexpected: the unexpected status code of the response is 404')]),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',r"as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case GetCurrentUser failed: execution is successful; id, email, role is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'id' : \w+ in content of response is different from the expected. 'role' : admin in content of response is different from the expected. 'email' : admin@spirent.com in content of response is different from the expected."),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,"as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case GetCurrentUser failed: execution is successful; role is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'role' : admin in content of response is different from the expected.")]),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}||200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,"as not enough setup information is provided, the test setup is skipped; execution is successful; user[email] is/are not defined in extra.json or pre-defined local variables; status code expected but first level check failed. Error: 'email' : admin@spirent.com in content of response is different from the expected.")]),
@@ -250,14 +250,14 @@ class TestTOrunTO:
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|UNEXPECTED|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code is expected to be digits instead of something else: UNEXPECTED')]),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.SUCCESS,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification is successful.')]),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||UNEXPECTED|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; execution is successful; status code expected and first level check succeed; verification failed, error: the api level test case name UNEXPECTED cannot be found in API test set TS1103')]),
-                                                  ('POST|/login|{"wrong_key":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),  #This is expected fail
+                                                  ('POST|/login|{"wrong_key":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),  #This is expected fail
                                                   ('POST||{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,'as not enough setup information is provided, the test setup is skipped; fail to execute as no path is provided')]),
                                                   ('|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,'as not enough setup information is provided, the test setup is skipped; fail to execute as no execution method is provided')]),
                                                   ('POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]||{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,u'as not enough setup information is provided, the test setup is skipped; execution is successful; status code is expected to be digits instead of something else: ')]),                                                  
-                                                  ('POST|/login|{"user[email]":"$nonexist_email","user[password]":"nonexist_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
+                                                  ('POST|/login|{"user[email]":"$nonexist_email","user[password]":"nonexist_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
                                                   ('POST|/login||user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.BLOCKED,'as not enough setup information is provided, the test setup is skipped; fail to execute as JSON object to make POST request is missing')]),
-                                                  ('POST|/login|{"user[email]":"$admin_email"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')]),
-                                                  ('POST|/login|{"user[email]":"","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected. The unexpected status code of the response is 401')])
+                                                  ('POST|/login|{"user[email]":"$admin_email"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
+                                                  ('POST|/login|{"user[email]":"","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||',[(constants.FAILED,'as not enough setup information is provided, the test setup is skipped; fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')])
                                                   ])    
     def test_testobject_runtc_login(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,request,expected):
         print 'test_testobject_runtc_login  <============================ actual test code'                                   
@@ -275,7 +275,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])            
 
         if c_QATCPARAMSTEXT=='POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}||||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||':
             assert verdict[0][0] == constants.FAILED and re.match(expected, verdict[0][1])
@@ -299,7 +299,7 @@ class TestTOrunTO:
         search_path=tc.Name
 
         with pytest.raises(Exception) as excinfo:
-            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+            to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
             
         assert expected in excinfo.value.message     
         
@@ -323,7 +323,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")            
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])            
 
         assert verdict == expected
 
@@ -343,7 +343,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -364,7 +364,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -385,7 +385,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -406,7 +406,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -428,7 +428,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -449,7 +449,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -470,7 +470,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
@@ -490,7 +490,7 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
     
@@ -513,7 +513,28 @@ class TestTOrunTO:
         variable_value_dict.setdefault(tc.Name,[]).append({})
         variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
         search_path=tc.Name
-        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"")
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
+        
+        assert verdict == expected
+
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('login||{"user[email]":"$nonexist_email","user[password]":"$nonexist_password"}||401|{"field":"email","message":"There is no user with this email."}||{"okay":true,"current_user":null}||GetCurrentUser|||logout||||||||||||||||||||',[(constants.SUCCESS,'as not enough setup information is provided, the test setup is skipped; execution is successful; verification is successful.')])])
+    def test_testobject_runtc_LoginNonexistentUser(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_LoginNonexistentUser  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
         
         assert verdict == expected
 
