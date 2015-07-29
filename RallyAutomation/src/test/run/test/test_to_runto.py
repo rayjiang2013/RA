@@ -545,7 +545,7 @@ class TestTOrunTO:
         new_data=(to_obj.runTO(ts))[1]
         assert ts.FormattedID==new_data['ts']['FormattedID']
         
-    def test_testobject_runto_same_verdict_size(self,config_class,test_config_module):
+    def test_testobject_runto_same_verdict_size(self,config_class):
         print 'test_testobject_runto_same_verdict_size  <============================ actual test code'
         (ts,to_obj)=config_class[0:2]
         verd=(to_obj.runTO(ts))[0]
