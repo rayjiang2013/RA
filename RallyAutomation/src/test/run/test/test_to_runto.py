@@ -538,6 +538,27 @@ class TestTOrunTO:
         
         assert verdict == expected
 
+    @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('login||{"user[email]":"$admin_email","user[password]":"$wrong_password"}||401|{"field":"password","message":"The password is incorrect."}||{"okay":true,"current_user":null}||GetCurrentUser||logout|||||||||||||||||||||||',[(constants.SUCCESS,'as not enough setup information is provided, the test setup is skipped; execution is successful; verification is successful.')])])
+    def test_testobject_runtc_LoginWrongPW(self,config_test_testobject_runtc,c_QATCPARAMSTEXT,test_config_module,expected):
+        print 'test_testobject_runtc_LoginWrongPW  <============================ actual test code'      
+
+        rally=test_config_module[0]
+        
+        new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj=config_test_testobject_runtc  
+
+        data_to_runtc['tc'].update({"FormattedID":tc.FormattedID,"c_QATCPARAMSTEXT":c_QATCPARAMSTEXT})
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.updateTC()      
+
+        s = requests.session()
+        variable_value_dict={}
+        variable_value_dict.setdefault(tc.Name,[]).append({})
+        variable_value_dict[tc.Name]=helper_obj.remove_number_key_of_dict(helper_obj.list_to_dict(variable_value_dict[tc.Name])) 
+        search_path=tc.Name
+        verdict,variable_value_dict=to_obj.runTC(tc, [], new_ts, constants.STEPS_SUP_EXE_FLC_VER_CLU, variable_value_dict, s,"",None,search_path,None,"",[])
+        
+        assert verdict == expected
+
     
     def test_testobject_runto_equal_formattedid(self,config_class):
         print 'test_testobject_runto_equal_formattedid  <============================ actual test code'
