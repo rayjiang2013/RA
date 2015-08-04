@@ -1,0 +1,248 @@
+{
+"test_config" : {
+"switch_data" : {
+"portGroupAddress" : [],
+"packageName" : "l4l7Vm"
+},
+"global" : {
+"mixer" : [
+{
+"percentage" : 100,
+"protocol" : "HTTP 1.1"
+}
+],
+"ipAddressLimitations": {
+"http" : 1
+},
+"runConfiguration" : {
+"eventLogsLevel" : "4",
+"runtimestatistics|timeInterval" : "4",
+"test|client|pktTrace":"off",
+"test|client|pktTraceBytes": 5000000,
+"test|server|pktTrace": "off",
+"test|server|pktTraceBytes": 5000000
+},
+"testMode" : "Trail",
+"testType" : "Device",
+"trafficPattern" : "PAIR"
+},
+"header" : {
+"author" : "admin@spirent.com",
+"createdTime" : "DateTime",
+"description" : "Test created for Layer4-7 HTTP Bandwidth Test Template",
+"name" : "HTTP 1.1 Throughput",
+"subType" : "none",
+"system" : "Avalanche",
+"type" : "httpbandwidth",
+"updatedTime" : "DateTime"
+},
+"interfaces" : [],
+"virtual_routers" : [],
+"load" : {
+"flat_vol" : 0,
+"max" : 0,
+"conversionEnabled": false,
+"measurement" : "Bandwidth",
+"timer" : {
+"delay" : 30,
+"rampup" : 80,
+"rampdown" : 80,
+"downtime" : 30,
+"duration" : 600,
+"sample" : 4
+},
+"volume" : 0,
+"failure" : {
+"enabled": true,
+"bandwidth" : 5,
+"maxPercent": 80,
+"transactions" : 3,
+"method": "or"
+}
+},
+"network" : {
+"client" : {
+"networkprofile|fairnessThreshold" : 2147483647,
+"networkprofile|higherBoundPortRange" : 65535,
+"networkprofile|igmpSuppressReports" : "on",
+"networkprofile|igmpVersion" : 2,
+"networkprofile|ipReassemblyTimeout" : 30000,
+"networkprofile|lowerBoundPortRange" : 1024,
+"networkprofile|roundRobinDNS" : "off",
+"networkprofile|gratuitousARP" : "on",
+"networkprofile|tcpOptions|ip6MaxSegSize" : 1440,
+"networkprofile|tcpOptions|randomizePort" : "off",
+"networkprofile|tcpOptions|tcpCongestionControl" : "on",
+"networkprofile|tcpOptions|tcpVegasFlag" : "off",
+"networkprofile|tcpOptions|tcpDelayedAckBytes" : 2920,
+"networkprofile|tcpOptions|tcpDelayedAckTimeout" : 200,
+"networkprofile|tcpOptions|tcpDelayedAcks" : "on",
+"networkprofile|tcpOptions|tcpInactivityTimeout" : 70000,
+"networkprofile|tcpOptions|tcpMaxSegSize" : 1460,
+"networkprofile|tcpOptions|tcpPiggybackGet" : "off",
+"networkprofile|tcpOptions|tcpReceiveWindowSize" : 32768,
+"networkprofile|tcpOptions|tcpRetries" : 5,
+"networkprofile|tcpOptions|tcpSackOption" : "off",
+"networkprofile|tcpOptions|tcpTimeout" : 2000,
+"networkprofile|tcpOptions|tcpTimeoutOverride" : "on"
+},
+"server" : {
+"servernetworkprofile|fairnessThreshold" : 2147483647,
+"servernetworkprofile|ipReassemblyTimeout" : 30000,
+"servernetworkprofile|roundRobinDNS" : "off",
+"servernetworkprofile|gratuitousARP" : "on",
+"servernetworkprofile|tcpOptions|ip6MaxSegSize" : 1440,
+"servernetworkprofile|tcpOptions|tcpCongestionControl" : "on",
+"servernetworkprofile|tcpOptions|tcpVegasFlag" : "off",
+"servernetworkprofile|tcpOptions|randomizePort" : "off",
+"servernetworkprofile|tcpOptions|tcpDelayedAckBytes" : 2920,
+"servernetworkprofile|tcpOptions|tcpDelayedAckTimeout" : 200,
+"servernetworkprofile|tcpOptions|tcpDelayedAcks" : "on",
+"servernetworkprofile|tcpOptions|tcpInactivityTimeout" : 0,
+"servernetworkprofile|tcpOptions|tcpMaxSegSize" : 1460,
+"servernetworkprofile|tcpOptions|tcpPiggybackGet" : "off",
+"servernetworkprofile|tcpOptions|tcpReceiveWindowSize" : 32768,
+"servernetworkprofile|tcpOptions|tcpRetries" : 2,
+"servernetworkprofile|tcpOptions|tcpSackOption" : "off",
+"servernetworkprofile|tcpOptions|tcpTimeout" : 2000,
+"servernetworkprofile|tcpOptions|tcpTimeoutOverride" : "off"
+}
+},
+"protocols" : [
+{
+"name" : "HTTP 1.1",
+"protocol" : "HTTP",
+"params" : {
+"client" : {
+"action" : [{
+"LEVEL" : "1",
+"METHOD" : "GET"
+}],
+"userProfile" : {
+"userProfile|httpProtocolLevel" : "2",
+"userProfile|authType" : "None",
+"userProfile|enforceContentLength" : "off",
+"userProfile|persistence" : "on",
+"userProfile|extendedHttpHeaders|httpHeaders": ["Accept: */*","Accept-Language: en-us","Accept-Encoding: gzip, deflate, compress"],
+
+"userProfile|numberOfSimultaneousConnections": 4,
+
+"userProfile|proxy|http|maxTxnPerProxyConnection": "100",
+"userProfile|proxy|proxyUseSameServer": "off",
+
+"userProfile|reusePreloadedCookies" : "off",
+
+"userProfile|sslConfig|enableCommonNameMatching" : "off",
+"userProfile|sslConfig|sendCloseNotify" : "off",
+"userProfile|transactionsPerConnection" : 10,
+"userProfile|userAgent" : "Mozilla/4.0 (compatible MSIE 5.01; Windows NT)",
+"userProfile|vqa|lossConcealment|slicesPerIFrame" : 30
+},
+"forms": [{
+"name": "form1",
+"fileContents": "user,password",
+"generate": 500
+}]
+},
+"server" : {
+"serverProfile" : {
+"serverProfile|closeMethod" : "RST",
+"serverProfile|port" : 80,
+"serverprofile|http|httpVersion" : "2",
+"serverprofile|http|cookieExpiresDateTime": "Mon, 05 Jan 1970 00:00:00 GMT",
+"serverprofile|http|defTxnProfile": "txn_prof_http1_1",
+"serverprofile|http|maxRequests": "10",
+"serverprofile|http|serverType": "Jetty/4.2.9rc2 (SunOS/5.8 sparc java/1.4.1_04)"
+}
+},
+"transactionProfile" : {
+"transactionProfile|bodyMean" : 0,
+"transactionProfile|bodySD" : 0,
+"transactionProfile|bodyStringType" : 1,
+"transactionProfile|bodyType" : 0,
+"transactionProfile|dataType" : 1,
+
+"transactionProfile|name": "txn_prof_http1_1",
+"transactionProfile|bodyBytes": 100000,
+"transactionProfile|bodyDL": "",
+"transactionProfile|bodyFileName": "Default",
+"transactionProfile|description": "",
+"transactionProfile|fullyQualifiedPath": "",
+"transactionProfile|httpABR|bitrateLevels|level": [
+{"id": 0},
+{"id": 1},
+{"id": 2},
+{"id": 3},
+{"id": 4},
+{"id": 5},
+{"id": 6},
+{"id": 7},
+{"id": 8},
+{"id": 9}
+]
+}
+},
+"statistics" : {
+"server.http.averageTxnsPerSec" : 0,
+"server.http.txnsPerSec" : 0,
+"client.http.abortedTxnsPerSec" : 0,
+"client.http.attemptedTxnsPerSec" : 0,
+"client.http.successfulTxnsPerSec" : 0,
+"client.http.unsuccessfulTxnsPerSec" : 0,
+"client.url.averageRespTimePerUrl" : 0,
+"client.http.abortedTxns" : 0,
+"client.http.attemptedTxns" : 0,
+"client.http.successfulTxns" : 0,
+"client.http.unsuccessfulTxns" : 0,
+"client.protocolStats.HTTP1.1.inRawBw" : 0,
+"client.protocolStats.HTTP1.1.outRawBw" : 0,
+"client.protocolStats.HTTP1.1.attemptTran" : 0,
+"client.protocolStats.HTTP1.1.abortTran" : 0,
+"client.protocolStats.HTTP1.1.succTran" : 0,
+"client.protocolStats.HTTP1.1.unsuccTran" : 0,
+"client.protocolStats.HTTP1.1.openConn" : 0,
+"client.protocolStats.HTTP1.1.succConn" : 0,
+"client.protocolStats.HTTP1.1.unsuccConn" : 0
+}
+}
+],
+"slots" : [],
+"statistics" : {
+"client.timeRemaining": 0,
+"client.sum.loadspec.currentLoadSpecCount" : 0,
+"client.sum.loadspec.desiredLoadSpecCount" : 0,
+"client.sum.http.successfulTxns" : 0,
+"client.sum.http.unsuccessfulTxns" : 0,
+"client.sum.http.successfulTxnsPerSec" : 0,
+"client.sum.http.unsuccessfulTxnsPerSec" :0,
+"client.driver.rxBandwidth" : 0,
+"client.driver.rxPacketRate" : 0,
+"client.driver.txBandwidth" : 0,
+"client.driver.txPacketRate" : 0,
+"client.pktsize.In_0_64" : 0,
+"client.pktsize.In_65_128" : 0,
+"client.pktsize.In_129_256" : 0,
+"client.pktsize.In_257_512" : 0,
+"client.pktsize.In_513_1024" : 0,
+"client.pktsize.In_1025_1500" : 0,
+"client.pktsize.In_over_1500" : 0,
+"client.pktsize.Out_0_64" : 0,
+"client.pktsize.Out_65_128" : 0,
+"client.pktsize.Out_129_256" : 0,
+"client.pktsize.Out_257_512" : 0,
+"client.pktsize.Out_513_1024" : 0,
+"client.pktsize.Out_1025_1500" : 0,
+"client.pktsize.Out_over_1500" : 0,
+"client.tcp.cummulativeAttemptedConns" : 0,
+"client.tcp.cummulativeEstablishedConns" : 0,
+"client.sum.tcp.attemptedConns" : 0,
+"client.sum.tcp.currentEstablishedConns" : 0,
+"client.tcp.averageTimeToSynAck" : 0,
+"client.tcp.averageTimeToFirstByte" : 0
+},
+"subnets" : []
+}
+"test_type" : "AVALANCHE",
+"_id" : "HTTP_Bandwidth_predefined_test",
+"run_id" : "httpbandwitdh",
+}

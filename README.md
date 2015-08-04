@@ -11,3 +11,5 @@ WORKSPACE = your workspace name
 PROJECT = your project name
 
 2. then put the file into your project folder RallyAutomation/src/test/run
+
+3. run the command line option: --config=config.cfg extra.json logging.json

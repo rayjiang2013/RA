@@ -1,0 +1,1 @@
+echo 'spirent' | sudo -S python /root/git/RallyAutomation2/RallyAutomation/src/test/run/example.py --config=/root/git/RallyAutomation2/RallyAutomation/src/test/run/config.cfg "/root/git/RallyAutomation2/RallyAutomation/src/test/run/extra.json" "/root/git/RallyAutomation2/RallyAutomation/src/test/run/logging.json"

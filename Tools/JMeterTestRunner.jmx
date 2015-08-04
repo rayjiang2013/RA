@@ -1,0 +1,2056 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.8" jmeter="2.13 r1665067">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <boolProp name="TestPlan.functional_mode">true</boolProp>
+      <stringProp name="TestPlan.comments"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group-TestRunner" enabled="true">
+        <longProp name="ThreadGroup.start_time">1200525828000</longProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <longProp name="ThreadGroup.end_time">1200525828000</longProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+            <stringProp name="filename">/work/jmeter_config-v3.csv</stringProp>
+            <stringProp name="fileEncoding">ASCII</stringProp>
+            <stringProp name="variableNames">USER,PASSWORD,IP_CONTROLLER,IP_CHASSIS_01,PORT_GROUP_GROUP_ID_01,PORT_GROUP_GROUP_ID_02,PORT_GROUP_GROUP_ID_03,PORT_GROUP_GROUP_ID_04,CLIENT_SUBNET_NAME_1,SERVER_SUBNET_NAME_1,QUEUE_NAME_1,QUEUE_NAME_2</stringProp>
+            <stringProp name="delimiter">,</stringProp>
+            <boolProp name="quotedData">false</boolProp>
+            <boolProp name="recycle">true</boolProp>
+            <boolProp name="stopThread">false</boolProp>
+            <stringProp name="shareMode">shareMode.all</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${IP_CONTROLLER}</stringProp>
+            <stringProp name="HTTPSampler.port">80</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+          </ConfigTestElement>
+          <hashTree/>
+          <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+            <collectionProp name="CookieManager.cookies"/>
+            <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          </CookieManager>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Index Page" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.image_parser">true</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="user[email]" elementType="HTTPArgument">
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <stringProp name="Argument.value">${USER}</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">user[email]</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                </elementProp>
+                <elementProp name="user[password]" elementType="HTTPArgument">
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <stringProp name="Argument.value">${PASSWORD}</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">user[password]</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/login</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <URLRewritingModifier guiclass="URLRewritingModifierGui" testclass="URLRewritingModifier" testname="HTTP URL-Rewriting Modifier" enabled="true">
+              <boolProp name="path_extension">false</boolProp>
+              <boolProp name="path_extension_no_questionmark">false</boolProp>
+              <stringProp name="argument_name">_avalanche5_app_session</stringProp>
+              <boolProp name="path_extension_no_equals">false</boolProp>
+              <boolProp name="cache_value">true</boolProp>
+              <boolProp name="encode">false</boolProp>
+            </URLRewritingModifier>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetChassis" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_chassis/${IP_CHASSIS_01}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+String matched    = &quot;&quot;;
+M_START    = 1;
+M_END      = 10; 
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+targetPortGroupId = vars.get(&quot;PORT_GROUP_GROUP_ID_01&quot;);
+log.info(&quot;PORT_GROUP_GROUP_ID_01: &quot; + targetPortGroupId);
+log.info(&quot;\n\n\n  ------------------------   END CSV   ------------------------ \n\n&quot;);
+
+if( items.isArray() ) {
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+	available_PortGroupId = &quot;&quot;;
+
+	av_portGroup_1 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(0);
+	av_portGroup_GroupId_1 = av_portGroup_1.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_1.group_id = &quot; + av_portGroup_GroupId_1);
+	av_portGroup_Id_1 = av_portGroup_1.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.id = &quot; + av_portGroup_Id_1);
+	reserveState_1 = av_portGroup_1.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_1.reserve_state = &quot; + reserveState_1);
+	log.info(&quot;\n&quot;);
+	av_ports_PortId_1_1 = av_portGroup_1.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].port_id = &quot; + av_ports_PortId_1_1);
+	av_ports_Id_1_1 = av_portGroup_1.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].id = &quot; + av_ports_Id_1_1);
+	log.info(&quot;\n&quot;);
+	av_ports_PortId_1_2 = av_portGroup_1.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].port_id = &quot; + av_ports_PortId_1_2);
+	av_ports_Id_1_2 = av_portGroup_1.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].id = &quot; + av_ports_Id_1_2);
+	log.info(&quot;\n&quot;);
+
+	String strVar1 = av_portGroup_GroupId_1.toString();
+	String portGroup_GroupId_1 = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+	if( portGroup_GroupId_1.equals(targetPortGroupId) ) {
+		log.info(&quot;\n\n\n  ------------------------   FOUND GROUP Id   ------------------------ \n&quot;);
+		log.info(&quot;portGroup_GroupId_1  &gt;&gt;&gt;&quot; + portGroup_GroupId_1 + &quot;&lt;&lt;&lt;&quot;);
+		log.info(&quot;av_portGroup_Id_1    &gt;&gt;&gt;&quot; + av_portGroup_Id_1 + &quot;&lt;&lt;&lt;&quot;);
+		log.info(&quot;\n&quot;);
+
+		String strVar1 = av_portGroup_Id_1.toString();
+		String str_portGroup_Id = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+		log.info(&quot;str_portGroup_Id    &gt;&gt;&gt;&quot; + str_portGroup_Id + &quot;&lt;&lt;&lt;&quot;);
+		log.info(&quot;\n&quot;);
+
+		vars.put(&quot;TARGET_PORT_GROUP_ID_1&quot;, str_portGroup_Id);
+	}
+	else {
+		log.info(&quot;\n\n\n  - - - - - - - - - -    not - Found - GROUP Id    - - - - - - - - - - \n&quot;);
+		log.info(&quot;strVar1              &gt;&gt;&gt;&quot; + strVar1 + &quot;&lt;&lt;&lt;&quot;);
+		log.info(&quot;portGroup_GroupId_1  &gt;&gt;&gt;&quot; + portGroup_GroupId_1 + &quot;&lt;&lt;&lt;&quot;);
+		log.info(&quot;\n&quot;);		
+	}
+
+	// String validation required
+	if(reserveState_1.length() &gt;= M_END) {
+		matched = reserveState_1.substring(M_START, M_END);	
+		if( matched.equals(&quot;Available&quot;) ) {
+			log.info(&quot;AVAILABLE - PortGroup-1&quot;);
+			available_PortGroupId = av_portGroup_Id_1;
+		}
+		else {
+			log.info(&quot;_NOT_AVAILABLE - PortGroup-1&quot;);
+		}		
+	}
+	else {
+		log.info(&quot;_NOT_AVAILABLE - PortGroup-1&quot;);
+	}		
+
+
+	av_portGroup_2 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(1);
+	test8 = av_portGroup_2.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_2.group_id = &quot; + test8);
+	test8_0 = av_portGroup_2.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.id = &quot; + test8_0);
+	test8_1 = av_portGroup_2.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_2.reserve_state = &quot; + test8_1);
+	log.info(&quot;\n&quot;);
+	test8_31 = av_portGroup_2.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].port_id = &quot; + test8_31);
+	test8_32 = av_portGroup_2.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].id = &quot; + test8_32);
+	log.info(&quot;\n&quot;);
+	test8_41 = av_portGroup_2.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].port_id = &quot; + test8_41);
+	test8_42 = av_portGroup_2.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].id = &quot; + test8_42);
+	log.info(&quot;\n&quot;);
+
+	// String validation required
+	if(reserveState_2.length() &gt;= M_END) {
+		matched = reserveState_2.substring(M_START, M_END);	
+		if( matched.equals(&quot;Available&quot;) ) {
+			log.info(&quot;AVAILABLE - PortGroup-2&quot;);
+			available_PortGroupId = av_portGroup_Id_2;
+		}
+		else {
+			log.info(&quot;_NOT_AVAILABLE - PortGroup-2&quot;);
+		}		
+	}
+	else {
+		log.info(&quot;_NOT_AVAILABLE - PortGroup-2&quot;);
+	}		
+
+
+	av_portGroup_3 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(2);
+	test9 = av_portGroup_3.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_3.group_id = &quot; + test9);
+	test9_0 = av_portGroup_3.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.id = &quot; + test9_0);
+	test9_1 = av_portGroup_3.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_3.reserve_state = &quot; + test9_1);
+	log.info(&quot;\n&quot;);
+	test9_31 = av_portGroup_3.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].port_id = &quot; + test9_31);
+	test9_32 = av_portGroup_3.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].id = &quot; + test9_32);
+	log.info(&quot;\n&quot;);
+	test9_41 = av_portGroup_3.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].port_id = &quot; + test9_41);
+	test9_42 = av_portGroup_3.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].id = &quot; + test9_42);
+	log.info(&quot;\n&quot;);
+
+	// String validation required
+	if(reserveState_3.length() &gt;= M_END) {
+		matched = reserveState_3.substring(M_START, M_END);	
+		if( matched.equals(&quot;Available&quot;) ) {
+			log.info(&quot;AVAILABLE - PortGroup-3&quot;);
+			available_PortGroupId = av_portGroup_Id_2;
+		}
+		else {
+			log.info(&quot;_NOT_AVAILABLE - PortGroup-3&quot;);
+		}		
+	}
+	else {
+		log.info(&quot;_NOT_AVAILABLE - PortGroup-3&quot;);
+	}		
+
+	
+	av_portGroup_4 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(3);
+	test10 = av_portGroup_4.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_4.group_id = &quot; + test10);
+	test10_0 = av_portGroup_4.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.id = &quot; + test10_0);
+	test10_1 = av_portGroup_4.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_4.reserve_state = &quot; + test10_1);
+	log.info(&quot;\n&quot;);
+	test10_31 = av_portGroup_4.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].port_id = &quot; + test10_31);
+	test10_32 = av_portGroup_4.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].id = &quot; + test10_32);
+	log.info(&quot;\n&quot;);
+	test10_41 = av_portGroup_4.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].port_id = &quot; + test10_41);
+	test10_42 = av_portGroup_4.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].id = &quot; + test10_42);
+	log.info(&quot;\n&quot;);
+
+	// String validation required
+	if(reserveState_4.length() &gt;= M_END) {
+		matched = reserveState_4.substring(M_START, M_END);	
+		if( matched.equals(&quot;Available&quot;) ) {
+			log.info(&quot;AVAILABLE - PortGroup-4&quot;);
+			available_PortGroupId = av_portGroup_Id_4;
+		}
+		else {
+			log.info(&quot;_NOT_AVAILABLE - PortGroup-4&quot;);
+		}		
+	}
+	else {
+		log.info(&quot;_NOT_AVAILABLE - PortGroup-4&quot;);
+	}		
+
+
+	// Storing ID of one Port Group - for future reservation
+	log.info(&quot;available_PortGroupId = &quot; + available_PortGroupId);
+	String str_available_PortGroupId = available_PortGroupId.toString();
+	vars.put(&quot;available_port_group_id&quot;, str_available_PortGroupId);
+
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CreateNewQueue" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="queue[name]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${QUEUE_NAME_1}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">queue[name]</stringProp>
+                </elementProp>
+                <elementProp name="queue[port_groups][]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${new_q_id}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">queue[port_groups][]</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev  = ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items    = JsonArray.readFrom(json_str);
+
+nq = vars.get(&quot;new_q_id&quot;);
+log.info(&quot;nq = &quot; + nq);
+
+if( items.isArray() ) {
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+
+	test1 = items.get(&quot;id&quot;);
+	log.info(&quot;id = &quot; + test1);
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAVQueues" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+targetQueueName = vars.get(&quot;QUEUE_NAME_1&quot;);
+log.info(&quot;QUEUE_NAME_1: &quot; + targetQueueName);
+log.info(&quot;\n\n\n  ------------------------   END CSV   ------------------------ \n\n&quot;);
+
+if( items.isArray() ) {
+	log.info(&quot;\n&quot;);
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+
+	for (i=0; i&lt;num_items; i++) {
+		qName = items.get(i).get(&quot;name&quot;);
+		log.info(&quot;av_queues[&quot; + i + &quot;].name = &quot; + qName);
+		qId = items.get(i).get(&quot;id&quot;);
+		log.info(&quot;av_queues[&quot; + i + &quot;].id = &quot; + qId);
+		log.info(&quot;\n&quot;);
+
+		String strVar1 = qName.toString();
+		String str_QueueName = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+		if( str_QueueName.equals(targetQueueName) ) {
+			log.info(&quot;\n\n\n  ------------------------   FOUND QUEUE Id   ------------------------ \n&quot;);
+			log.info(&quot;qName  &gt;&gt;&gt;&quot; + qName + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;qId    &gt;&gt;&gt;&quot; + qId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			String strVar1 = qId.toString();
+			String str_qId = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+			log.info(&quot;str_qId    &gt;&gt;&gt;&quot; + str_qId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			vars.put(&quot;TARGET_QUEUE_ID_1&quot;, str_qId);
+		}
+
+	}
+
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CreateSubnet-Client" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="name" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">BW_C_1</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">name</stringProp>
+                </elementProp>
+                <elementProp name="description" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">subnet for client to Port Id: 1</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">description</stringProp>
+                </elementProp>
+                <elementProp name="config[router|routes|route]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[router|routes|route]</stringProp>
+                </elementProp>
+                <elementProp name="config[ui|ipaddress|start]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">192.168.43.2</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[ui|ipaddress|start]</stringProp>
+                </elementProp>
+                <elementProp name="config[netMaskBits]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">24</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[netMaskBits]</stringProp>
+                </elementProp>
+                <elementProp name="config[ui|ipaddress|count]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">253</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[ui|ipaddress|count]</stringProp>
+                </elementProp>
+                <elementProp name="config[macMasquerade|enabled]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">off</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[macMasquerade|enabled]</stringProp>
+                </elementProp>
+                <elementProp name="config[defaultGatewayEnabld]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">False</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[defaultGatewayEnabld]</stringProp>
+                </elementProp>
+                <elementProp name="config[defaultGatewayEnabled]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[defaultGatewayEnabled]</stringProp>
+                </elementProp>
+                <elementProp name="config[vlanId]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[vlanId]</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/profile/subnets</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">Java</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CreateSubnet-Server" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="name" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">BW_S_1</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">name</stringProp>
+                </elementProp>
+                <elementProp name="description" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">subnet for server to Port Group Id: 1</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">description</stringProp>
+                </elementProp>
+                <elementProp name="config[router|routes|route]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[router|routes|route]</stringProp>
+                </elementProp>
+                <elementProp name="config[ui|ipaddress|start]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">192.168.1.2</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[ui|ipaddress|start]</stringProp>
+                </elementProp>
+                <elementProp name="config[netMaskBits]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">24</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[netMaskBits]</stringProp>
+                </elementProp>
+                <elementProp name="config[ui|ipaddress|count]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">253</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[ui|ipaddress|count]</stringProp>
+                </elementProp>
+                <elementProp name="config[macMasquerade|enabled]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">off</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[macMasquerade|enabled]</stringProp>
+                </elementProp>
+                <elementProp name="config[defaultGatewayEnabld]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">False</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[defaultGatewayEnabld]</stringProp>
+                </elementProp>
+                <elementProp name="config[defaultGatewayEnabled]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[defaultGatewayEnabled]</stringProp>
+                </elementProp>
+                <elementProp name="config[vlanId]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">None</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">config[vlanId]</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/profile/subnets</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">Java</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetSubnetProfiles" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/profile/subnets</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start  SUBNETS  Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+clientSubnetName = vars.get(&quot;CLIENT_SUBNET_NAME_1&quot;);
+log.info(&quot;CLIENT_SUBNET_NAME_1: &quot; + clientSubnetName);
+serverSubnetName = vars.get(&quot;SERVER_SUBNET_NAME_1&quot;);
+log.info(&quot;SERVER_SUBNET_NAME_1: &quot; + serverSubnetName);
+log.info(&quot;\n\n\n  ------------------------   END CSV   ------------------------ \n\n&quot;);
+
+if( items.isArray() ) {
+	log.info(&quot;\n&quot;);
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+
+	for (i=0; i&lt;num_items; i++) {
+		subnetName = items.get(i).get(&quot;name&quot;);
+		log.info(&quot;subnets[&quot; + i + &quot;].name = &quot; + subnetName);
+		subnetId = items.get(i).get(&quot;_id&quot;);
+		log.info(&quot;subnets[&quot; + i + &quot;].id = &quot; + subnetId);
+		log.info(&quot;\n&quot;);
+		
+		String strVar1 = subnetName.toString();
+		String str_subnetName = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+		if( str_subnetName.equals(clientSubnetName) ) {
+			log.info(&quot;\n\n\n  ------------------------   FOUND Client SUBNET Id   ------------------------ \n&quot;);
+			log.info(&quot;Client subnet Name  &gt;&gt;&gt;&quot; + subnetName + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;Client subnet Id    &gt;&gt;&gt;&quot; + subnetId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			String strVar1 = subnetId.toString();
+			String str_subnetName = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+			log.info(&quot;str_subnetId    &gt;&gt;&gt;&quot; + str_subnetId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			vars.put(&quot;CLIENT_SUBNET_ID_1&quot;, str_subnetId);
+		}
+		else if( str_subnetName.equals(serverSubnetName) ) {
+			log.info(&quot;\n\n\n  ------------------------   FOUND Server SUBNET Id   ------------------------ \n&quot;);
+			log.info(&quot;Server subnet Name  &gt;&gt;&gt;&quot; + subnetName + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;Server subnet Id    &gt;&gt;&gt;&quot; + subnetId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			String strVar1 = subnetId.toString();
+			String str_subnetName = strVar1.replaceAll(&quot;\&quot;&quot;, &quot;&quot;);
+			log.info(&quot;str_subnetId    &gt;&gt;&gt;&quot; + str_subnetId + &quot;&lt;&lt;&lt;&quot;);
+			log.info(&quot;\n&quot;);
+
+			vars.put(&quot;SERVER_SUBNET_ID_1&quot;, str_subnetId);
+		}
+
+	}
+
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+}
+
+log.info(&quot;\n\n\n  ------------------------   END  SUBNETS Test   ------------------------ \n\n&quot;);
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="AddPortGroup_to_Queue" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${IP_CONTROLLER}</stringProp>
+            <stringProp name="HTTPSampler.port">80</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">1000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.protocol">http</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues/${TARGET_QUEUE_ID_1}/add_port_group?port_group_id=${TARGET_PORT_GROUP_ID_1}</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+              <stringProp name="ConstantTimer.delay">3000</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">targetPortGroupId = vars.get(&quot;TARGET_PORT_GROUP_ID_1&quot;);
+targetQueueId = vars.get(&quot;TARGET_QUEUE_ID_1&quot;);
+
+log.info(&quot;TARGET_PORT_GROUP_ID_1: &gt;&gt;&gt;&quot; + targetPortGroupId + &quot;&lt;&lt;&lt; &quot;);
+log.info(&quot;TARGET_QUEUE_ID_1:      &gt;&gt;&gt;&quot; + targetQueueId + &quot;&lt;&lt;&lt; &quot;);
+log.info(&quot;\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n&quot;);
+
+log.info(&quot;\n\n\n  ------------------------   END  --HERO--  CSV   ------------------------ \n\n&quot;);
+
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAVQueues" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PutAVQueues_AddTest.v2" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="test_config" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">/work/test_config.json</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">test_config</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues/2907e6d3049cbb10f217a20501b46789/add_test</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/test_config.json" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/test_config.json</stringProp>
+                  <stringProp name="File.paramname"></stringProp>
+                  <stringProp name="File.mimetype"></stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/logout</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="false">
+            <stringProp name="FileSaver.filename">rc060515_responses</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">false</boolProp>
+            <boolProp name="FileSaver.addTimstamp">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>true</responseData>
+              <samplerData>true</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>true</responseHeaders>
+              <requestHeaders>true</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <url>true</url>
+              <fileName>true</fileName>
+              <threadCounts>true</threadCounts>
+            </value>
+          </objProp>
+          <stringProp name="filename">rc060515_testdata-1.txt</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group-sandbox" enabled="false">
+        <longProp name="ThreadGroup.start_time">1200525828000</longProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <longProp name="ThreadGroup.end_time">1200525828000</longProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="TestPlan.comments">This is scratch are for sandbox verification</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+            <stringProp name="filename">/Users/rcollazo/Downloads/apache-jmeter-2.13/bin/examples/rc_config.csv</stringProp>
+            <stringProp name="fileEncoding"></stringProp>
+            <stringProp name="variableNames">USER,PASSWORD,IP_CONTROLLER,IP_CHASSIS_01,PORT_GROUP_GROUP_ID_01,PORT_GROUP_GROUP_ID_02,PORT_GROUP_GROUP_ID_03,PORT_GROUP_GROUP_ID_04</stringProp>
+            <stringProp name="delimiter">,</stringProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">true</boolProp>
+            <boolProp name="stopThread">false</boolProp>
+            <stringProp name="shareMode">shareMode.all</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers"/>
+          </HeaderManager>
+          <hashTree/>
+          <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${IP_CONTROLLER}</stringProp>
+            <stringProp name="HTTPSampler.port">80</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">1000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">1000</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+          </ConfigTestElement>
+          <hashTree/>
+          <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+            <collectionProp name="CookieManager.cookies"/>
+            <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          </CookieManager>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Index Page" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.image_parser">true</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="user[email]" elementType="HTTPArgument">
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <stringProp name="Argument.value">${USER}</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">user[email]</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                </elementProp>
+                <elementProp name="user[password]" elementType="HTTPArgument">
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <stringProp name="Argument.value">${PASSWORD}</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">user[password]</stringProp>
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/login</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <URLRewritingModifier guiclass="URLRewritingModifierGui" testclass="URLRewritingModifier" testname="HTTP URL-Rewriting Modifier" enabled="true">
+              <boolProp name="path_extension">false</boolProp>
+              <boolProp name="path_extension_no_questionmark">false</boolProp>
+              <stringProp name="argument_name">_avalanche5_app_session</stringProp>
+              <boolProp name="path_extension_no_equals">false</boolProp>
+              <boolProp name="cache_value">true</boolProp>
+              <boolProp name="encode">false</boolProp>
+            </URLRewritingModifier>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetChassis" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_chassis/${IP_CHASSIS_01}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient3.1</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+if( items.isArray() ) {
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+
+//	test1 = items.get(&quot;id&quot;);
+//	log.info(&quot;id = &quot; + test1);
+
+	test2 = items.get(&quot;ip&quot;);
+	log.info(&quot;ip = &quot; + test2);
+
+//	test3 = items.get(&quot;firmware&quot;);
+//	log.info(&quot;firmware = &quot; + test3);
+//
+//	test4 = items.get(&quot;firmware&quot;).get(&quot;version&quot;);
+//	log.info(&quot;firmware.version = &quot; + test4);
+//
+//	test5 = items.get(&quot;firmware&quot;).get(&quot;latest&quot;);
+//	log.info(&quot;firmware.latest = &quot; + test5);
+//
+//	test6 = items.get(&quot;av_devices&quot;).get(0).get(&quot;software&quot;);
+//	log.info(&quot;av_devices.software = &quot; + test6);
+//
+//
+	av_portGroup_1 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(0);
+	test7 = av_portGroup_1.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_1.group_id = &quot; + test7);
+	test7_0 = av_portGroup_1.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.id = &quot; + test7_0);
+	test7_1 = av_portGroup_1.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_1.reserve_state = &quot; + test7_1);
+	log.info(&quot;\n&quot;);
+//	test7_2 = av_portGroup_1.get(&quot;capacity&quot;);
+//	log.info(&quot;av_portGroup_1.capacity = &quot; + test7_2);
+	test7_31 = av_portGroup_1.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].port_id = &quot; + test7_31);
+	test7_32 = av_portGroup_1.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].id = &quot; + test7_32);
+	log.info(&quot;\n&quot;);
+	test7_41 = av_portGroup_1.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].port_id = &quot; + test7_41);
+	test7_42 = av_portGroup_1.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_1.av_ports[0].id = &quot; + test7_42);
+	log.info(&quot;\n&quot;);
+
+
+	av_portGroup_2 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(1);
+	test8 = av_portGroup_2.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_2.group_id = &quot; + test8);
+	test8_0 = av_portGroup_2.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.id = &quot; + test8_0);
+	test8_1 = av_portGroup_2.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_2.reserve_state = &quot; + test8_1);
+	log.info(&quot;\n&quot;);
+//	test8_2 = av_portGroup_2.get(&quot;capacity&quot;);
+//	log.info(&quot;av_portGroup_2.capacity = &quot; + test8_2);
+	test8_31 = av_portGroup_2.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].port_id = &quot; + test8_31);
+	test8_32 = av_portGroup_2.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].id = &quot; + test8_32);
+	log.info(&quot;\n&quot;);
+	test8_41 = av_portGroup_2.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].port_id = &quot; + test8_41);
+	test8_42 = av_portGroup_2.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_2.av_ports[0].id = &quot; + test8_42);
+	log.info(&quot;\n&quot;);
+
+
+
+	av_portGroup_3 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(2);
+	test9 = av_portGroup_3.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_3.group_id = &quot; + test9);
+	test9_0 = av_portGroup_3.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.id = &quot; + test9_0);
+	test9_1 = av_portGroup_3.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_3.reserve_state = &quot; + test9_1);
+	log.info(&quot;\n&quot;);
+//	test9_2 = av_portGroup_3.get(&quot;capacity&quot;);
+//	log.info(&quot;av_portGroup_3.capacity = &quot; + test9_2);
+	test9_31 = av_portGroup_3.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].port_id = &quot; + test9_31);
+	test9_32 = av_portGroup_3.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].id = &quot; + test9_32);
+	log.info(&quot;\n&quot;);
+	test9_41 = av_portGroup_3.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].port_id = &quot; + test9_41);
+	test9_42 = av_portGroup_3.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_3.av_ports[0].id = &quot; + test9_42);
+	log.info(&quot;\n&quot;);
+
+
+	
+	av_portGroup_4 = items.get(&quot;av_devices&quot;).get(0).get(&quot;av_port_groups&quot;).get(3);
+	test10 = av_portGroup_4.get(&quot;group_id&quot;);
+	log.info(&quot;av_portGroup_4.group_id = &quot; + test10);
+	test10_0 = av_portGroup_4.get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.id = &quot; + test10_0);
+	test10_1 = av_portGroup_4.get(&quot;reserve_state&quot;);
+	log.info(&quot;av_portGroup_4.reserve_state = &quot; + test10_1);
+	log.info(&quot;\n&quot;);
+//	test10_2 = av_portGroup_4.get(&quot;capacity&quot;);
+//	log.info(&quot;av_portGroup_4.capacity = &quot; + test10_2);
+	test10_31 = av_portGroup_4.get(&quot;av_ports&quot;).get(0).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].port_id = &quot; + test10_31);
+	test10_32 = av_portGroup_4.get(&quot;av_ports&quot;).get(0).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].id = &quot; + test10_32);
+	log.info(&quot;\n&quot;);
+	test10_41 = av_portGroup_4.get(&quot;av_ports&quot;).get(1).get(&quot;port_id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].port_id = &quot; + test10_41);
+	test10_42 = av_portGroup_4.get(&quot;av_ports&quot;).get(1).get(&quot;id&quot;);
+	log.info(&quot;av_portGroup_4.av_ports[0].id = &quot; + test10_42);
+	log.info(&quot;\n&quot;);
+
+
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAvalancheProfiles" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_profiles</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetChassisProfile" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_chassis/${IP_CHASSIS_01}/profiles</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAVQueues" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+if( items.isArray() ) {
+	log.info(&quot;\n&quot;);
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+//vars.put(&quot;testVar&quot;, &quot;RobertJC&quot;);
+//String s_num_items = num_items.toString();
+//vars.put(&quot;someX&quot;, s_num_items);
+//vars.put(&quot;target_id&quot;, &quot;60734d883642256f0c4b90e2f05e8da6&quot;);
+
+	for (i=0; i&lt;num_items; i++) {
+		lpStr = items.get(i).get(&quot;name&quot;);
+		log.info(&quot;av_queues[&quot; + i + &quot;].name = &quot; + lpStr);
+		lpStr = items.get(i).get(&quot;id&quot;);
+		log.info(&quot;av_queues[&quot; + i + &quot;].id = &quot; + lpStr);
+		log.info(&quot;\n&quot;);
+	}
+
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetSubnetProfiles" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/profile/subnets</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+
+if( items.isArray() ) {
+	log.info(&quot;\n&quot;);
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+
+	for (i=0; i&lt;num_items; i++) {
+		lpStr = items.get(i).get(&quot;name&quot;);
+		log.info(&quot;subnet_profiles[&quot; + i + &quot;].name = &quot; + lpStr);
+		lpStr = items.get(i).get(&quot;_id&quot;);
+		log.info(&quot;subnet_profiles[&quot; + i + &quot;]._id = &quot; + lpStr);
+		log.info(&quot;\n&quot;);
+	}
+
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAVProfiles" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_profiles</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAVTests" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_tests?sort_by=updated_at&amp;sort_direction=descending</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import com.eclipsesource.json.*;
+
+log.info(&quot;\n\n\n  ------------------------   Start Test   ------------------------ \n\n&quot;);
+my_prev=ctx.getPreviousResult();
+json_str = my_prev.getResponseDataAsString();
+items = JsonArray.readFrom(json_str);
+log.info(&quot;\n\n\n  --  ---  --------  ------- - -   Test *** TEST *** Test   - - --------  ------  ---  -- \n\n&quot;);
+
+varA = vars.get(&quot;testVar&quot;);
+log.info(&quot;varA: &quot; + varA);
+varB = vars.get(&quot;someX&quot;);
+log.info(&quot;varB: &quot; + varB);
+
+if( items.isArray() ) {
+	log.info(&quot;\n&quot;);
+	log.info(&quot;JSON result: top structure is Array&quot;);
+	num_items = items.size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+}
+else {
+	log.info(&quot;JSON result: top structure is String&quot;);
+
+	num_items = items.get(&quot;tests&quot;).size();
+	log.info(&quot;Items in JSON block: &quot; + num_items);
+	log.info(&quot;\n&quot;);
+
+	for (i=0; i&lt;num_items; i++) {
+		lpStr = items.get(&quot;tests&quot;).get(i).get(&quot;name&quot;);
+		log.info(&quot;av_tests[&quot; + i + &quot;].name = &quot; + lpStr);
+		lpStr = items.get(&quot;tests&quot;).get(i).get(&quot;_id&quot;);
+		log.info(&quot;av_tests[&quot; + i + &quot;]._id = &quot; + lpStr);
+		lpStr = items.get(&quot;tests&quot;).get(i).get(&quot;test_type&quot;);
+		log.info(&quot;av_tests[&quot; + i + &quot;].test_type = &quot; + lpStr);
+		lpStr = items.get(&quot;tests&quot;).get(i).get(&quot;type&quot;);
+		log.info(&quot;av_tests[&quot; + i + &quot;].type = &quot; + lpStr);
+		log.info(&quot;\n&quot;);
+	}
+
+}
+
+log.info(&quot;\n\n\n  ------------------------   END Test   ------------------------ \n\n&quot;);
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAvalancheTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche_test/60734d883642256f0c4b90e2f05e8da6</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="TestPlan.comments">${target_id}</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetHTTPBandwidthTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/http_bandwidth_tests</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="TestPlan.comments">65d7b1d1f4f94d42518e6b5b32d863a0</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetHTTPBandwidthTest" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/http_bandwidth_tests/60734d883642256f0c4b90e2f05e8da6</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PutHTTPBandwidthTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="data" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                  <stringProp name="Argument.value">/work/input_sample_test.json</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">data</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">text/javascript</stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/http_bandwidth_tests/60734d883642256f0c4b90e2f05e8da6</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/input_sample_test.json" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/input_sample_test.json</stringProp>
+                  <stringProp name="File.paramname">data</stringProp>
+                  <stringProp name="File.mimetype">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PutHTTPBandwidthTestsV2" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/http_bandwidth_tests/953048b990194e3c4cd6e3145d22d30c</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/input_sample_test.json" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/input_sample_test.json</stringProp>
+                  <stringProp name="File.paramname"></stringProp>
+                  <stringProp name="File.mimetype"></stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PutAVQueues_AddTest.v1" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="test_import" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">test_config</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">test_import</stringProp>
+                </elementProp>
+                <elementProp name="id" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">60734d883642256f0c4b90e2f05e8da6</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">id</stringProp>
+                </elementProp>
+                <elementProp name="queued_tests" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">1</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">queued_tests</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">application/json, text/javascript, */*;</stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues/eb9ab14a80e72b490f36f30dd39cca11/add_test</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/input_sample_test.json" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/input_sample_test.json</stringProp>
+                  <stringProp name="File.paramname">test_config</stringProp>
+                  <stringProp name="File.mimetype">application/json, text/javascript, */*;\r\n</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PutAVQueues_AddTest.v2" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="test_config" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">/work/test_config.json</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">test_config</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_queues/2907e6d3049cbb10f217a20501b46789/add_test</stringProp>
+            <stringProp name="HTTPSampler.method">PUT</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/test_config.json" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/test_config.json</stringProp>
+                  <stringProp name="File.paramname"></stringProp>
+                  <stringProp name="File.mimetype"></stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PostPlayerStart" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">application/json</stringProp>
+            <stringProp name="HTTPSampler.path">/player/start</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PrepareExportAVTest" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="names[]" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">ThroughputSampleTest</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">names[]</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_tests/prepare_export</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetBWTestTemplate" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/playerapi/tests/httpbandwidth/template</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetExportAVTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_tests/export?job_id=export_tests_20150617144839_robert.collazo@spirent.com_1eksj57</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="ImportAVTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="name" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">test_import</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">name</stringProp>
+                </elementProp>
+                <elementProp name="filename" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">testimport_20150618-1512_1.zip</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">filename</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_tests/import</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+              <collectionProp name="HTTPFileArgs.files">
+                <elementProp name="/work/testimport_20150618-1512_1.zip" elementType="HTTPFileArg">
+                  <stringProp name="File.path">/work/testimport_20150618-1512_1.zip</stringProp>
+                  <stringProp name="File.paramname">test_import</stringProp>
+                  <stringProp name="File.mimetype">application/zip</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetTestImport_Status" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_tests/import_status?job_id=export_tests_20150617134241_robert.collazo@spirent.com_1hzzgb8</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetSystemAbout" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/system/about</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAllScenariosId" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/scenarios</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAvalancheCPSTest" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/cps_tests</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAvalancheEmixTests" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/emix_tests</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetAvalancheHttpBandwidthTest" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/avalanche/http_bandwidth_tests</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetBackupInfo" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/backup/info</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetChassises" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/av_chassis</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GetDNSS" enabled="false">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/profile/dnss</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Logout" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/logout</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="false">
+            <stringProp name="FileSaver.filename">testexport_rc</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.successonly">false</boolProp>
+            <boolProp name="FileSaver.addTimstamp">true</boolProp>
+          </ResultSaver>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>true</responseData>
+              <samplerData>true</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>true</responseHeaders>
+              <requestHeaders>true</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <url>true</url>
+              <fileName>true</fileName>
+              <threadCounts>true</threadCounts>
+            </value>
+          </objProp>
+          <stringProp name="filename">rc060515_testdata-1.txt</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

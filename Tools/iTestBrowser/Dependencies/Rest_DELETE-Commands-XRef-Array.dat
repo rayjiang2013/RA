@@ -1,0 +1,14 @@
+av_chassis, DELETE /av_chassis/$ip
+av_queues, DELETE /av_queues/$id
+av_reports, DELETE /av_reports/$type/$runId
+avalanche, DELETE /avalanche/$testType\\_tests/$id
+mutation, DELETE /mutation/fuzztests/$id
+mutation, DELETE /mutation/hosts/$id
+mutation, DELETE /mutation/protocols/config/$id
+profile, DELETE /profile/dnss/$id
+profile, DELETE /profile/networks/$id
+profile, DELETE /profile/subnets/$id
+profile, DELETE /profile/traffic_mix/$id
+tracks, DELETE /tracks/$id
+users, DELETE /users/$userId
+mutation, DELETE $urlPrefix$id
