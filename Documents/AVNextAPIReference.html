@@ -1,0 +1,162 @@
+<html><head><style>
+a { color:#0000ff; font-weight:normal; text-decoration:none; }
+</style></head><body bgcolor=#15151f style='line-height:24px; margin-left:80px; margin-right:80px'><br>
+<p span style='font-size:18pt; font-family: Arial; font-weight:bold; color:#fcfcfc'>
+Avalanche API Reference</p>
+
+<table border=4 bgcolor=#dfdfdf cellspacing=0 cellpadding=16 width=100% style='border-style:inset'><tr>
+<td width=50% valign=top style='line-height:24px'>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#put-av_chassisidreboot">PUT /av_chassis/:id/reboot</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidadd_port_groupport_group_idport_group_id">PUT /av_queues/:id/add_port_group?port_group_id=port_group_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidremove_port_groupport_group_idport_group_id">PUT /av_queues/:id/remove_port_group?port_group_id=port_group_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidadd_test">PUT /av_queues/:id/add_test</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidstop_all_tests">PUT /av_queues/:id/stop_all_tests</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidstop_testqueue_test_idqueue_test_id">PUT /av_queues/:id/stop_test?queue_test_id=queue_test_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidfinish_testqueue_test_idqueue_test_id">PUT /av_queues/:id/finish_test?queue_test_id=queue_test_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesfinish_test_with_run_idrun_idrun_id">PUT /av_queues/finish_test_with_run_id?run_id=run_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidrestart_testqueue_test_idqueue_test_id">PUT /av_queues/:id/restart_test?queue_test_id=queue_test_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesrestart_test_with_run_idrun_idrun_id">PUT /av_queues/restart_test_with_run_id?run_id=run_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#put-av_queuesidremove_testqueue_test_idqueue_test_id">PUT /av_queues/:id/remove_test?queue_test_id=queue_test_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Backup-controller#put-backuprestore_backup">PUT /backup/restore_backup</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#put-load_specificationspeed">PUT /load_specification/speed</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#put-----playerapitestsid">PUT /playerapi/tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#put-----playerapitestsidchangestatus">PUT /playerapi/tests/:id/:changeStatus</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#put----profilenetworksidformat">PUT /profile/networks/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#put----profileprotocolsidformat">PUT /profile/protocols/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#put----profilesubnetsidformat">PUT /profile/subnets/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#put-av_testscancel_export">PUT /av_tests/cancel_export</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#put-testscancel_export">PUT /tests/cancel_export</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#put-av_testscancel_import">PUT /av_tests/cancel_import</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#put-avalancheemix_testsid">PUT /avalanche/emix_tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#put-profiletraffic_mixid">PUT /profile/traffic_mix/:id</a><br>
+</td>
+
+
+<td width=50% valign=top style='line-height:24px'>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#post-av_chassisip10475250">POST /av_chassis/?ip=10.47.52.50</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#post-av_chassisidswitch_profile">POST /av_chassis/:id/switch_profile</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#post-av_queues">POST /av_queues/</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Backup-controller#post-backupperform_backup">POST /backup/perform_backup</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/License-Controller#post-licenses">POST /licenses</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/License-Controller#post-licensesserver">POST /licenses/server</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Oobe-Controller#post-oobeadmin-user">POST /oobe/admin-user</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#post-----playerapitests">POST /playerapi/tests</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#post-av_post_resultsformat">POST /av_post_results(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#post---profilenetworksformat">POST /profile/networks(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#post---profileprotocolsformat">POST /profile/protocols(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#post---profilesubnetsformat">POST /profile/subnets(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#post-trackscreate_from_query">POST /tracks/create_from_query</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#post-systemlivesupportcommandstart">POST /system/livesupport?command=start</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#post-systemlivesupportcommandstop">POST /system/livesupport?command=stop</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#post-av_testsprepare_export">POST /av_tests/prepare_export</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#post-testsprepare_export">POST /tests/prepare_export</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#post-av_testsimport">POST /av_tests/import</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#post-avalancheemix_tests">POST /avalanche/emix_tests</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#post-profiletraffic_mix">POST /profile/traffic_mix</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Users-controller#post-users-and-put-usersid">POST /users</a><br>
+</td>
+
+
+</tr>
+<tr>
+<td width=50% valign=top style='line-height:24px'>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#get-av_chassisid">GET /av_chassis/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#get-av_chassisnewip10475250">GET /av_chassis/new?ip="10.47.52.50"</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#get-av_chassis">GET /av_chassis</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#get-av_chassisidprofiles">GET /av_chassis/:id/profiles</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#get-av_chassischeck_statussequenceridsequencer1commandidinstalltestpackagecommand1">GET /av_chassis/check_status?sequencerID=sequencer1&amp;commandID=installtestpackagecommand1</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#get-av_queuesid">GET /av_queues/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#get-av_queues">GET /av_queues</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#get-av_queuestest_statusqueue_test_idqueue_test_id">GET /av_queues/test_status?queue_test_id=queue_test_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Backup-controller#get-backupinfo">GET /backup/info</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Backup-controller#get-backupdownload">GET /backup/download</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#get-av_tests">GET /av_tests</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-av_profiles">GET /av_profiles</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get-av_reports">GET /av_reports</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get-av_reportsreport_typeidlogs">GET /av_reports/[report_type]/[id]/logs</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/License-Controller#get-licenses">GET /licenses</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/License-Controller#get-licensesvalidate_serveripip">GET /licenses/validate_server?ip={ip}</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/License-Controller#get-licensescapacity">GET /licenses/capacity</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-load_specification">GET /load_specification/</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-load_specificationspeed">GET /load_specification/speed</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapiteststypetemplate">GET /playerapi/tests/:type/template</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapitestsid">GET /playerapi/tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapitestsidstate">GET /playerapi/tests/:id/state</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapitestsidresults">GET /playerapi/tests/:id/results</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapitestsidstatistics">GET /playerapi/tests/:id/statistics</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#get-----playerapitestsidtimeline">GET /playerapi/tests/:id/timeline</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get----av_post_resultsformat">GET /av_post_results(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get----av_post_resultstest_refsidformat">GET /av_post_results/test_refs/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get----av_post_resultsrun_refidformat">GET /av_post_results/run_ref/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get---av_post_resultspost_resultsidformat">GET /av_post_results/post_results/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get---av_post_resultstest_runsidformat">GET /av_post_results/test_runs/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get---av_post_resultsdebugidformat">GET /av_post_results/debug/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get---av_post_resultspdfidformat">GET /av_post_results/pdf/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#get---av_post_resultsfileformat">GET /av_post_results/file(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilenetworksformat">GET /profile/networks(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilenetworksidformat">GET /profile/networks/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilenetworksidoptionsformat">GET /profile/networks/:id/options(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profileprotocolsformat">GET /profile/protocols(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profileprotocolsidformat">GET /profile/protocols/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profileprotocolsidoptionsformat">GET /profile/protocols/:id/options(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilesubnetsformat">GET /profile/subnets(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilesubnetsidformat">GET /profile/subnets/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get----profilesubnetsidoptionsformat">GET /profile/subnets/:id/options(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get--scenarioscategories">GET /scenarios/categories</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get-scenarios">GET /scenarios</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get-scenarioscallflowid">GET /scenarios/callflow/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get-scenariosmslidscenario_id">GET /scenarios/msl?id=scenario_id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get-scenariosid">GET /scenarios/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Scenario-and-Scenario-Group-%28Tracks%29-API#get-scenariossubtypeappidqkey_word_for_search">GET /scenarios?subtype=appid&amp;q=key_word_for_search</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get--trackscategories">GET /tracks/categories</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get--trackssubtypeappidfacetscategorycommunication">GET /tracks?subtype=appid&amp;facets={"category":["Communication"]}</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-tracksdetailsid">GET /tracks/details/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-trackssubtypeappidqkey_word_for_search">GET /tracks?subtype=appid&amp;q=key_word_for_search</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-tracksfacetscategorycategorysubtypeappidsort_fieldupdated_bysort_orderdesc">GET /tracks?facets={"category":["category"]}&amp;subtype=appid&amp;sort_field=updated_by&amp;sort_order=desc</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avalanche-apis#get-tracksall_profiles">GET /tracks/all_profiles</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemabout">GET /system/about</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemversions">GET /system/versions</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemupdate">GET /system/update</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemgem_status">GET /system/gem_status</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemsystem_reset">GET /system/system_reset</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemreset_factory_defaults">GET /system/reset_factory_defaults</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/System-controller#get-systemlivesupport">GET /system/livesupport</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#get-av_testsexport">GET /av_tests/export**</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#get-testsexports">GET /tests/exports**</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Test-Export-Import-Controller#get-av_testsimport_status">GET /av_tests/import_status</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#get-avalancheemix_tests">GET /avalanche/emix_tests</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#get-avalancheemix_testsid">GET /avalanche/emix_tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get-profiletraffic_mixprotocols">GET /profile/traffic_mix/protocols</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get-profiletraffic_mix">GET /profile/traffic_mix</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#get-profiletraffic_mixid">GET /profile/traffic_mix/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Users-controller#get-users">GET /users</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Users-controller#get-usersid">GET /users/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Users-controller#get-usersget_super_admin">GET /users/get_super_admin</a>
+</td>
+
+
+<td width=50% valign=top style='line-height:24px'>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avchassis-controller#delete-av_chassisid">DELETE /av_chassis/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Avqueues-controller#delete-av_queuesid">DELETE /av_queues/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#delete-av_reportsreport_typeid">DELETE /av_reports/[report_type]/[id]</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Player-Controller#delete-----playerapitestsid">DELETE /playerapi/tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Post-test-results-controller#delete-av_post_resultsdelete_resultsidformat">DELETE /av_post_results/delete_results/:id(.:format)</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#delete-profilenetworksidformat">DELETE /profile/networks/:id(.:format)</a><br>
+
+<!--  wiki/Protocol-Profile -->
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#delete-profileprotocolsidformat">DELETE /profile/protocols/:id(.:format)</a><br>
+
+<!--  a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller/subnets#delete-profilesubnetsidformat">DELETE /profile/subnets/:id(.:format Bing)</a><br  -->
+
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Subnet-Profile#delete-profilesubnetsidformat">DELETE /profile/subnets/:id(.:format)</a><br>
+
+<!-- https://github.com/mudynamics/avalanche_app/wiki/Subnet-Profile  -->
+
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Tests-controller#delete-avalancheemix_testsid">DELETE /avalanche/emix_tests/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Profiles-controller#delete-profiletraffic_mixid">DELETE /profile/traffic_mix/:id</a><br>
+<a href="https://github.com/mudynamics/avalanche_app/wiki/Users-controller#delete-usersid">DELETE /users/:id</a><br>
+
+</td></tr>
+</table>
+<br><br>
+</body></html>

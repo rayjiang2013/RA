@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# export DEST=/work/itest/Analy/POSTED_030415/actions
+# export DEST=/work/itest/Analy/POSTED_030415/itest_actions
+export DEST=/work/itest/Analy/POSTED_062615/itest_actions
+
+for fname in $(find . -name '*.fftc'); do
+    echo $fname
+    folder=`echo $fname | cut -d "/" -f 2`
+    type_check=`echo $folder | grep "\."`
+#    echo $type_check
+    destPath=$DEST/$folder
+#    echo $destPath
+
+	if [ ! -e $destPath ]; then
+		if [ ! $type_check ]; then
+# 			echo "Sorry, no such Path. Creating..."
+# 			echo $destPath
+			mkdir -p $destPath
+		fi
+	fi
+	
+	file_name=`echo $fname | cut -c 3-`
+	destFile=$DEST/$file_name
+# 	echo $destFile
+	grep "action=" $fname | sed "s/^.*action=\"//" | cut -d "\"" -f 1 > $destFile
+	
+    echo
+done

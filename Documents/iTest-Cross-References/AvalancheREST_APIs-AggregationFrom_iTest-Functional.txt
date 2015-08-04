@@ -1,0 +1,442 @@
+AbortTest                               
+action="GET"                             action='/playerapi/tests/$id'
+action="PUT"                             action='/playerapi/tests/$id/abort'
+----------------------------------------------------------------------------------------------------
+AddPortGroupToQueue                      
+action="PUT"                             action='/av_queues/$queueId/add_port_group'
+----------------------------------------------------------------------------------------------------
+CreateAvalancheTestByJson                
+action="POST"                            action='/avalanche/$type\\_tests'
+----------------------------------------------------------------------------------------------------
+CreateChassis                           
+action="GET"                             action='/av_chassis/new?ip=$ip'
+action="POST"                            action='/av_chassis'
+----------------------------------------------------------------------------------------------------
+CreateDNS                                
+action="POST"                            action='/profile/dnss'
+----------------------------------------------------------------------------------------------------
+CreateFuzzTestByJson                    
+action="POST"                            action='/mutation/fuzztests'
+----------------------------------------------------------------------------------------------------
+CreateHost                               
+action="POST"                            action='/mutation/hosts'
+----------------------------------------------------------------------------------------------------
+CreateMuTestByJson                       
+action="POST"                            action='/tests'
+----------------------------------------------------------------------------------------------------
+CreateNetwork                            
+action="POST"                            action='/profile/networks'
+----------------------------------------------------------------------------------------------------
+CreateProfile                           
+action="POST"                            action='/mutation/profiles'
+----------------------------------------------------------------------------------------------------
+CreateProfileByJson                     
+action="POST"                            action='/mutation/profiles'
+----------------------------------------------------------------------------------------------------
+CreateProtocolDNS                        
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolHttpRfc6265                
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolMLD                        
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolOpenFlow                   
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolSPDYv1                     
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolSPDYv2                     
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolSPDYv3                     
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolTCP                        
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateProtocolVXLAN                      
+action="POST"                            action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+CreateQueue                              
+action="POST"                            action='/av_queues'
+----------------------------------------------------------------------------------------------------
+CreateSubnet                             
+action="POST"                            action='/profile/subnets'
+----------------------------------------------------------------------------------------------------
+CreateSubnetByJson                      
+action="POST"                            action='/profile/subnets'
+----------------------------------------------------------------------------------------------------
+CreateTrack                              
+action="POST"                            action='/tracks/create_from_query'
+----------------------------------------------------------------------------------------------------
+CreateTrafficMix                         
+action="POST"                            action='/profile/traffic_mix'
+----------------------------------------------------------------------------------------------------
+CreateUser                              
+action="POST"                            action='/users'
+----------------------------------------------------------------------------------------------------
+DeleteChassis                           
+action="DELETE"                          action='/av_chassis/$ip'
+----------------------------------------------------------------------------------------------------
+DeleteDNS                                
+action="DELETE"                          action='/profile/dnss/$id'
+----------------------------------------------------------------------------------------------------
+DeleteHost                               
+action="DELETE"                          action='/mutation/hosts/$id'
+----------------------------------------------------------------------------------------------------
+DeleteLibraryProfile                     
+action="DELETE"                          action='$urlPrefix$id'
+----------------------------------------------------------------------------------------------------
+DeleteLibraryReport                      
+action="DELETE"                          action='/av_reports/$type/$runId'
+----------------------------------------------------------------------------------------------------
+DeleteLibraryTest                       
+action="GET"                             action='/av_tests?sort_by=updated_at&amp;sort_direction=descending'
+action="DELETE"                          action='/avalanche/$testType\\_tests/$id'
+action="DELETE"                          action='/mutation/fuzztests/$id'
+----------------------------------------------------------------------------------------------------
+DeleteMuLibraryTest                     
+action="GET"                             action='/tests'
+action="POST"                            action='/results/destroy'
+----------------------------------------------------------------------------------------------------
+DeleteNetwork                            
+action="DELETE"                          action='/profile/networks/$id'
+----------------------------------------------------------------------------------------------------
+DeleteProtocol                           
+action="DELETE"                          action='/mutation/protocols/config/$id'
+----------------------------------------------------------------------------------------------------
+DeleteQueue                              
+action="DELETE"                          action='/av_queues/$id'
+----------------------------------------------------------------------------------------------------
+DeleteSubnet                            
+action="GET"                             action='/profile/subnets'
+action="DELETE"                          action='/profile/subnets/$id'
+----------------------------------------------------------------------------------------------------
+DeleteTrack                              
+action="DELETE"                          action='/tracks/$id'
+----------------------------------------------------------------------------------------------------
+DeleteTrafficMix                         
+action="DELETE"                          action='/profile/traffic_mix/$id'
+----------------------------------------------------------------------------------------------------
+DeleteUser                               
+action="DELETE"                          action='/users/$userId'
+----------------------------------------------------------------------------------------------------
+EditUser                                 
+action="PUT"                             action='/users/$userId'
+----------------------------------------------------------------------------------------------------
+ExecuteMuTest                            
+action="GET"                             action='/player/loading/$testId'
+action="GET"                             action='/player/timeline/?id=$testId&amp;player_type=scale'
+action="GET"                             action='/player/timeline/?id=$testId&amp;player_type=scale'
+action="GET"                             action='/player/running?id=$testId'
+action="POST"                            action='/player/audit_stats'
+action="GET"                             action='/player/running?id=$testId'
+----------------------------------------------------------------------------------------------------
+GetAllScenariosId                        
+action="GET"                             action='/scenarios?page=1&amp;per_page=1000'
+action="GET"                             action='/scenarios?page=$i&amp;per_page=1000'
+----------------------------------------------------------------------------------------------------
+GetAllScenariosNum                      
+action="GET"                             action='/scenarios?page=1&amp;per_page=1'
+----------------------------------------------------------------------------------------------------
+GetAvalancheCPSTest                     
+action="GET"                             action='/avalanche/cps_tests?sort_by=updated_at&amp;sort_direction=descending'
+action="GET"                             action='/avalanche/cps_tests/$id'
+----------------------------------------------------------------------------------------------------
+GetAvalancheCPSTests                    
+action="GET"                             action='/avalanche/cps_tests'
+----------------------------------------------------------------------------------------------------
+GetAvalancheEmixTest                    
+action="GET"                             action='/avalanche/emix_tests?sort_by=updated_at&amp;sort_direction=descending'
+action="GET"                             action='/avalanche/emix_tests/$id'
+----------------------------------------------------------------------------------------------------
+GetAvalancheEmixTests                   
+action="GET"                             action='/avalanche/emix_tests'
+----------------------------------------------------------------------------------------------------
+GetAvalancheHttpBandwidthTest           
+action="GET"                             action='/avalanche/http_bandwidth_tests?sort_by=updated_at&amp;sort_direction=descending'
+action="GET"                             action='/avalanche/http_bandwidth_tests/$id'
+----------------------------------------------------------------------------------------------------
+GetAvalancheHttpBandwidthTests          
+action="GET"                             action='/avalanche/http_bandwidth_tests'
+----------------------------------------------------------------------------------------------------
+GetAvalancheTest                         
+action="GET"                             action='/avalanche/$testType\\_tests/$id'
+----------------------------------------------------------------------------------------------------
+GetBackupInfo                           
+action="GET"                             action='/backup/info'
+----------------------------------------------------------------------------------------------------
+GetChassis                              
+action="GET"                             action='/av_chassis/$ip'
+----------------------------------------------------------------------------------------------------
+GetChassisPortGroupId                   
+action="GET"                             action='/av_chassis/$ip'
+----------------------------------------------------------------------------------------------------
+GetChassisPortGroupStringId             
+action="GET"                             action='/av_chassis/$ip'
+----------------------------------------------------------------------------------------------------
+GetChassises                            
+action="GET"                             action='/av_chassis'
+----------------------------------------------------------------------------------------------------
+GetDNS                                   
+action="GET"                             action='/profile/dnss/$id'
+----------------------------------------------------------------------------------------------------
+GetDNSS                                 
+action="GET"                             action='/profile/dnss'
+----------------------------------------------------------------------------------------------------
+GetFixturesTrafficMixer                 
+action="GET"                             action='/fixtures/traffic_mixes/$type.json'
+----------------------------------------------------------------------------------------------------
+GetFuzzTest                              
+action="GET"                             action='/mutation/fuzztests/$id'
+----------------------------------------------------------------------------------------------------
+GetFuzzTestIssues                       
+action="GET"                             action='/mutation/stats/$runId/tests_issues?queue_test_id=$testId&amp;timestamp=$timestamp'
+----------------------------------------------------------------------------------------------------
+GetFuzzTestLoadStatus                   
+action="GET"                             action='/mutation/stats/$runId/loading_status?queue_test_id=$testId'
+----------------------------------------------------------------------------------------------------
+GetFuzzTestResult                       
+action="GET"                             action='/mutation/results?run_id=$runId'
+----------------------------------------------------------------------------------------------------
+GetFuzzTestStatus                       
+action="GET"                             action='/mutation/stats/$runId/tests_status?queue_test_id=$testId'
+----------------------------------------------------------------------------------------------------
+GetFuzzTests                            
+action="GET"                             action='/mutation/fuzztests'
+----------------------------------------------------------------------------------------------------
+GetHost                                  
+action="GET"                             action='/mutation/hosts/$id'
+----------------------------------------------------------------------------------------------------
+GetHosts                                
+action="GET"                             action='/mutation/hosts'
+----------------------------------------------------------------------------------------------------
+GetLibraryProfiles                      
+action="GET"                             action='/av_profiles?sort_by=updated_at&amp;sort_direction=descending'
+----------------------------------------------------------------------------------------------------
+GetLibraryReports                       
+action="GET"                             action='/av_reports?sort_by=name&amp;sort_direction=ascending'
+----------------------------------------------------------------------------------------------------
+GetLibraryTest                          
+action="GET"                             action='/av_tests?sort_by=updated_at&amp;sort_direction=descending'
+----------------------------------------------------------------------------------------------------
+GetLibraryTests                         
+action="GET"                             action='/av_tests?sort_by=updated_at&amp;sort_direction=descending'
+----------------------------------------------------------------------------------------------------
+GetLicenses                             
+action="GET"                             action='/licenses'
+----------------------------------------------------------------------------------------------------
+GetMuLibraryTest                        
+action="GET"                             action='/tests'
+action="GET"                             action='/tests/$id'
+----------------------------------------------------------------------------------------------------
+GetMuLibraryTests                       
+action="GET"                             action='/tests'
+----------------------------------------------------------------------------------------------------
+GetNetwork                               
+action="GET"                             action='/profile/networks/$id'
+----------------------------------------------------------------------------------------------------
+GetNetworks                             
+action="GET"                             action='/profile/networks'
+----------------------------------------------------------------------------------------------------
+GetPlayerTest                           
+action="GET"                             action='/playerapi/tests/$id'
+----------------------------------------------------------------------------------------------------
+GetPlayerTestState                      
+action="GET"                             action='/playerapi/tests/$id/state'
+----------------------------------------------------------------------------------------------------
+GetPlayerTestTemplate                   
+action="GET"                             action='/playerapi/tests/$type/template'
+----------------------------------------------------------------------------------------------------
+GetPlayerTestTimeLine                   
+action="GET"                             action='/playerapi/tests/$id/timeline?start_time=$start_time'
+----------------------------------------------------------------------------------------------------
+GetPostTestDebug                        
+action="GET"                             action='/av_post_results/debug/$id'
+----------------------------------------------------------------------------------------------------
+GetPostTestPdf                          
+action="GET"                             action='/av_post_results/pdf/$id?forkId=0'
+action="GET"                             action='/av_post_results/pdf/$id?forkId=$forkId'
+action="GET"                             action='/av_post_results/pdf/$id?forkId=$forkId'
+----------------------------------------------------------------------------------------------------
+GetPostTestResults                      
+action="GET"                             action='/av_post_results/post_results/$id'
+----------------------------------------------------------------------------------------------------
+GetPostTestRunRef                       
+action="GET"                             action='/av_post_results/run_ref/$id'
+----------------------------------------------------------------------------------------------------
+GetPredefinedProtocols                  
+action="GET"                             action='/fixtures/traffic_mixes/predefined_protocol.json'
+----------------------------------------------------------------------------------------------------
+GetProtocolConfig                        
+action="GET"                             action='/mutation/protocols/config/$id'
+----------------------------------------------------------------------------------------------------
+GetProtocols                            
+action="GET"                             action='/mutation/protocols'
+----------------------------------------------------------------------------------------------------
+GetProtocolsCategory                    
+action="GET"                             action='/mutation/protocols/category'
+----------------------------------------------------------------------------------------------------
+GetProtocolsConfig                      
+action="GET"                             action='/mutation/protocols/config'
+----------------------------------------------------------------------------------------------------
+GetQueue                                 
+action="GET"                             action='/av_queues/$id'
+----------------------------------------------------------------------------------------------------
+GetQueueTestStatus                      
+action="GET"                             action='/av_queues/test_status?queue_test_id=$id'
+----------------------------------------------------------------------------------------------------
+GetQueues                               
+action="GET"                             action='/av_queues'
+----------------------------------------------------------------------------------------------------
+GetSubnet                               
+action="GET"                             action='/profile/subnets'
+action="GET"                             action='/profile/subnets/$id'
+----------------------------------------------------------------------------------------------------
+GetSubnetOptions                        
+action="GET"                             action='/profile/subnets'
+action="GET"                             action='/profile/subnets/$id/options'
+----------------------------------------------------------------------------------------------------
+GetSubnetRoute                           
+----------------------------------------------------------------------------------------------------
+GetSubnets                              
+action="GET"                             action='/profile/subnets'
+----------------------------------------------------------------------------------------------------
+GetSuperAdmin                           
+action="GET"                             action='/users/get_super_admin'
+----------------------------------------------------------------------------------------------------
+GetSystemAbout                          
+action="GET"                             action='/system/about'
+----------------------------------------------------------------------------------------------------
+GetSystemGemStatus                      
+action="GET"                             action='/system/gem_status'
+----------------------------------------------------------------------------------------------------
+GetSystemLiveSupport                    
+action="GET"                             action='/system/livesupport'
+----------------------------------------------------------------------------------------------------
+GetSystemServiceStatus                  
+action="GET"                             action='/system/service_status'
+----------------------------------------------------------------------------------------------------
+GetSystemVersions                       
+action="GET"                             action='/system/versions'
+----------------------------------------------------------------------------------------------------
+GetTestState                            
+action="GET"                             action='/playerapi/tests/$id/state'
+----------------------------------------------------------------------------------------------------
+GetTrack                                 
+action="GET"                             action='/tracks/$id'
+----------------------------------------------------------------------------------------------------
+GetTrackDetail                           
+action="GET"                             action='/tracks/details/$id'
+action="GET"                             action='/tracks/details/$id?limit=3000'
+----------------------------------------------------------------------------------------------------
+GetTracks                               
+action="GET"                             action='/tracks?page=1&amp;per_page=20000000'
+----------------------------------------------------------------------------------------------------
+GetTrafficMix                            
+action="GET"                             action='/profile/traffic_mix/$id'
+----------------------------------------------------------------------------------------------------
+GetTrafficMixes                         
+action="GET"                             action='/profile/traffic_mix'
+----------------------------------------------------------------------------------------------------
+GetUser                                  
+action="GET"                             action='/users/$userId'
+----------------------------------------------------------------------------------------------------
+GetUsers                                
+action="GET"                             action='/users'
+----------------------------------------------------------------------------------------------------
+NegativeVerifyQueue                      
+----------------------------------------------------------------------------------------------------
+PerformBackup                           
+action="POST"                            action='/backup/perform_backup'
+----------------------------------------------------------------------------------------------------
+RemovePortGroupFromQueue                 
+action="PUT"                             action='/av_queues/$queueId/remove_port_group'
+----------------------------------------------------------------------------------------------------
+RemoveQueueTest                          
+action="PUT"                             action='/av_queues/$queueId/remove_test?queue_test_id=$id'
+----------------------------------------------------------------------------------------------------
+RestartQueueTest                         
+action="PUT"                             action='/av_queues/$queueId/restart_test?queue_test_id=$id'
+----------------------------------------------------------------------------------------------------
+RunFuzzTestByJson                       
+action="POST"                            action='/mutation/players/start'
+----------------------------------------------------------------------------------------------------
+RunMuTestByJson                          
+action="POST"                            action='/player/start'
+----------------------------------------------------------------------------------------------------
+RunQueueTestByJson                       
+action="PUT"                             action='/av_queues/$queueId/add_test'
+----------------------------------------------------------------------------------------------------
+StartTest                               
+action="PUT"                             action='/playerapi/tests/$id/start'
+----------------------------------------------------------------------------------------------------
+StopQueueAllTest                         
+action="PUT"                             action='/av_queues/$id/stop_all_tests'
+----------------------------------------------------------------------------------------------------
+StopQueueTest                            
+action="PUT"                             action='/av_queues/$queueId/stop_test?queue_test_id=$id'
+----------------------------------------------------------------------------------------------------
+StopTest                                
+action="GET"                             action='/playerapi/tests/$id'
+action="PUT"                             action='/playerapi/tests/$id/stop'
+----------------------------------------------------------------------------------------------------
+SystemLiveSupportCommand                
+action="GET"                             action='/system/livesupport?command=$cmd'
+----------------------------------------------------------------------------------------------------
+SystemReset                             
+action="GET"                             action='/system/reset'
+----------------------------------------------------------------------------------------------------
+UpdateAvalancheTestByJson                
+action="PUT"                             action='/avalanche/$type\\_tests/$id'
+----------------------------------------------------------------------------------------------------
+UpdateDNS                                
+action="PUT"                             action='/profile/dnss/$id'
+----------------------------------------------------------------------------------------------------
+UpdateFuzzTestByJson                     
+action="PUT"                             action='/mutation/fuzztests/$id'
+----------------------------------------------------------------------------------------------------
+UpdateHost                               
+action="PUT"                             action='/mutation/hosts/$id'
+----------------------------------------------------------------------------------------------------
+UpdateMuTestByJson                       
+action="PUT"                             action='/tests/$id'
+----------------------------------------------------------------------------------------------------
+UpdateNetwork                            
+action="PUT"                             action='/profile/networks/$id'
+----------------------------------------------------------------------------------------------------
+UpdatePlayerTestNetwork                  
+----------------------------------------------------------------------------------------------------
+UpdateProtocolTCP                        
+action="PUT"                             action='/mutation/protocols/config/$id'
+----------------------------------------------------------------------------------------------------
+UpdateSubnet                             
+action="PUT"                             action='/profile/subnets/$id'
+----------------------------------------------------------------------------------------------------
+UpdateSubnetByJson                      
+action="GET"                             action='/profile/subnets'
+action="GET"                             action='/profile/subnets/$id'
+action="PUT"                             action='/profile/subnets/$id'
+----------------------------------------------------------------------------------------------------
+UpdateTrack                              
+action="PUT"                             action='/tracks/update/$id'
+----------------------------------------------------------------------------------------------------
+UpdateTrafficMix                         
+action="PUT"                             action='/profile/traffic_mix/$id'
+----------------------------------------------------------------------------------------------------
+VerifyMuTestResult                      
+action="GET"                             action='/report/show?queue_test_id=$testId'
+action="GET"                             action='/results/$resultId'
+action="GET"                             action='/report/download?id=$resultId'
+action="GET"                             action='/report/download?id=$resultId&amp;forkId=$forkId'
+----------------------------------------------------------------------------------------------------
+login                                   
+action="POST"                            action='/login'
+----------------------------------------------------------------------------------------------------
+logout                                  
+action="DELETE"                          action='/logout'
+----------------------------------------------------------------------------------------------------
+
