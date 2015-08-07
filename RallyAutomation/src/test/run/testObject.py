@@ -52,14 +52,23 @@ class testObject(object):
         self.logger.propagate=False
         self.helper_obj=helper(rally,data)
     
-    def sanityCheck(self):
+    def sanityCheck(self,ts_id):
         try:
             pass
-            #raise Exception
+            #raise Exception('Environment sanity check failed')
         except Exception, details:
 
-            #x=inspect.stack()
-            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+            x=inspect.stack()
+
+            if details.message=='Environment sanity check failed':
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                report_data=[]
+                report_data.append("Test Report for Test Set %s:\n" % ts_id)                                           
+                report_data.append("Test Set ID: %s\nBuild: %s\nVerdict: Blocked\nNotes: %s\nDate: %s\nTester: %s\n" % (ts_id,self.data["ts"]["Build"],details,datetime.datetime.now(),self.data['user']['UserName']))  
+                report=self.genReport(report_data,constants.FROM_EXCEPTION)
+                self.sendNotification(report)    
+                sys.exit(1)  
+            elif 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
                 #print Exception,details
@@ -67,7 +76,7 @@ class testObject(object):
                 sys.exit(1)
         self.logger.info("Sanity check is successfully performed")
         return True
-    
+
     #Get last build information. 
     def getLastBuildInfoFromJenkins(self):
         try:
@@ -808,7 +817,7 @@ class testObject(object):
 
             
     #First level check
-    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub):
+    def firstLevelCheck(self,lst,r,verdict,tc,s_ession,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub,ts):
         try: 
             setup_calls=lst[constants.INDEXES_SUP[0]].split(";")
             if len(response_to_sub)!=0:
@@ -870,13 +879,14 @@ class testObject(object):
             elif (r!=None and lst[constants.INDEXES_FLC[0]].isdigit()) and r.status_code != int(lst[constants.INDEXES_FLC[0]]):
                 #Run Env Sanity Check
                 #to_obj=testObject(self.rally,self.data)       
-                if self.sanityCheck():
+                if self.sanityCheck(ts.FormattedID):
                     verdict[-1]=(constants.FAILED,verdict[-1][1]+'; status code unexpected: the unexpected status code of the response is %s' % r.status_code) 
                     self.logger.debug("Test case %s, build %s failed because status code unexpected. The unexpected status code of the response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.status_code))                       
                     #return verdict
                 else:    
-                    raise Exception('Environment sanity check failed')
-                    #verdict.append((0,'Failure: sanity check of environment failed'))            
+                    #raise Exception('Environment sanity check failed')
+                    #verdict.append((0,'Failure: sanity check of environment failed'))      
+                    pass      
             else:
                 
                 if (lst[constants.INDEXES_FLC[1]] != u'' ):# and (r.content==str(lst[constants.INDEXES_FLC[0]])):
@@ -933,7 +943,7 @@ class testObject(object):
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
-                raise
+                raise         
             else:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
@@ -1236,7 +1246,7 @@ class testObject(object):
                     if tc_type==constants.FUNC_LVL_TC:
                         pass
                     else:
-                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub,testset_under_test)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     self.cleaner(lst_of_par, tc,testset_under_test,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
@@ -1265,7 +1275,7 @@ class testObject(object):
                     if tc_type==constants.FUNC_LVL_TC:
                         pass
                     else:
-                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                        verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub,testset_under_test)
                     if verdict[-1][0]==constants.SUCCESS:
                         verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                 #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1294,7 +1304,7 @@ class testObject(object):
                 if tc_type==constants.FUNC_LVL_TC:
                     pass
                 else:
-                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub)
+                    verdict,variable_value_dict=self.firstLevelCheck(lst_of_par, response, verdict, tc,s,variable_value_dict,r_ver_content,parrent_tc,steps_type,search_path,search_index,response_to_sub,testset_under_test)
                 if verdict[-1][0]==constants.SUCCESS:
                     verdict=self.verificator(lst_of_par, response, verdict, tc,s,variable_value_dict,search_path,parrent_tc,steps_type,search_index)
                     #self.cleaner(lst_of_par, tc,testset_under_test,s)
@@ -1517,16 +1527,20 @@ class testObject(object):
         return trs
         
     #Generate report
-    def genReport(self,trs):
+    def genReport(self,trs,from_rally_or_not):
         filename="Report-%s.log" % datetime.datetime.now()
         try:
             with open(filename,"ab+") as f:
                 i=0
-                for tr in trs:
-                    if i == 0:
-                        f.write("Test Report for Test Set %s:\n" % tr.TestSet.FormattedID)
-                        i+=1                       
-                    f.write("Test Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
+                if from_rally_or_not==1:
+                    for tr in trs:
+                        if i == 0:
+                            f.write("Test Report for Test Set %s:\n" % tr.TestSet.FormattedID)
+                            i+=1                       
+                        f.write("Test Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
+                elif from_rally_or_not==0:
+                    for line in trs:
+                        f.write(line)
             self.logger.info('Report %s is successfully generated' % filename)
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)

@@ -18,6 +18,7 @@ from build import build
 from copy import deepcopy
 
 from extractAPI import extractAPI
+import constants
 
 #The main function    
 if __name__ == '__main__':
@@ -60,29 +61,31 @@ if __name__ == '__main__':
         
         to_obj=testObject(rally,data)
         
-        if to_obj.sanityCheck():
+        if to_obj.sanityCheck(data['ts']['FormattedID']):
             to_obj.getLastBuildInfoFromJenkins()
             to_obj.updateBuildInfo()
             to_obj.getLatestBuild()
             ts_ut=to_obj.copyTS()
             (verd,newdt)=to_obj.runTO(ts_ut)
             test_results=to_obj.runTS(verd,newdt)    
-            report=to_obj.genReport(test_results)
+            report=to_obj.genReport(test_results,constants.FROM_TR)
             to_obj.sendNotification(report)
 
-        else: raise Exception('Environment sanity check failed')            
+        else: 
+            pass
+            #raise Exception('Environment sanity check failed')            
         
         
         
     except Exception,details:
         #x=inspect.stack()
         #print ('test_' in x[1][3])
-        if ('test_' in inspect.stack()[1][3]) or ('test_' in inspect.stack()[2][3]):
-            raise
-        else:
+        #if ('test_' in inspect.stack()[1][3]) or ('test_' in inspect.stack()[2][3]):
+            #raise
+        #else:
             #print Exception,details
-            logger.error('ERROR: %s \n' % details,exc_info=True)
-            sys.exit(1)
+        logger.error('ERROR: %s \n' % details,exc_info=True)
+        sys.exit(1)
 
     
 
