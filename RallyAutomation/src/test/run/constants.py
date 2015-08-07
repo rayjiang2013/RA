@@ -31,3 +31,8 @@ COMPLETED=2
 #functional test case or api test case
 FUNC_LVL_TC=0
 API_LVL_TC=1
+
+#generate the report from Rally test result or exception
+FROM_TR=1
+FROM_EXCEPTION=0
+
