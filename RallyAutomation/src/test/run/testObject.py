@@ -232,8 +232,17 @@ class testObject(object):
 
     #connector between mysql api and major framework; formulate the test cases like in Rally custom field
     def sqlConnector(self):
-        sql_obj=sql_functions('mysql.json','sqldb')
-        
+        try:
+            sql_obj=sql_functions('mysql.json','sqldb')
+            #need implement
+        except Exception, details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)            
     
     #Setup
     def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict,search_path,parrent_tc,steps_type,search_index):
