@@ -34,6 +34,8 @@ import re
 
 from helper import helper
 
+from sqlFunctions import sql_functions
+
 class testObject(object):
     '''
     classdocs
@@ -227,6 +229,11 @@ class testObject(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
+
+    #connector between mysql api and major framework; formulate the test cases like in Rally custom field
+    def sqlConnector(self):
+        sql_obj=sql_functions('mysql.json','sqldb')
+        
     
     #Setup
     def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict,search_path,parrent_tc,steps_type,search_index):
