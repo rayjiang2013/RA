@@ -234,7 +234,7 @@ class testObject(object):
     def sqlConnector(self):
         try:
             sql_obj=sql_functions('mysql.json','sqldb')
-            #need implement
+            #need implement#
         except Exception, details:
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
