@@ -19,6 +19,7 @@ from copy import deepcopy
 
 from extractAPI import extractAPI
 import constants
+from sqlConnector import sqlConnector
 
 #The main function    
 if __name__ == '__main__':
@@ -56,8 +57,14 @@ if __name__ == '__main__':
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
    
-        #api_obj=extractAPI(rally,data)
-
+        #Read mysql configuration parameters for mysql.json
+        with open(sys.argv[4]) as mysql_data:
+            mysql_data=json.load(mysql_data)
+            logger.debug("The mysql.json configuration file contains parameters as below: %s" % mysql_data)
+        
+        #get test case infomation from database
+        sql_obj=sqlConnector(sys.argv[4],mysql_data)
+        tc_string=sql_obj.getTCsFromDB('logout')
         
         to_obj=testObject(rally,data)
         
