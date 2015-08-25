@@ -64,7 +64,7 @@ if __name__ == '__main__':
         
         #get test case infomation from database
         sql_obj=sqlConnector(sys.argv[4],mysql_data)
-        tc_string=sql_obj.getTCsFromDB('logout')
+        tc_string=sql_obj.getTCFromDB('logout')
         
         to_obj=testObject(rally,data)
         

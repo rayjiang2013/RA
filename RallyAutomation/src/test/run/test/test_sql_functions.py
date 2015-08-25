@@ -6,15 +6,18 @@ Created on Aug 5, 2015
 import pytest
 import json
 import os
-from src.test.run.mysqlConnection import sql_functions
+from src.test.run.sqlFunctions import sql_functions
 import mysql.connector
 import datetime
 
 
 """Opens A Working Connection To Test Functions Within"""
-@pytest.fixture(scope='module',params=[("../mysql_test.json",'sqldb','../mysql.json')])
+@pytest.fixture(scope='module',params=[("mysql_test.json",'sqldb','mysql.json')])
 def class_instance_fixture(request):
+    parent_path=os.path.dirname(os.path.dirname(__file__))
     jfile,key,value_file = request.param
+    jfile=parent_path+'/'+jfile
+    value_file=parent_path+'/'+value_file
     with open(value_file) as json_data_file:
             data = json.load(json_data_file)
             data[key].pop('database',None)
@@ -77,10 +80,13 @@ def reset_schema(request, class_instance_fixture):
     request.addfinalizer(reset)
 """Creates JSON Files to be Used in Unit Tests"""
 @pytest.fixture(scope='function',params=[
-                                       ("../bad_pass.json","../mysql.json",'sqldb')
+                                       ("bad_pass.json","mysql.json",'sqldb')
                                        ])
 def create_bad_pass_json_file(request):
+    parent_path=os.path.dirname(os.path.dirname(__file__))
     jfile,info_file,key = request.param
+    jfile=parent_path+'/'+jfile
+    info_file=parent_path+'/'+info_file
     with open(info_file) as json_data_file:
             data = json.load(json_data_file)
             data[key]['password'] = 'bad_pass'
@@ -91,10 +97,13 @@ def create_bad_pass_json_file(request):
     request.addfinalizer(fin)
     return jfile
 @pytest.fixture(scope='function',params=[
-                                       ("../bad_db.json","../mysql.json",'sqldb')
+                                       ("bad_db.json","mysql.json",'sqldb')
                                        ])
 def create_bad_db_json_file(request):
+    parent_path=os.path.dirname(os.path.dirname(__file__))
     jfile,info_file,key = request.param
+    jfile=parent_path+'/'+jfile
+    info_file=parent_path+'/'+info_file
     with open(info_file) as json_data_file:
             data = json.load(json_data_file)
             data[key]['database'] = 'bad_db'
@@ -105,10 +114,13 @@ def create_bad_db_json_file(request):
     request.addfinalizer(fin)
     return jfile
 @pytest.fixture(scope='function',params=[
-                                       ("../bad_key.json","../mysql.json",'sqldb')
+                                       ("bad_key.json","mysql.json",'sqldb')
                                        ])
 def create_bad_key_json_file(request):
+    parent_path=os.path.dirname(os.path.dirname(__file__))
     jfile,info_file,key = request.param
+    jfile=parent_path+'/'+jfile
+    info_file=parent_path+'/'+info_file
     with open(info_file) as json_data_file:
             data = json.load(json_data_file)
             data['bad_key'] = data.pop(key)
@@ -119,10 +131,12 @@ def create_bad_key_json_file(request):
     request.addfinalizer(fin)
     return jfile
 @pytest.fixture(scope='function',params=[
-                                       ("../bad_host.json",{'sqldb':{'db':'*','host':'badhost','passwd':'*','user':'*'}})
+                                       ("bad_host.json",{'sqldb':{'db':'*','host':'badhost','passwd':'*','user':'*'}})
                                        ])
 def create_bad_host_json_file(request):
+    parent_path=os.path.dirname(os.path.dirname(__file__))
     jfile,key = request.param
+    jfile=parent_path+'/'+jfile
     with open(jfile,'w') as outfile:
         json.dump(key,outfile)
     def fin():  

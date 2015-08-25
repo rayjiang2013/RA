@@ -35,11 +35,11 @@ class TestSqlConnector:
             print details
             sys.exit(1)            
 
-    @pytest.mark.parametrize("tc_name,tc_string",[('logout','DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||'),
-                                                  ('login','POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout|||||||||||||||||||||||||||||||||||||'),
-                                                  ('GetCurrentUser','GET|/current_user|||200|{"okay":true,"current_user":{"id":"$id","email":"$email","role":"$role"}}|||||||logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}||||||||||||||||||||||||||||||')])
+    @pytest.mark.parametrize("tc_name,tc_string",[('logout','DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||'),
+                                                  ('login','POST|/login|{"user[email]":"$admin_email","user[password]":"$admin_password"}|user[email]|200|{"okay":true,"current_user":{"email":"$user[email]"}}|role;id;email|||GetCurrentUser|||logout||||||||||'),
+                                                  ('GetCurrentUser','GET|/current_user|||200|{"okay":true,"current_user":{"id":"$id","email":"$email","role":"$role"}}|||||||logout|||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||')])
     #@pytest.fixture(scope="class",params=['ss'])
     def test_get_tcs_from_db(self,config_class,tc_name,tc_string):
         sql_obj=config_class
-        assert sql_obj.getTCsFromDB(tc_name)==tc_string
+        assert sql_obj.getTCFromDB(tc_name)==tc_string
         

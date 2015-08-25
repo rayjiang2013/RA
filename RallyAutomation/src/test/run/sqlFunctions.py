@@ -21,6 +21,7 @@ class sql_functions:
         except EnvironmentError:
             raise EnvironmentError("JSON File Could Not Be Found/Opened")
         try:
+            #session_config={ key:value for (key,value) in self.db_key.items() if key == "passwd" or key == "autocommit" or key == 'host' or key == 'db' or key == 'user' }
             self.cnx = mysql.connector.connect(**self.db_key) #uses all values found in json key dict.
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
