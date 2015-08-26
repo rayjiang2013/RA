@@ -56,7 +56,7 @@ if __name__ == '__main__':
             data = json.load(data_file)
             #print "The extra.json configuration file contains parameters as below:"
             logger.debug("The extra.json configuration file contains parameters as below: %s" % data)
-   
+        '''
         #Read mysql configuration parameters for mysql.json
         with open(sys.argv[4]) as mysql_data:
             mysql_data=json.load(mysql_data)
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         #get test case infomation from database
         sql_obj=sqlConnector(sys.argv[4],mysql_data)
         tc_string=sql_obj.getTCFromDB('logout')
-        
+        '''
         to_obj=testObject(rally,data)
         
         if to_obj.sanityCheck(data['ts']['FormattedID']):
