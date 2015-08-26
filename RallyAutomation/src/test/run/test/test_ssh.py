@@ -11,14 +11,21 @@ import sys
 from test_fixture_base import test_config_module
 import inspect
 from copy import deepcopy
-#Test testObject/copyTS
+import os
+import json
+
 class TestSSH:
     
     @pytest.fixture(scope="class",params=[{'ip':'10.61.46.70','port':22,'username':'thot','password':'thot123'}])#,{'ip':'127.0.0.1','port':22,'username':'ljiang','password':'Jag6413682'},{'ip':'10.10.2.59','port':22,'username':'lei','password':'spirent'}])
     def config_class(self,request,test_config_module):
         try:
             print ("setup_class    class:%s" % self.__class__.__name__)
-            rally,data=test_config_module
+            parent_path=os.path.dirname(os.path.dirname(__file__))
+            # Read ssh configuration parameters from the ssh.json
+            with open(parent_path+'/ssh.json') as data_file:    
+                data = json.load(data_file)
+            
+            rally=test_config_module[0]
             data_to_ssh=deepcopy(data)
             data_to_ssh['ssh']=request.param
             ssh_obj=ssh(rally,data_to_ssh)
@@ -64,9 +71,6 @@ class TestSSH:
             
             print details
             sys.exit(1)            
-
-
-
             
     #@pytest.mark.parametrize("dirname", ['lei','12345','lei123'])        
     def test_remote_mkdir(self,config_class,config_test_remote_mkdir):
@@ -117,10 +121,7 @@ class TestSSH:
             
             print details
             sys.exit(1)            
-
-
-    
-    #@pytest.mark.parametrize("filename", ['123.log'])        
+   
     def test_read_log(self,config_class,config_test_read_log):
         print 'test_read_log  <============================ actual test code'
         connection,ssh_obj=config_class
