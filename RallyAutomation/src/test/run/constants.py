@@ -36,3 +36,6 @@ API_LVL_TC=1
 FROM_TR=1
 FROM_EXCEPTION=0
 
+#number of test case fields
+NO_TC_FIELDS=23
+

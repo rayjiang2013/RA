@@ -18,46 +18,36 @@ class TestTOCopyTS:
     @pytest.fixture(scope="class",params=["TS484","484"])
     #@pytest.mark.parametrize("fid_to_copy",['TS484'])
     def config_class(self,test_config_module,request):
-        try:
-            print ("setup_class    class:%s" % self.__class__.__name__)
-            #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            rally,data=test_config_module
-            
-            data_to_copy=deepcopy(data)
-            data_to_copy['ts']['FormattedID']=request.param
-                        
-            ts_obj=testSet(rally,data_to_copy)
-            ts=ts_obj.getTSByID(data_to_copy['ts']['FormattedID'])[0]
-            tcs=ts_obj.allTCofTS(ts)
-    
-            fids=[]
-            for tc in tcs:
-                fids.append(tc.FormattedID)
-            
-            to_obj=testObject(rally,data_to_copy)
-            ts_new=to_obj.copyTS()
-            #global new_self_data
-            new_self_data=deepcopy(data_to_copy) #use deepcopy instead of shallow one to create two separate object
-            new_self_data['ts']['FormattedID']=ts_new.FormattedID
-            
-            def fin():
-                try:
-                    print ("teardown_class class:%s" % self.__class__.__name__)
-                    ts_new_obj=testSet(rally,new_self_data)
-                    ts_new_obj.delTS()
-            
-                except Exception,details:
+        print ("setup_class    class:%s" % self.__class__.__name__)
+        #global ts_obj,ts,tcs,fids,new_self_data,ts_new
+        rally,data=test_config_module
+        
+        data_to_copy=deepcopy(data)
+        data_to_copy['ts']['FormattedID']=request.param
                     
-                    print details
-                    sys.exit(1)    
-                    
-            request.addfinalizer(fin)
-            
-            return (ts_new,ts,fids)
-        except Exception,details:
-            
-            print details
-            sys.exit(1)            
+        ts_obj=testSet(rally,data_to_copy)
+        ts=ts_obj.getTSByID(data_to_copy['ts']['FormattedID'])[0]
+        tcs=ts_obj.allTCofTS(ts)
+
+        fids=[]
+        for tc in tcs:
+            fids.append(tc.FormattedID)
+        
+        to_obj=testObject(rally,data_to_copy)
+        ts_new=to_obj.copyTS()
+        #global new_self_data
+        new_self_data=deepcopy(data_to_copy) #use deepcopy instead of shallow one to create two separate object
+        new_self_data['ts']['FormattedID']=ts_new.FormattedID
+        
+        def fin():
+            print ("teardown_class class:%s" % self.__class__.__name__)
+            ts_new_obj=testSet(rally,new_self_data)
+            ts_new_obj.delTS()
+               
+        request.addfinalizer(fin)
+        
+        return (ts_new,ts,fids)
+           
 
     def test_testobject_copyts_same_tc_order(self,config_class):
         print 'test_testobject_copyts_same_tc_order  <============================ actual test code'
