@@ -12,32 +12,20 @@ class TestHelper:
     
     @pytest.fixture(scope="class")
     def config_class(self,test_config_module,request):
-        try:
-            print ("setup_class    class:%s" % self.__class__.__name__)
-            #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (rally,data)=test_config_module
-            
-            helper_obj=helper(rally,data)
-            
-            def fin():
-                try:
-                    print ("teardown_class class:%s" % self.__class__.__name__)
-                    #ts_new_obj=testSet(rally,data_to_runto)
-                    #ts_new_obj.delTS()
-            
-                except Exception,details:
-                    
-                    print details
-                    sys.exit(1)    
-                    
-            request.addfinalizer(fin)
-            
-            return helper_obj
-        except Exception,details:
-            
-            print details
-            sys.exit(1)             
-    
+        print ("setup_class    class:%s" % self.__class__.__name__)
+        #global ts_obj,ts,tcs,fids,new_self_data,ts_new
+        (rally,data)=test_config_module
+        
+        helper_obj=helper(rally,data)
+        
+        def fin():
+            print ("teardown_class class:%s" % self.__class__.__name__)
+            #ts_new_obj=testSet(rally,data_to_runto)
+            #ts_new_obj.delTS()
+                           
+        request.addfinalizer(fin)
+        
+        return helper_obj        
     
 
     @pytest.mark.parametrize("search_path_list,variable_value_dict,local_variable_dict,current_api_call,return_value", [(["Test Case Dummy","login","GetCurrentUser"],{"Test Case Dummy":{"login":{"GetCurrentUser":{"whatever":"whatever"}}}},{"whatever":"whatever"},"login",{'Test Case Dummy': {'login': {'GetCurrentUser': {'login': {'whatever': 'whatever'}, 'whatever': 'whatever'}}}})])

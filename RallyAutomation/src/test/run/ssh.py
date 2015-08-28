@@ -22,12 +22,12 @@ print data
 '''
 
 class ssh():
-    def __init__(self,rally,data):
+    def __init__(self,data):
         '''
         Constructor
         '''
         self.data=data
-        self.rally=rally
+        #self.rally=rally
         #setup("logging.json")
         #logger.debug("testObject is initiated successfully")
         self.logger = logging.getLogger(__name__)
@@ -138,4 +138,19 @@ class ssh():
                 sys.exit(1)
         self.logger.info("THoT is started")            
         return 
+    
+    #run a generic command
+    def runCMD(self,connection,cmd):
+        try:
+            stdin, stdout, stderr=connection.exec_command(cmd)
+        except Exception,details:
+            #x=inspect.stack()
+            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+                raise
+            else:
+                #print Exception,details
+                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                sys.exit(1)
+        self.logger.info("A command %s is created remotely" % cmd)            
+        return stdin, stdout, stderr   
         

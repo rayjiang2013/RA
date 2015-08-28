@@ -34,6 +34,7 @@ import re
 
 from helper import helper
 
+
 class testObject(object):
     '''
     classdocs
@@ -227,6 +228,7 @@ class testObject(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
+        
     
     #Setup
     def setup(self,lst,tc,ts,s_ession,variable_value_dict,verdict,search_path,parrent_tc,steps_type,search_index):

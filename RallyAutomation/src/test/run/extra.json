@@ -61,12 +61,6 @@
 		"nonexist_password":"nonexistpassword",
 		"wrong_password":"wrongpassword"
 	},
-    "ssh": {
-        "ip": "127.0.0.1",
-        "password": "Jag6413682",
-        "port": 22,
-        "username": "ljiang"
-    },
     "tc": {
         "Description": "Test",
         "Expedite": "false",

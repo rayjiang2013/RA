@@ -12,43 +12,33 @@ import sys
 class TestDefect:
     @pytest.fixture(scope="class")
     def config_class(self,test_config_module,request):
-        try:
-            print ("setup_class    class:%s" % self.__class__.__name__)
-            #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (rally,data)=test_config_module
-            
-            data_df=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-            data_df['df']={"FormattedID": "",
-                            "FoundInBuild": "",
-                            "Name": "Dummy defect",
-                            "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
-                            "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
-                            "ScheduleState": "Defined",
-                            "State": "Submitted",
-                            "TestCase": ""}
-            
-            df_obj=defect(rally,data_df)
-            df=df_obj.createDF()
-            
-            def fin():
-                try:
-                    print ("teardown_class class:%s" % self.__class__.__name__)
-                    data_delete_df=deepcopy(data_df)
-                    data_delete_df['df']['FormattedID']=df.FormattedID
-                    df_obj_del=defect(rally,data_delete_df)
-                    df_obj_del.delDF()
-                except Exception,details:
-                    
-                    print details
-                    sys.exit(1)    
-                    
-            request.addfinalizer(fin)
-            
-            return df,rally
-        except Exception,details:
-            
-            print details
-            sys.exit(1)         
+        print ("setup_class    class:%s" % self.__class__.__name__)
+        #global ts_obj,ts,tcs,fids,new_self_data,ts_new
+        (rally,data)=test_config_module
+        
+        data_df=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+        data_df['df']={"FormattedID": "",
+                        "FoundInBuild": "",
+                        "Name": "Dummy defect",
+                        "Owner": "https://rally1.rallydev.com/slm/webservice/v2.0/user/24343572282",
+                        "Project": "https://rally1.rallydev.com/slm/webservice/v2.0/project/24755623223",
+                        "ScheduleState": "Defined",
+                        "State": "Submitted",
+                        "TestCase": ""}
+        
+        df_obj=defect(rally,data_df)
+        df=df_obj.createDF()
+        
+        def fin():
+            print ("teardown_class class:%s" % self.__class__.__name__)
+            data_delete_df=deepcopy(data_df)
+            data_delete_df['df']['FormattedID']=df.FormattedID
+            df_obj_del=defect(rally,data_delete_df)
+            df_obj_del.delDF()
+                
+        request.addfinalizer(fin)
+        
+        return df,rally    
             
     @pytest.mark.parametrize("notes", ["this is to test if updating notes will work"])
     def test_defect_updateDF(self,notes,config_class):
