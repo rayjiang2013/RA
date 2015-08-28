@@ -28,41 +28,29 @@ from src.test.run.helper import helper
 class TestTOrunTO:
     @pytest.fixture(scope="class",params=['TS1205'])
     def config_class(self,test_config_module,request):
-        try:
-            print ("setup_class    class:%s" % self.__class__.__name__)
-            (rally,data)=test_config_module
-            
-            data_to_runto=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-            data_to_runto['ts']['FormattedID']=request.param
-            
-            ts_obj=testSet(rally,data_to_runto)
-            ts=ts_obj.getTSByID(data_to_runto['ts']['FormattedID'])[0]
-                        
-            to_obj=testObject(rally,data_to_runto)
-            
-            def fin():
-                try:
-                    print ("teardown_class class:%s" % self.__class__.__name__)
-                    #ts_new_obj=testSet(rally,data_to_runto)
-                    #ts_new_obj.delTS()
-            
-                except Exception,details:
+        print ("setup_class    class:%s" % self.__class__.__name__)
+        (rally,data)=test_config_module
+        
+        data_to_runto=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+        data_to_runto['ts']['FormattedID']=request.param
+        
+        ts_obj=testSet(rally,data_to_runto)
+        ts=ts_obj.getTSByID(data_to_runto['ts']['FormattedID'])[0]
                     
-                    print details
-                    sys.exit(1)    
-                    
-            request.addfinalizer(fin)
-            
-            return (ts,to_obj,ts_obj,data_to_runto)#verd,new_data)
-        except Exception,details:
-            
-            print details
-            sys.exit(1)            
+        to_obj=testObject(rally,data_to_runto)
+        
+        def fin():
+            print ("teardown_class class:%s" % self.__class__.__name__)
+            #ts_new_obj=testSet(rally,data_to_runto)
+            #ts_new_obj.delTS() 
+                
+        request.addfinalizer(fin)
+        
+        return (ts,to_obj,ts_obj,data_to_runto)#verd,new_data)         
 
 
     @pytest.fixture(scope="function")
     def config_test_testobject_runto_blocked(self,test_config_module,config_class,request):
-        try:
             print ("setup_method    method:%s" % inspect.stack()[0][3])
             (ts,to_obj,ts_obj,data_to_runto)=config_class
             #rally=test_config_module[1]
@@ -86,27 +74,15 @@ class TestTOrunTO:
             to_obj_after_add_block_tcr=testObject(to_obj.rally,new_self_block_data)
             
             def fin():
-                try:
-                    inspect_elements=inspect.stack()
-                    print ("teardown_method method:%s" % inspect_elements[0][3])
-                    new_self_block_data['tcresult'].update({"oid":tcr_block.oid})
-                    ts_new_obj=testCaseResult(to_obj.rally,new_self_block_data)
-                    ts_new_obj.delTCR()
-            
-                except Exception,details:
-                    
-                    print details
-                    sys.exit(1)    
-                    
+                inspect_elements=inspect.stack()
+                print ("teardown_method method:%s" % inspect_elements[0][3])
+                new_self_block_data['tcresult'].update({"oid":tcr_block.oid})
+                ts_new_obj=testCaseResult(to_obj.rally,new_self_block_data)
+                ts_new_obj.delTCR()
+                   
             request.addfinalizer(fin)
             
             return ts_with_block,to_obj_after_add_block_tcr
-        except Exception,details:
-            
-            print details
-            sys.exit(1)    
-
-
 
     @pytest.fixture(scope="class",params=[{
         "Name": "Dummy",
@@ -115,65 +91,55 @@ class TestTOrunTO:
         "ScheduleState": "Defined"
     }])
     def config_test_testobject_runtc(self,test_config_module,request):
-        try:
-            print ("setup_method    method: %s" % inspect.stack()[0][3])
-            #global ts_obj,ts,tcs,fids,new_self_data,ts_new
-            (rally,data)=test_config_module
-            
-            data_to_runtc=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
-            data_to_runtc['ts']['FormattedID']=request.param
-            ts_obj=testSet(rally,data_to_runtc)
+        print ("setup_method    method: %s" % inspect.stack()[0][3])
+        #global ts_obj,ts,tcs,fids,new_self_data,ts_new
+        (rally,data)=test_config_module
+        
+        data_to_runtc=deepcopy(data) #use deepcopy instead of shallow one to create two separate object
+        data_to_runtc['ts']['FormattedID']=request.param
+        ts_obj=testSet(rally,data_to_runtc)
+        #ts=ts_obj.getTSByID(request.param)[0]
+        ts=ts_obj.createTS(request.param)
+        
+        helper_obj=helper(rally,data_to_runtc)
+        
+        data_to_runtc['tc']={
+            "Description": "Test Case Dummy",
+            "Expedite": "false",
+            "FormattedID": "",
+            "LastBuild": "",
+            "Method": "Automated",
+            "Name": "Test Case Dummy",
+            "Objective": "",
+            "TestFolder": "",
+            "Type": "Acceptance",
+            "c_QATCPARAMSTEXT":""}
+                   
+        to_obj=testObject(rally,data_to_runtc)           
+        #runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s)
+        tc_obj=testCase(rally,data_to_runtc)
+        tc=tc_obj.createTC()
+        new_ts=ts_obj.addSpecificTCs([tc],ts)
+        
+        def fin():                    
+            print ("teardown_method method: config_test_testobject_runtc")    
+            #print ("teardown_method method: %s" % inspect.stack()[0][3])
             #ts=ts_obj.getTSByID(request.param)[0]
-            ts=ts_obj.createTS(request.param)
-            
-            helper_obj=helper(rally,data_to_runtc)
+            data_to_runtc['ts']['FormattedID']=new_ts.FormattedID
+            ts_obj=testSet(rally,data_to_runtc)
+            tcs=ts_obj.allTCofTS(new_ts)
+            for tc in tcs:
+                if tc.Name=='Test Case Dummy':
+                    data_to_runtc['tc']['FormattedID']=tc.FormattedID
+                    tc_obj=testCase(rally,data_to_runtc)
+                    tc_obj.delTC()
+        
+            ts_obj.delTS()
+               
+        request.addfinalizer(fin)        
+        
+        return new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj
  
-            data_to_runtc['tc']={
-                "Description": "Test Case Dummy",
-                "Expedite": "false",
-                "FormattedID": "",
-                "LastBuild": "",
-                "Method": "Automated",
-                "Name": "Test Case Dummy",
-                "Objective": "",
-                "TestFolder": "",
-                "Type": "Acceptance",
-                "c_QATCPARAMSTEXT":""}
-                       
-            to_obj=testObject(rally,data_to_runtc)           
-            #runTC(self,tc,verdict,testset_under_test,steps_type,variable_value_dict,s)
-            tc_obj=testCase(rally,data_to_runtc)
-            tc=tc_obj.createTC()
-            new_ts=ts_obj.addSpecificTCs([tc],ts)
-
-            def fin():
-                try:
-                    
-                    print ("teardown_method method: config_test_testobject_runtc")    
-                    #print ("teardown_method method: %s" % inspect.stack()[0][3])
-                    #ts=ts_obj.getTSByID(request.param)[0]
-                    data_to_runtc['ts']['FormattedID']=new_ts.FormattedID
-                    ts_obj=testSet(rally,data_to_runtc)
-                    tcs=ts_obj.allTCofTS(new_ts)
-                    for tc in tcs:
-                        if tc.Name=='Test Case Dummy':
-                            data_to_runtc['tc']['FormattedID']=tc.FormattedID
-                            tc_obj=testCase(rally,data_to_runtc)
-                            tc_obj.delTC()
-
-                    ts_obj.delTS()
-                    
-                except Exception,details:                    
-                    print details
-                    sys.exit(1)  
-                    
-            request.addfinalizer(fin)        
-            
-            return new_ts,data_to_runtc,ts_obj,helper_obj,tc,to_obj,tc_obj
-        except Exception,details:
-            
-            print details
-            sys.exit(1)    
 
     @pytest.mark.parametrize("c_QATCPARAMSTEXT,expected", [('DELETE|/nonexist|||200|{"okay":true}||||||||||||login||{"user[email]":"$admin_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.FAILED, u'the test case is setup successfully; execution is successful; status code unexpected: the unexpected status code of the response is 404')]),
                                                   ('DELETE|/logout|||200|{"okay":true}||||||||||||login||{"user[email]":"$nonexist_email","user[password]":"$admin_password"}|||||||||||||||||||||||||||||||',[(constants.BLOCKED, u'fail to setup as the restful api level test case TC2118 (login) failed: fail to execute as unable to save values in response content to variables as the variable: role cannot be found in the response content, id cannot be found in the response content, email cannot be found in the response content; status code unexpected: the unexpected status code of the response is 401')]),
