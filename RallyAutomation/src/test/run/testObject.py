@@ -37,7 +37,7 @@ from helper import helper
 
 class testObject(object):
     '''
-    classdocs
+    This class is used to provide high level actions the framework can perform
     '''
 
 
