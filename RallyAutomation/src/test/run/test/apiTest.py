@@ -8,7 +8,7 @@ import pycurl
 import json
 
 #s=requests.session()
-#login_data={'formPosted':'1', 'login_email':'me@example.com, 'password':'pw'}
+#login_data={'formPosted':'1', 'login_email':'me@mainFuncs.com, 'password':'pw'}
 #s.post('http://10.40.60.170/login)', login_data)
 #logged in! cookies saved for future requests.
 #r2 = s.get('https://localhost/profile_data.json', ...)

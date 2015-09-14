@@ -1,7 +1,7 @@
 from src.test.run.testObject import testObject
 from src.test.run.testSet import testSet
 from copy import deepcopy
-#import src.test.run.example
+#import src.test.run.mainFuncs
 #import pytest
 import sys
 
@@ -9,7 +9,7 @@ from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a 
 import json
 
 
-#xunit-style example
+#xunit-style mainFuncs
 def setup_module(module):
     try:
         global rally,data,to_obj
@@ -18,7 +18,7 @@ def setup_module(module):
         server, user, password, apikey, workspace, project = rallyWorkset(options) #apikey can be obtained from https://rally1.rallydev.com/login/
         #global rally
         rally = Rally(server, user, password, workspace=workspace, project=project)
-        rally.enableLogging('rally.example.log', attrget=True, append=True)
+        rally.enableLogging('rally.mainFuncs.log', attrget=True, append=True)
         #global data
         # Read other configuration parameters from the extra.json
         with open('../extra.json') as data_file:    
