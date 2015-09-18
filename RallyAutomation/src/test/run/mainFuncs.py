@@ -3,6 +3,7 @@ Created on Oct 28, 2014
 
 @author: ljiang
 '''
+# pylint: disable=fixme, relative-import
 import sys
 import os.path
 sys.path.append(os.path.dirname(__file__))
