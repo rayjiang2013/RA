@@ -3,14 +3,14 @@ Created on Nov 10, 2014
 
 @author: ljiang
 '''
-
-
-#from testSet import *
-from smtplib import *
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+# pylint: disable=fixme, relative-import
+# pylint: disable=fixme, broad-except
 import sys
-#sys.setrecursionlimit(1500)
+import os.path
+sys.path.append(os.path.dirname(__file__))
+from smtplib import SMTP, SMTPException
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from testSet import testSet
 import datetime
 from user import user
@@ -18,20 +18,15 @@ from testCaseResult import testCaseResult
 import logging
 from defect import defect
 import requests
-import ast
 from copy import deepcopy
 import inspect
 from buildDefinition import buildDefinition
 from build import build
-
 from jenkinsNotifier import jenkinsNotifier
 from dateutil import tz
-
 import json
-
 import constants
 import re
-
 from helper import helper
 
 
@@ -39,118 +34,121 @@ class testObject(object):
     '''
     This class is used to provide high level actions the framework can perform
     '''
-
-
-    def __init__(self,rally,data):
+    def __init__(self, rally, data):
         '''
-        Constructor
+        Constructor of testObject
         '''
-        self.data=data
-        self.rally=rally
-        #setup("logging.json")
-        #logger.debug("testObject is initiated successfully")
+        self.data = data
+        self.rally = rally
         self.logger = logging.getLogger(__name__)
-        self.logger.propagate=False
-        self.helper_obj=helper(rally,data)
-    
-    def sanityCheck(self,ts_id):
+        self.logger.propagate = False
+        self.helper_obj = helper(rally, data)
+
+    def sanityCheck(self, ts_id):
+        '''To do the sanity check of the SUT'''
         try:
             pass
             #raise Exception('Environment sanity check failed')
         except Exception, details:
-
-            x=inspect.stack()
-
-            if details.message=='Environment sanity check failed':
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+            #x=inspect.stack()
+            if details.message == 'Environment sanity check failed':
+                self.logger.error('ERROR: %s \n', details, exc_info=True)
                 report_data=[]
-                report_data.append("Test Report for Test Set %s:\n" % ts_id)                                           
-                report_data.append("Test Set ID: %s\nBuild: %s\nVerdict: Blocked\nNotes: %s\nDate: %s\nTester: %s\n" % (ts_id,self.data["ts"]["Build"],details,datetime.datetime.now(),self.data['user']['UserName']))  
-                report=self.genReport(report_data,constants.FROM_EXCEPTION)
-                self.sendNotification(report)    
-                sys.exit(1)  
+                report_data.append("Test Report for Test Set %s:\n" % ts_id)
+                report_data.append("Test Set ID: %s\n \
+                                    Build: %s\n \
+                                    Verdict: Blocked\n \
+                                    Notes: %s\n \
+                                    Date: %s\n \
+                                    Tester: %s\n"
+                                    % (ts_id, self.data["ts"]["Build"], details,
+                                       datetime.datetime.now(), self.data['user']['UserName']))
+                report=self.genReport(report_data, constants.FROM_EXCEPTION)
+                self.sendNotification(report)
+                sys.exit(1)
             elif 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
                 #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                self.logger.error('ERROR: %s \n', details, exc_info=True)
                 sys.exit(1)
         self.logger.info("Sanity check is successfully performed")
         return True
 
-    #Get last build information. 
+    #Get last build information.
     def getLastBuildInfoFromJenkins(self):
+        '''Get last build data from Jenkins and update it in the extra.json'''
         try:
-            jenkins_obj=jenkinsNotifier(self.rally,self.data)
-            server=jenkins_obj.getServerInstance()
-            build_obj,job_obj=jenkins_obj.getLastBuildInfo(server)
-            duration_list=str(build_obj.get_duration()).split(':')
-            duration_double=int(duration_list[0])*3600+int(duration_list[1])*60+float(duration_list[2])
-            utc1=str(build_obj.get_timestamp()).split('+')[0] #2015-03-19 00:01:35+00:00
-            utc2=datetime.datetime.strptime(utc1,'%Y-%m-%d %H:%M:%S')
+            jenkins_obj = jenkinsNotifier(self.rally, self.data)
+            server = jenkins_obj.getServerInstance()
+            build_obj, job_obj = jenkins_obj.getLastBuildInfo(server)
+            duration_list = str(build_obj.get_duration()).split(':')
+            duration_double = int(duration_list[0])*3600+\
+                                int(duration_list[1])*60+float(duration_list[2])
+            utc1 = str(build_obj.get_timestamp()).split('+')[0] #2015-03-19 00:01:35+00:00
+            utc2 = datetime.datetime.strptime(utc1, '%Y-%m-%d %H:%M:%S')
             from_zone = tz.tzutc()
             to_zone = tz.tzlocal()
-            utc2 = utc2.replace(tzinfo=from_zone)
+            utc2 = utc2.replace(tzinfo = from_zone)
             local = utc2.astimezone(to_zone)
-            local_iso=local.isoformat()
+            local_iso = local.isoformat()
             bd_dict={
                      'Number':build_obj.get_number(),
                      'Duration':duration_double,
-                     'Uri':build_obj.baseurl, 
-                     'Message':'Build for job '+job_obj.name+ ' was successful.',
-                     'Status': build_obj.get_status(),
+                     'Uri':build_obj.baseurl,
+                     'Message':'Build for job '+job_obj.name+' was successful.',
+                     'Status':build_obj.get_status(),
                      'Start':local_iso
                      }
-            bddf_dict={
+            bddf_dict = {
                        'Name':job_obj.name
                        }
             self.data['build'].update(bd_dict)
             self.data['builddf'].update(bddf_dict)
-            self.logger.info("The last build information at Jenkins instance %s is successfully obtained" % (server.baseurl))
+            self.logger.info("The last build information at Jenkins instance %s \
+                            is successfully obtained", server.baseurl)
         except Exception, details:
-
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
                 #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
-                sys.exit(1)            
-    
+                self.logger.error('ERROR: %s \n', details, exc_info=True)
+                sys.exit(1)
+
     #Update build info
     def updateBuildInfo(self):
+        '''create new build in Rally'''
         try:
-            
-            builddf_obj=buildDefinition(self.rally,self.data)
-            builddfs=builddf_obj.getAllBuildDefinitions()
+            builddf_obj = buildDefinition(self.rally, self.data)
+            builddfs = builddf_obj.getAllBuildDefinitions()
             for builddf in builddfs:
                 if builddf.Name == self.data['builddf']['Name']:
                     break
-            else:   
-                new_builddf=builddf_obj.createBuildDefinition()
-                self.logger.info("New build definition name %s is created" % (new_builddf.Name))
-            
-            data_with_bddf_ref=deepcopy(self.data)
-            data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
-            build_obj=build(self.rally,data_with_bddf_ref)
-            bd=build_obj.createBuild()
+            else:
+                builddf = builddf_obj.createBuildDefinition()
+                self.logger.info("New build definition name %s is created", builddf.Name)
+            data_with_bddf_ref = deepcopy(self.data)
+            data_with_bddf_ref['build'].\
+            update({'BuildDefinition':builddf._ref})#, 'Name':builddf.Name}):
+                                                    #cannot create the build with a Name
+                                                    #so the Name of bld will always be Unknown
+            build_obj = build(self.rally, data_with_bddf_ref)
+            bld = build_obj.createBuild()
             #self.data['ts']['Build']=build.Number
-            self.logger.info("Build name %s number %s is created" % (bd.Name, bd.Number))
-
-            if bd.Status=="SUCCESS":
+            self.logger.info("Build name %s number %s is created", builddf.Name, bld.Number)
+            if bld.Status == "SUCCESS":
                 return
             else: raise Exception('Build failed')
-
         except Exception, details:
-
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
                 #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
-                sys.exit(1)        
-    
+                self.logger.error('ERROR: %s \n', details, exc_info=True)
+                sys.exit(1)
+
     #Get build information
     def getBuildInfo(self):
         try:
@@ -191,7 +189,7 @@ class testObject(object):
             bd=sorted_bds[0]
             #build_number=bd.number
             self.data['ts']['Build']=bd.Number
-            self.logger.info("Latest build name %s number %s is obtained" % (bd.Name, bd.Number))
+            self.logger.info("Latest build name %s number %s is obtained" % (builddf.Name, bd.Number))
             
             if bd.Status=="SUCCESS":
                 return
@@ -1601,5 +1599,3 @@ class testObject(object):
                 self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
                 sys.exit(1)
             #print "Error: unable to send email :  {err}".format(err=error)
-            
-

@@ -4,6 +4,7 @@ Created on Oct 28, 2014
 @author: ljiang
 '''
 # pylint: disable=fixme, relative-import
+# pylint: disable=fixme, broad-except
 import sys
 import os.path
 sys.path.append(os.path.dirname(__file__))
@@ -37,9 +38,9 @@ def main():
         #Setup
         try:
             #logConfig("logging.json")
-            logger=setup(sys.argv[3])
+            logger = setup(sys.argv[3])
             #logger = logging.getLogger(__name__)
-            logger.propagate=False
+            logger.propagate = False
             options = [opt for opt in sys.argv[1:] if opt.startswith('--')]
 
             #apikey can be obtained from https://rally1.rallydev.com/login/
@@ -53,14 +54,15 @@ def main():
             #/getting-error-rallyrestapierror-422-not-authorized-to-perform-action-invalid
             #and http://stackoverflow.com/questions/30492008
             #/net-rally-restapi-error-not-authorized-to-perform-action-invalid-key-when-cr
-            rally=Rally(server, user, password, apikey=apikey,workspace=workspace, project=project)
+            rally = Rally(server, user, password, apikey=apikey, \
+                          workspace=workspace, project=project)
 
             rally.enableLogging('rally.example.log', attrget=True, append=True)
             # Read other configuration parameters from the extra.json
             with open(sys.argv[2]) as data_file:
                 data = json.load(data_file)
                 logger.debug("The extra.json configuration file contains \
-                            parameters as below: %s",data)
+                            parameters as below: %s", data)
             #Read mysql configuration parameters for mysql.json
             #with open(sys.argv[4]) as mysql_data:
                 #mysql_data=json.load(mysql_data)
@@ -70,19 +72,19 @@ def main():
             #sql_obj=sqlConnector(sys.argv[4],mysql_data)
             #tc_string=sql_obj.getTCFromDB('logout')
 
-            to_obj=testObject(rally,data)
+            to_obj = testObject(rally, data)
             if to_obj.sanityCheck(data['ts']['FormattedID']):
                 to_obj.getLastBuildInfoFromJenkins()
                 to_obj.updateBuildInfo()
                 to_obj.getLatestBuild()
-                ts_ut=to_obj.copyTS()
-                (verd,newdt)=to_obj.runTO(ts_ut)
-                test_results=to_obj.runTS(verd,newdt)
-                report=to_obj.genReport(test_results,constants.FROM_TR)
+                ts_ut = to_obj.copyTS()
+                (verd, newdt) = to_obj.runTO(ts_ut)
+                test_results = to_obj.runTS(verd, newdt)
+                report = to_obj.genReport(test_results, constants.FROM_TR)
                 to_obj.sendNotification(report)
-        except Exception,details:
-            print details
-            logger.error('ERROR: %s \n' % details,exc_info=True)
+        except Exception, details:
+            #print details
+            logger.error('ERROR: %s \n', details, exc_info=True)
             sys.exit(1)
 
 if __name__ == '__main__':

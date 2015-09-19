@@ -69,7 +69,7 @@ class build(object):
             
             for build in response:
                 builds.append(build)                    
-                self.logger.debug("Build obtained, ObjectID: %s  Build Number: %s Build Name: %s \n" % (build.oid,build.Number,build.Name))
+                self.logger.debug("Build obtained, ObjectID: %s  Build Number: %s\n" % (build.oid,build.Number))
             return builds
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
@@ -89,7 +89,7 @@ class build(object):
         bd_data = {key: value for key, value in self.data['build'].items()}
         try:
             bd = self.rally.put('Build', bd_data)
-            self.logger.debug("Build created, ObjectID: %s, Name: %s" % (bd.oid, bd.Name))
+            self.logger.debug("Build created, ObjectID: %s, Number: %s" % (bd.oid, bd.Number))
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
             #x=inspect.stack()
