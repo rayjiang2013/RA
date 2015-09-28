@@ -151,28 +151,28 @@ class testObject(object):
 
     #Get build information
     def getBuildInfo(self):
+        '''Get build data from Rally'''
         try:
             builddf_obj=buildDefinition(self.rally,self.data)
             builddf=builddf_obj.getBuildDefinitionByName()
             data_with_bddf_ref=deepcopy(self.data)
             data_with_bddf_ref['build'].update({'BuildDefinition':builddf._ref})
             build_obj=build(self.rally,data_with_bddf_ref)
-            bd=build_obj.getBuild()
+            bld=build_obj.getBuild()
             #self.data['ts']['Build']=build.Number
-            self.logger.info("Build name %s number %s is obtained" % (bd.Name, bd.Number))
+            self.logger.info("Build name %s number %s is obtained", builddf.Name, bld.Number)
 
-            if bd.Status=="SUCCESS":
+            if bld.Status=="SUCCESS":
                 return
             else: raise Exception('Build failed')
 
         except Exception, details:
-
             #x=inspect.stack()
             if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
                 raise
             else:
                 #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
+                self.logger.error('ERROR: %s \n', details, exc_info=True)
                 sys.exit(1)
 
 
