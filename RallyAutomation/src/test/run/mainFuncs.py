@@ -73,7 +73,7 @@ def main():
             #tc_string=sql_obj.getTCFromDB('logout')
 
             to_obj = testObject(rally, data)
-            if to_obj.sanityCheck(data['ts']['FormattedID']):
+            if to_obj.sanityCheck(data['ts']['FormattedID'], constants.CHECK_IP):
                 to_obj.getLastBuildInfoFromJenkins()
                 to_obj.updateBuildInfo()
                 to_obj.getLatestBuild()

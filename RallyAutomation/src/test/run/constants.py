@@ -39,3 +39,14 @@ FROM_EXCEPTION=0
 #number of test case fields
 NO_TC_FIELDS=23
 
+#ping commands options
+PING_COMMAND = {'Darwin'  : ["ping", "-o", "-c", "2", "-t", "2"],
+                'Unix'    : ["ping",       "-c", "2", "-w", "2"],
+                'Linux'   : ["ping",       "-c", "2", "-w", "2"],
+                'Windows' : ["ping",       "-n", "2", "-w", "2"],
+                'Cygwin'  : ["ping",       "-n", "2", "-w", "2"]
+                }
+
+#IP to check
+CHECK_IP = ['10.10.2.166', '10.10.3.240', '10.10.2.59',
+            '10.10.3.208', 'rally1.rallydev.com', 'localhost']
