@@ -7,11 +7,14 @@ Created on Oct 28, 2014
 # pylint: disable=fixme, broad-except
 import sys
 import os.path
+from notification import Notification
 sys.path.append(os.path.dirname(__file__))
 import json
 from testObject import testObject
 from rallyLogger import setup
 import constants
+from notification import Notification
+from reporting import Reporting
 #from sqlConnector import sqlConnector
 
 #The bugs https://github.com/RallyTools/RallyRestToolkitForPython/issues/37 and
@@ -73,15 +76,17 @@ def main():
             #tc_string=sql_obj.getTCFromDB('logout')
 
             to_obj = testObject(rally, data)
-            if to_obj.sanityCheck(data['ts']['FormattedID'], constants.CHECK_IP):
+            notification_obj = Notification(rally, data)
+            report_obj = Reporting(rally, data)
+            if to_obj.sanityCheck(data['ts']['FormattedID'], *constants.CHECK_IP):
                 to_obj.getLastBuildInfoFromJenkins()
                 to_obj.updateBuildInfo()
                 to_obj.getLatestBuild()
                 ts_ut = to_obj.copyTS()
                 (verd, newdt) = to_obj.runTO(ts_ut)
                 test_results = to_obj.runTS(verd, newdt)
-                report = to_obj.genReport(test_results, constants.FROM_TR)
-                to_obj.sendNotification(report)
+                report = report_obj.genReport(test_results, constants.FROM_TR)
+                notification_obj.sendNotification(report)
         except Exception, details:
             #print details
             logger.error('ERROR: %s \n', details, exc_info=True)

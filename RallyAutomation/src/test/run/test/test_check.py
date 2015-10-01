@@ -23,11 +23,11 @@ class TestCheck:
         assert return_value == True
 
     #ping devices and see if they are responsive
-    @pytest.mark.parametrize("target, expected", [(['10.10.2.166', '10.10.3.240', '10.10.2.59',
+    @pytest.mark.parametrize("target, expected", [(['10.10.2.166', '10.10.3.107', '10.10.2.59',
                                                   '10.10.3.208', 'rally1.rallydev.com',
                                                   'localhost'], ''),
                                                   (['10.10.2.166'], ''),
-                                                  (['10.10.3.240'], ''),
+                                                  (['10.10.3.107'], ''),
                                                   (['10.10.2.59'], ''),
                                                   (['10.10.3.208'], ''),
                                                   (['rally1.rallydev.com'], ''),

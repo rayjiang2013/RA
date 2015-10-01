@@ -200,6 +200,26 @@
             ],
             "level": "DEBUG",
             "propagate": "no"
+        },
+        "reporting": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
+        },
+        "notification": {
+            "handlers": [
+                "console",
+                "info_file_handler",
+                "debug_file_handler",
+                "error_file_handler"
+            ],
+            "level": "DEBUG",
+            "propagate": "no"
         }
     },
     "root": {

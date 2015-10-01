@@ -28,7 +28,8 @@ import json
 import constants
 import re
 from helper import helper
-
+from check import check
+#from notification import Notification
 
 class testObject(object):
     '''
@@ -44,14 +45,24 @@ class testObject(object):
         self.logger.propagate = False
         self.helper_obj = helper(rally, data)
 
-    def sanityCheck(self, ts_id):
+    def sanityCheck(self, ts_id, *args):
         '''To do the sanity check of the SUT'''
         try:
-            pass
+            check_obj = check(self.data, self.rally)
+            check_obj.checkLic(ts_id)
+            check_obj.ping(ts_id, *args)
             #raise Exception('Environment sanity check failed')
         except Exception, details:
-            #x=inspect.stack()
-            if details.message == 'Environment sanity check failed':
+            x = inspect.stack()
+            '''
+            if details.message in ['License check failed: unexpected response code',
+                                   'License check failed: the response is not ok',
+                                   'License check failed: license expired',
+                                   'License server check failed: unexpected response code',
+                                   'License server check failed: the response is not ok',
+                                   'License server check failed: license server expired',
+                                   'ping: cannot resolve nonexist: Unknown host',
+                                   'Request timeout for %s' % target]:
                 self.logger.error('ERROR: %s \n', details, exc_info=True)
                 report_data=[]
                 report_data.append("Test Report for Test Set %s:\n" % ts_id)
@@ -66,7 +77,8 @@ class testObject(object):
                 report=self.genReport(report_data, constants.FROM_EXCEPTION)
                 self.sendNotification(report)
                 sys.exit(1)
-            elif 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
+            '''
+            if 'test_' in x[1][3] or 'test_' in x[2][3]:
                 raise
             else:
                 #print Exception,details
@@ -879,7 +891,7 @@ class testObject(object):
             elif (r!=None and lst[constants.INDEXES_FLC[0]].isdigit()) and r.status_code != int(lst[constants.INDEXES_FLC[0]]):
                 #Run Env Sanity Check
                 #to_obj=testObject(self.rally,self.data)       
-                if self.sanityCheck(ts.FormattedID):
+                if self.sanityCheck(ts.FormattedID, *constants.CHECK_IP):
                     verdict[-1]=(constants.FAILED,verdict[-1][1]+'; status code unexpected: the unexpected status code of the response is %s' % r.status_code) 
                     self.logger.debug("Test case %s, build %s failed because status code unexpected. The unexpected status code of the response is %s" % (tc.FormattedID,self.data["ts"]["Build"],r.status_code))                       
                     #return verdict
@@ -1525,77 +1537,3 @@ class testObject(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
         return trs
-        
-    #Generate report
-    def genReport(self,trs,from_rally_or_not):
-        filename="Report-%s.log" % datetime.datetime.now()
-        try:
-            with open(filename,"ab+") as f:
-                i=0
-                if from_rally_or_not==1:
-                    for tr in trs:
-                        if i == 0:
-                            f.write("Test Report for Test Set %s:\n" % tr.TestSet.FormattedID)
-                            i+=1                       
-                        f.write("Test Case ID: %s\nBuild: %s\nVerdict: %s\nDate: %s\nTester: %s\n" % (tr.TestCase.FormattedID,tr.Build,tr.Verdict,tr.Date,tr.Tester.UserName))
-                elif from_rally_or_not==0:
-                    for line in trs:
-                        f.write(line)
-            self.logger.info('Report %s is successfully generated' % filename)
-        except Exception, details:
-            #sys.stderr.write('ERROR: %s \n' % details)
-            #x=inspect.stack()
-            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
-                raise
-            else:
-                #print Exception,details
-                self.logger.error('ERROR: %s \n' % details,exc_info=True)
-                sys.exit(1)
-        #print "Report %s is successfully generated" % filename   
-        #print "--------------------------------------------------------------------"     
-        return filename
-            
-    
-    #Send email notification; two ways - 1.http://z3ugma.github.io/blog/2014/01/26/getting-python-working-on-microsoft-exchange/    not working, hold for now
-    #2. http://www.tutorialspoint.com/python/python_sending_email.htm
-    # Also, the current smtp server of spirent doesnot allow sending email to email address outside the spirent domain.
-    def sendNotification(self,fname):
-        try:
-            #Create the email.
-            msg = MIMEMultipart()
-            msg["Subject"] = str(self.data['email']['EMAIL_SUBJECT']) #EMAIL_SUBJECT 
-            msg["From"] =  str(self.data['email']['EMAIL_FROM']) #EMAIL_FROM   
-            msg["To"] =  str(",".join(self.data['email']['EMAIL_RECEIVER'])) #",".join(EMAIL_RECEIVER)   
-            #body = MIMEMultipart('alternative')
-            #body.attach(MIMEText("test", TEXT_SUBTYPE))
-            #Attach the message
-            #msg.attach(body)
-            #Attach a text file
-            msg.attach(MIMEText(file(fname).read()))  
-        
-            #smtpObj = SMTP(GMAIL_SMTP, GMAIL_SMTP_PORT)
-            smtpObj = SMTP(str(self.data['email']['EMAIL_SMTP']), self.data['email']['EMAIL_SMTP_PORT'])
-            #Identify yourself to GMAIL ESMTP server.
-            smtpObj.ehlo()
-            #Put SMTP connection in TLS mode and call ehlo again.
-            #smtpObj.starttls()
-            #smtpObj.ehlo()
-            #Login to service
-            #smtpObj.login(None,None)#user=EMAIL_FROM, password=EMAIL_PASSWD) Actually the spirent smtp server does not allow authentication, so no login is needed
-            #Send email
-            #smtpObj.sendmail(EMAIL_FROM, EMAIL_RECEIVER, msg.as_string())
-            smtpObj.sendmail(msg["From"], msg["To"].split(','), msg.as_string())
-            #close connection and session.
-            smtpObj.quit()
-            #print "The report is successfully sent"
-            #print "--------------------------------------------------------------------"
-            self.logger.info("The report is successfully sent")
-        except SMTPException as error:
-            #x=inspect.stack()
-            if 'test_' in inspect.stack()[1][3] or 'test_' in inspect.stack()[2][3]:
-                raise
-            else:
-                #print Exception,details
-                self.logger.error("Error: unable to send email :  {err}".format(err=error),exc_info=True)
-                sys.exit(1)
-            #print "Error: unable to send email :  {err}".format(err=error)

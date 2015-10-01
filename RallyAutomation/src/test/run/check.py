@@ -16,27 +16,28 @@ import json
 import datetime
 import inspect
 import constants
-from testObject import testObject
 import platform
 import subprocess
 from copy import copy
+from notification import Notification
+from reporting import Reporting
 
 class check:
     '''
     To provide funcs for sanity or env check
     '''
-    def __init__(self,data,rally):
+    def __init__(self, data, rally):
         '''
         Pass the test related data
         '''
-        self.data=data
-        self.rally=rally
+        self.data = data
+        self.rally = rally
         #setup("logging.json")
         #logger.debug("testObject is initiated successfully")
         self.logger = logging.getLogger(__name__)
-        self.logger.propagate=False
+        self.logger.propagate = False
 
-    def checkLic(self,ts_id):
+    def checkLic(self, ts_id):
         '''
         To check if the license/license server is working properly
         '''
@@ -76,7 +77,8 @@ class check:
             return True
         except Exception,details:
             inspt = inspect.stack()
-            to_obj = testObject(self.rally, self.data)
+            notification_obj = Notification(self.rally, self.data)
+            report_obj = Reporting(self.rally, self.data)
             if details.message in ['License check failed: unexpected response code',
                                    'License check failed: the response is not ok',
                                    'License check failed: license expired',
@@ -86,13 +88,13 @@ class check:
                 self.logger.error('ERROR: %s \n', details, exc_info=True)
                 report_data=[]
                 report_data.append("Test Report for Test Set %s:\n" % ts_id)
-                report_data.append("Test Set ID: %s\nBuild: %s\nVerdict: \
-                                    Blocked\nNotes: %s\nDate: %s\nTester: %s\n" %
+                report_data.append("Test Set ID: %s\nBuild: %s\nVerdict: "
+                                    "Blocked\nNotes: %s\nDate: %s\nTester: %s\n" %
                                    (ts_id, self.data["ts"]["Build"],
                                     details, datetime.datetime.now(),
                                     self.data['user']['UserName']))
-                report = to_obj.genReport(report_data, constants.FROM_EXCEPTION)
-                to_obj.sendNotification(report)
+                report = report_obj.genReport(report_data, constants.FROM_EXCEPTION)
+                notification_obj.sendNotification(report)
                 sys.exit(1)
             elif 'test_' in inspt[1][3] or 'test_' in inspt[2][3]:
                 raise
@@ -118,7 +120,8 @@ class check:
             return errors
         except Exception, details:
             inspt = inspect.stack()
-            to_obj = testObject(self.rally, self.data)
+            notification_obj = Notification(self.rally, self.data)
+            report_obj = Reporting(self.rally, self.data)
             if 'test_' in inspt[1][3] or 'test_' in inspt[2][3]:
                 raise
             elif details.message in ['ping: cannot resolve nonexist: Unknown host',
@@ -126,13 +129,13 @@ class check:
                 self.logger.error('ERROR: %s \n', details, exc_info=True)
                 report_data=[]
                 report_data.append("Test Report for Test Set %s:\n" % ts_id)
-                report_data.append("Test Set ID: %s\nBuild: %s\n\
-                                    Verdict: Blocked\nNotes: %s\nDate: %s\nTester: %s\n" %
+                report_data.append("Test Set ID: %s\nBuild: %s\n"
+                                   "Verdict: Blocked\nNotes: %s\nDate: %s\nTester: %s\n" %
                                    (ts_id, self.data["ts"]["Build"],
                                     details, datetime.datetime.now(),
                                     self.data['user']['UserName']))
-                report = to_obj.genReport(report_data, constants.FROM_EXCEPTION)
-                to_obj.sendNotification(report)
+                report = report_obj.genReport(report_data, constants.FROM_EXCEPTION)
+                notification_obj.sendNotification(report)
                 sys.exit(1)
             else:
                 #print Exception,details

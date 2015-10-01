@@ -48,5 +48,5 @@ PING_COMMAND = {'Darwin'  : ["ping", "-o", "-c", "2", "-t", "2"],
                 }
 
 #IP to check
-CHECK_IP = ['10.10.2.166', '10.10.3.240', '10.10.2.59',
+CHECK_IP = ['10.10.2.166', '10.10.3.107', '10.10.2.59',
             '10.10.3.208', 'rally1.rallydev.com', 'localhost']
