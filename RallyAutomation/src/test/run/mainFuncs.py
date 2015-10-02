@@ -7,7 +7,6 @@ Created on Oct 28, 2014
 # pylint: disable=fixme, broad-except
 import sys
 import os.path
-from notification import Notification
 sys.path.append(os.path.dirname(__file__))
 import json
 from testObject import testObject
