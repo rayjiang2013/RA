@@ -51,7 +51,7 @@
             "level": "DEBUG",
             "propagate": "no"
         },		
-        "example": {
+        "mainFuncs": {
             "handlers": [
                 "console",
                 "info_file_handler",
