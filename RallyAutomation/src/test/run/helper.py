@@ -10,7 +10,7 @@ import inspect
 import sys
 from pyral.restapi import Rally
 
-class helper:
+class helper(object):
     '''
     To provide supporting functions to fulfill tasks like search, replace and etc.
     @summary: This class is to provide supporting functions to fulfill tasks like search, replace and etc.

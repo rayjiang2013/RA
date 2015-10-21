@@ -7,7 +7,7 @@ import sys
 import logging
 import inspect
 
-class testCase:
+class testCase(object):
     '''
     This is the class module for Rally test case
     @summary: This class is used to provide Rally test case related functionalities

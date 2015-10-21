@@ -9,7 +9,7 @@ from testCase import testCase
 import logging
 import inspect
 
-class testCaseStep:
+class testCaseStep(object):
     '''
     This is the class module for test case step
     @summary: This class is used to provide Rally test case step related functionalities

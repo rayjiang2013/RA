@@ -7,7 +7,7 @@ import sys
 import logging
 import inspect
 
-class user:
+class user(object):
     '''
     This is the class module for Rally user
     @summary: This class is used to provide Rally user related functionalities

@@ -10,7 +10,7 @@ import inspect
 import time
 import os
 
-class ssh():
+class ssh(object):
     '''
     To provide ssh related functionalities
     @summary: This class is used to provide ssh related functionalities

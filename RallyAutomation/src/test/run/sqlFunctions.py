@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import errorcode
 import json
 
-class sql_functions:
+class sql_functions(object):
     """
     This class is used to create/test a mysql connection, create queries and send queries.
     @summary: This class is used to create/test a mysql connection, create queries and send queries.

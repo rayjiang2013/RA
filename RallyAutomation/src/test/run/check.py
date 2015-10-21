@@ -21,7 +21,7 @@ from copy import copy
 from notification import Notification
 from reporting import Reporting
 
-class check:
+class check(object):
     '''
     To provide funcs for sanity or env check
     @summary: This class is used to provide high level actions the framework can perform

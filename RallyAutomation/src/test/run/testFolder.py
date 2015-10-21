@@ -7,7 +7,7 @@ import sys
 import logging
 import inspect
 
-class testFolder:
+class testFolder(object):
     '''
     This is the class module for test folder
     @summary: This class is used to provide Rally test folder related functionalities

@@ -8,7 +8,7 @@ import sys
 import logging
 import inspect
 
-class defect:
+class defect(object):
     '''
     This is the class module for test case    
     @summary: This class is used to provide Rally defect related functionalities
