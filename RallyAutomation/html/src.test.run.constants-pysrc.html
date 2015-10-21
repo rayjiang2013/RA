@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.test.run.constants</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;src ::
+        Package&nbsp;test ::
+        Package&nbsp;run ::
+        Module&nbsp;constants
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.test.run.constants-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.test.run.constants-module.html">Module src.test.run.constants</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">To define constant variables</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">@author: ljiang</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">@summary: This module provides constant variable definitions</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-docstring">@status: under development</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-docstring">@var STEPS_SUP_EXE_FLC_VER: steps sequence of setup-&gt;execution-&gt;first level check-&gt;verification</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-docstring">@var STEPS_SUP_EXE_FLC_VER_CLU: steps sequence of setup-&gt;execution-&gt;first level check-&gt;verification-&gt;clean up</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring">@var STEPS_EXE_FLC_VER: steps sequence of execution-&gt;first level check-&gt;verification</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">@var INDEXES_SUP: indexes associated with test case setup step obtained from custom field in Rally</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">@var INDEXES_EXE: indexes associated with test case execution step obtained from custom field in Rally</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">@var INDEXES_FLC: indexes associated with test case first level check step obtained from custom field in Rally</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">@var INDEXES_VER: indexes associated with test case verification step obtained from custom field in Rally</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">@var INDEXES_CLU: indexes associated with test case clean up step obtained from custom field in Rally</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">@var FAILED: status number associated with failed test case</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">@var SUCCESS: status number associated with successful test case</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">@var BLOCKED: status number associated with blocked test case</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">@var MAX_NOTE_LENGTH: max length of text for notes field in Rally</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">@var INPROGRESS: scheduled state in progress for a Rally test set</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">@var ACCEPTED: scheduled state accepted for a Rally test set</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">@var COMPLETED: scheduled state completed for a Rally test set</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">@var FUNC_LVL_TC: identify functional level test case</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">@var API_LVL_TC: identify api level test case</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">@var FROM_TR: generate the report from Rally test result</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">@var FROM_EXCEPTION: generate the report from caught exception</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">@var NO_TC_FIELDS: total number of fields in the test case data list</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">@var PING_COMMAND: a dictionary of operating system associated with the ping commands</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">@var CHECK_IP: ip address to check for sanity check</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-comment">#test case execution steps</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable src.test.run.constants.STEPS_SUP_EXE_FLC_VER=src.test.run.constants-module.html#STEPS_SUP_EXE_FLC_VER"><a title="src.test.run.constants.STEPS_SUP_EXE_FLC_VER" class="py-name" href="#" onclick="return doclink('link-0', 'STEPS_SUP_EXE_FLC_VER', 'link-0');">STEPS_SUP_EXE_FLC_VER</a></tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable src.test.run.constants.STEPS_SUP_EXE_FLC_VER_CLU=src.test.run.constants-module.html#STEPS_SUP_EXE_FLC_VER_CLU"><a title="src.test.run.constants.STEPS_SUP_EXE_FLC_VER_CLU" class="py-name" href="#" onclick="return doclink('link-1', 'STEPS_SUP_EXE_FLC_VER_CLU', 'link-1');">STEPS_SUP_EXE_FLC_VER_CLU</a></tt><tt class="py-op">=</tt><tt class="py-number">1</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable src.test.run.constants.STEPS_EXE_FLC_VER=src.test.run.constants-module.html#STEPS_EXE_FLC_VER"><a title="src.test.run.constants.STEPS_EXE_FLC_VER" class="py-name" href="#" onclick="return doclink('link-2', 'STEPS_EXE_FLC_VER', 'link-2');">STEPS_EXE_FLC_VER</a></tt><tt class="py-op">=</tt><tt class="py-number">2</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"><tt class="py-comment">#associated test step index</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable src.test.run.constants.INDEXES_SUP=src.test.run.constants-module.html#INDEXES_SUP"><a title="src.test.run.constants.INDEXES_SUP" class="py-name" href="#" onclick="return doclink('link-3', 'INDEXES_SUP', 'link-3');">INDEXES_SUP</a></tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-number">17</tt><tt class="py-op">,</tt><tt class="py-number">18</tt><tt class="py-op">,</tt><tt class="py-number">19</tt><tt class="py-op">,</tt><tt class="py-number">20</tt><tt class="py-op">,</tt><tt class="py-number">21</tt><tt class="py-op">]</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable src.test.run.constants.INDEXES_EXE=src.test.run.constants-module.html#INDEXES_EXE"><a title="src.test.run.constants.INDEXES_EXE" class="py-name" href="#" onclick="return doclink('link-4', 'INDEXES_EXE', 'link-4');">INDEXES_EXE</a></tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">2</tt><tt class="py-op">,</tt><tt class="py-number">3</tt><tt class="py-op">]</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable src.test.run.constants.INDEXES_FLC=src.test.run.constants-module.html#INDEXES_FLC"><a title="src.test.run.constants.INDEXES_FLC" class="py-name" href="#" onclick="return doclink('link-5', 'INDEXES_FLC', 'link-5');">INDEXES_FLC</a></tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-number">4</tt><tt class="py-op">,</tt><tt class="py-number">5</tt><tt class="py-op">,</tt><tt class="py-number">6</tt><tt class="py-op">,</tt><tt class="py-number">22</tt><tt class="py-op">]</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable src.test.run.constants.INDEXES_VER=src.test.run.constants-module.html#INDEXES_VER"><a title="src.test.run.constants.INDEXES_VER" class="py-name" href="#" onclick="return doclink('link-6', 'INDEXES_VER', 'link-6');">INDEXES_VER</a></tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-number">7</tt><tt class="py-op">,</tt><tt class="py-number">8</tt><tt class="py-op">,</tt><tt class="py-number">9</tt><tt class="py-op">,</tt><tt class="py-number">10</tt><tt class="py-op">,</tt><tt class="py-number">11</tt><tt class="py-op">]</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable src.test.run.constants.INDEXES_CLU=src.test.run.constants-module.html#INDEXES_CLU"><a title="src.test.run.constants.INDEXES_CLU" class="py-name" href="#" onclick="return doclink('link-7', 'INDEXES_CLU', 'link-7');">INDEXES_CLU</a></tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-number">12</tt><tt class="py-op">,</tt><tt class="py-number">13</tt><tt class="py-op">,</tt><tt class="py-number">14</tt><tt class="py-op">,</tt><tt class="py-number">15</tt><tt class="py-op">,</tt><tt class="py-number">16</tt><tt class="py-op">]</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"><tt class="py-comment">#test case status</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable src.test.run.constants.FAILED=src.test.run.constants-module.html#FAILED"><a title="src.test.run.constants.FAILED" class="py-name" href="#" onclick="return doclink('link-8', 'FAILED', 'link-8');">FAILED</a></tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable src.test.run.constants.SUCCESS=src.test.run.constants-module.html#SUCCESS"><a title="src.test.run.constants.SUCCESS" class="py-name" href="#" onclick="return doclink('link-9', 'SUCCESS', 'link-9');">SUCCESS</a></tt><tt class="py-op">=</tt><tt class="py-number">1</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable src.test.run.constants.BLOCKED=src.test.run.constants-module.html#BLOCKED"><a title="src.test.run.constants.BLOCKED" class="py-name" href="#" onclick="return doclink('link-10', 'BLOCKED', 'link-10');">BLOCKED</a></tt><tt class="py-op">=</tt><tt class="py-number">2</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"><tt class="py-comment">#limitation</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable src.test.run.constants.MAX_NOTE_LENGTH=src.test.run.constants-module.html#MAX_NOTE_LENGTH"><a title="src.test.run.constants.MAX_NOTE_LENGTH" class="py-name" href="#" onclick="return doclink('link-11', 'MAX_NOTE_LENGTH', 'link-11');">MAX_NOTE_LENGTH</a></tt><tt class="py-op">=</tt><tt class="py-number">32768</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"><tt class="py-comment">#ScheduleState in Rally</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"><tt id="link-12" class="py-name" targets="Variable src.test.run.constants.INPROGRESS=src.test.run.constants-module.html#INPROGRESS"><a title="src.test.run.constants.INPROGRESS" class="py-name" href="#" onclick="return doclink('link-12', 'INPROGRESS', 'link-12');">INPROGRESS</a></tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"><tt id="link-13" class="py-name" targets="Variable src.test.run.constants.ACCEPTED=src.test.run.constants-module.html#ACCEPTED"><a title="src.test.run.constants.ACCEPTED" class="py-name" href="#" onclick="return doclink('link-13', 'ACCEPTED', 'link-13');">ACCEPTED</a></tt><tt class="py-op">=</tt><tt class="py-number">1</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"><tt id="link-14" class="py-name" targets="Variable src.test.run.constants.COMPLETED=src.test.run.constants-module.html#COMPLETED"><a title="src.test.run.constants.COMPLETED" class="py-name" href="#" onclick="return doclink('link-14', 'COMPLETED', 'link-14');">COMPLETED</a></tt><tt class="py-op">=</tt><tt class="py-number">2</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-comment">#functional test case or api test case</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt id="link-15" class="py-name" targets="Variable src.test.run.constants.FUNC_LVL_TC=src.test.run.constants-module.html#FUNC_LVL_TC"><a title="src.test.run.constants.FUNC_LVL_TC" class="py-name" href="#" onclick="return doclink('link-15', 'FUNC_LVL_TC', 'link-15');">FUNC_LVL_TC</a></tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable src.test.run.constants.API_LVL_TC=src.test.run.constants-module.html#API_LVL_TC"><a title="src.test.run.constants.API_LVL_TC" class="py-name" href="#" onclick="return doclink('link-16', 'API_LVL_TC', 'link-16');">API_LVL_TC</a></tt><tt class="py-op">=</tt><tt class="py-number">1</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"><tt class="py-comment">#generate the report from Rally test result or exception</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"><tt id="link-17" class="py-name" targets="Variable src.test.run.constants.FROM_TR=src.test.run.constants-module.html#FROM_TR"><a title="src.test.run.constants.FROM_TR" class="py-name" href="#" onclick="return doclink('link-17', 'FROM_TR', 'link-17');">FROM_TR</a></tt><tt class="py-op">=</tt><tt class="py-number">1</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable src.test.run.constants.FROM_EXCEPTION=src.test.run.constants-module.html#FROM_EXCEPTION"><a title="src.test.run.constants.FROM_EXCEPTION" class="py-name" href="#" onclick="return doclink('link-18', 'FROM_EXCEPTION', 'link-18');">FROM_EXCEPTION</a></tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"><tt class="py-comment">#number of test case fields</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt id="link-19" class="py-name" targets="Variable src.test.run.constants.NO_TC_FIELDS=src.test.run.constants-module.html#NO_TC_FIELDS"><a title="src.test.run.constants.NO_TC_FIELDS" class="py-name" href="#" onclick="return doclink('link-19', 'NO_TC_FIELDS', 'link-19');">NO_TC_FIELDS</a></tt><tt class="py-op">=</tt><tt class="py-number">23</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"><tt class="py-comment">#ping commands options</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"><tt id="link-20" class="py-name" targets="Variable src.test.run.constants.PING_COMMAND=src.test.run.constants-module.html#PING_COMMAND"><a title="src.test.run.constants.PING_COMMAND" class="py-name" href="#" onclick="return doclink('link-20', 'PING_COMMAND', 'link-20');">PING_COMMAND</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'Darwin'</tt>  <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-string">"ping"</tt><tt class="py-op">,</tt> <tt class="py-string">"-o"</tt><tt class="py-op">,</tt> <tt class="py-string">"-c"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">,</tt> <tt class="py-string">"-t"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">                <tt class="py-string">'Unix'</tt>    <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-string">"ping"</tt><tt class="py-op">,</tt>       <tt class="py-string">"-c"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">,</tt> <tt class="py-string">"-w"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">                <tt class="py-string">'Linux'</tt>   <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-string">"ping"</tt><tt class="py-op">,</tt>       <tt class="py-string">"-c"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">,</tt> <tt class="py-string">"-w"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">                <tt class="py-string">'Windows'</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-string">"ping"</tt><tt class="py-op">,</tt>       <tt class="py-string">"-n"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">,</tt> <tt class="py-string">"-w"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">                <tt class="py-string">'Cygwin'</tt>  <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-string">"ping"</tt><tt class="py-op">,</tt>       <tt class="py-string">"-n"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">,</tt> <tt class="py-string">"-w"</tt><tt class="py-op">,</tt> <tt class="py-string">"2"</tt><tt class="py-op">]</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">                <tt class="py-op">}</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line"> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line"><tt class="py-comment">#IP to check</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line"><tt id="link-21" class="py-name" targets="Variable src.test.run.constants.CHECK_IP=src.test.run.constants-module.html#CHECK_IP"><a title="src.test.run.constants.CHECK_IP" class="py-name" href="#" onclick="return doclink('link-21', 'CHECK_IP', 'link-21');">CHECK_IP</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'10.10.2.166'</tt><tt class="py-op">,</tt> <tt class="py-string">'10.10.3.107'</tt><tt class="py-op">,</tt> <tt class="py-string">'10.10.2.59'</tt><tt class="py-op">,</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">            <tt class="py-string">'10.10.3.208'</tt><tt class="py-op">,</tt> <tt class="py-string">'rally1.rallydev.com'</tt><tt class="py-op">,</tt> <tt class="py-string">'localhost'</tt><tt class="py-op">]</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Oct 20 18:52:52 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

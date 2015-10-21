@@ -1,5 +1,5 @@
 '''
-Created on Nov 19, 2014
+To setup logging configuration
 
 @author: ljiang
 '''
@@ -10,7 +10,14 @@ import sys
 import inspect
 
 def setup(log_config):
-    '''To setup logging configuration'''
+    '''
+    @summary: To setup logging configuration
+    @status: completed
+    @type log_config: string
+    @param log_config: name of the log config file
+    @raise details: log errors
+    @return: return the logger object
+    '''
     try:
         with open(log_config, 'rt') as f:
             config = json.load(f)

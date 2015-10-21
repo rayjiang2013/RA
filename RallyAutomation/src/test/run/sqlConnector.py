@@ -1,19 +1,25 @@
 '''
 To connect the framework with mysql api - sqlFunctions
+
+@author: ljiang
 '''
 import logging
 import inspect
 import constants
+import sys
 from sqlFunctions import sql_functions 
 
 class sqlConnector(object):
     '''
-    classdocs
+    To connect the test automation framework with mysql api - sqlFunctions
+    @summary: This class is used to connect the test automation framework with mysql api - sqlFunctions
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self,config_name,config_data):
-        '''
-        Constructor
-        '''
+
         self.config_name=config_name
         self.config_data=config_data
         #setup("logging.json")
@@ -23,6 +29,15 @@ class sqlConnector(object):
 
     #formulate the test cases like in Rally custom field
     def getTCFromDB(self,tc_name):
+        '''
+        @summary: To get the test cases data from database and formulate similar string
+            like in Rally so the test framework can process it
+        @status: completed
+        @type tc_name: string
+        @param tc_name: the name of the test case
+        @raise details: log errors
+        @return: return the reformulated test case data
+        '''
         try:
             sql_obj=sql_functions(self.config_name,'sqldb')
             #need implement#
@@ -57,5 +72,5 @@ class sqlConnector(object):
             else:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
-                sys.exit(1)    
+                sys.exit(1)
         return tc_string

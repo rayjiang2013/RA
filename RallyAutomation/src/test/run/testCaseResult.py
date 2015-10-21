@@ -1,31 +1,35 @@
 '''
-Created on Nov 12, 2014
+To interact with Rally test case result
 
 @author: ljiang
 '''
 import sys
-#from pprint import pprint
-
 import logging
-#from logging import config
 import inspect
-
 
 class testCaseResult:
     '''
-    This is the class module for test case    
+    This is the class module for test case result
+    @summary: This class is used to provide Rally test case result related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject  
     '''
     def __init__(self, rally,data):
-        '''
-        Constructor
-        '''
         self.data=data
         self.rally=rally
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
         
-    #Create test case
+    #Create test case result
     def createTCResult(self):
+        '''
+        @summary: create a test case result
+        @status: completed
+        @raise details: log errors
+        @return: return the object of test case result created
+        '''
         try:
             tr = self.rally.put('TestCaseResult', self.data['tcresult'])
             self.logger.debug("Test Case %s updated; Test result oid %s is created" % (tr.TestCase.FormattedID,tr.oid))
@@ -43,6 +47,13 @@ class testCaseResult:
     
     #Fetch all the test cases results of specific test case
     def allTCRofTC(self,tc):
+        '''
+        @summary: get all the test case results under a test case in Rally
+        @status: completed
+        @param tc: the object of Rally test case
+        @raise details: log errors
+        @return: return a list of Rally test case results
+        '''
         try:
             lst=[]
             #ts_obj=testSet(self.rally,self.data)
@@ -69,6 +80,12 @@ class testCaseResult:
 
     #Delete test case result
     def delTCR(self):
+        '''
+        @summary: delete a test case result
+        @status: completed
+        @raise details: log errors
+        @return: return None
+        '''
         try: 
             delete_success=self.rally.delete('TestCaseResult', self.data['tcresult']['oid'])
         except Exception, details:
@@ -81,24 +98,3 @@ class testCaseResult:
                 sys.exit(1)            
         if delete_success == True:
             self.logger.debug("Test case result deleted, ObjectID: %s" % self.data['tcresult']['oid'], exc_info=True)
-
-            
-    '''        
-    #Update test case result
-    def updateTCR(self):
-        try: 
-            tcr_data = {key: value for key, value in self.data['tcr'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') or (key == u'FormattedID'))}
-            #ts_data = self.data['ts']
-            for key in ts_data.iterkeys():
-                if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
-                    ts_data[key]=ts_data[key]._ref            
-            ts = self.rally.post('TestSet', ts_data)  
-            self.logger.debug("Test Set %s is updated" % ts.FormattedID)        
-        except Exception, details:
-            #sys.stderr.write('ERROR: %s \n' % details)
-            self.logger.error('ERROR: %s \n' % details)
-            sys.exit(1)
-        #print "Test Set %s updated" % ts.FormattedID
-        #print "--------------------------------------------------------------------"
-        return ts    
-    '''

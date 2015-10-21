@@ -1,5 +1,5 @@
 '''
-Created on Feb 9, 2015
+To provide ssh related functionalities
 
 @author: ljiang
 '''
@@ -9,23 +9,16 @@ import sys
 import inspect
 import time
 import os
-'''
-ssh=paramiko.SSHClient()
-ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-ssh.connect('127.0.0.1', username='ljiang', password='Jag6413682')
-stdin, stdout, stderr = ssh.exec_command("sudo dmesg")
-stdin.write('Jag6413682\n')
-stdin.flush()
-data = stdout.readlines()
-print data
-'''
 
 class ssh():
+    '''
+    To provide ssh related functionalities
+    @summary: This class is used to provide ssh related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar logger: the logger for testObject
+    '''
     def __init__(self,data):
-        '''
-        Constructor
-        '''
         self.data=data
         #self.rally=rally
         #setup("logging.json")
@@ -34,10 +27,15 @@ class ssh():
         self.logger.propagate=False
 
     def setupConnection(self):
+        '''
+        @summary: To setup connection with the ssh server
+        @status: completed
+        @raise details: log errors
+        @return: return ssh session object
+        '''
         try:
             ssh=paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            
             ssh.connect(self.data['ssh']['ip'], port=self.data['ssh']['port'],username=self.data['ssh']['username'], password=self.data['ssh']['password'])       
         except Exception,details:
             #x=inspect.stack()
@@ -51,6 +49,13 @@ class ssh():
         return ssh 
         
     def tearConnection(self,connection):
+        '''
+        @summary: To close connection with the ssh server
+        @status: completed
+        @param connection: the ssh connection object
+        @raise details: log errors
+        @return: return ssh session object
+        '''
         try:
             ssh=connection.close()
         except Exception,details:
@@ -65,6 +70,15 @@ class ssh():
         return ssh         
     
     def remoteMkdir(self,connection,dirname):
+        '''
+        @summary: To create a directory in the remote server
+        @status: completed
+        @param connection: the ssh connection object
+        @type dirname: string
+        @param dirname: the name of directory
+        @raise details: log errors
+        @return: return stdin: standard input handler, stdout: the standard output handler, stderr: the standard error handler 
+        '''
         try:
             stdin, stdout, stderr=connection.exec_command("mkdir %s" % dirname)
         except Exception,details:
@@ -79,6 +93,15 @@ class ssh():
         return stdin, stdout, stderr                 
     
     def readLog(self,connection,filename):
+        '''
+        @summary: To open a log for read
+        @status: completed
+        @param connection: the ssh connection object
+        @type filename: string
+        @param filename: the name of log file
+        @raise details: log errors
+        @return: the file object
+        '''
         try:
             sftp_client=connection.open_sftp()
             remote_file=sftp_client.open(filename,mode='r')
@@ -92,8 +115,15 @@ class ssh():
                 sys.exit(1)
         self.logger.info("A log file %s is read" % filename)            
         return remote_file
-    '''
+
     def closeLog(self,remote_file):
+        '''
+        @summary: To close a log
+        @status: completed
+        @param remote_file: the file object
+        @raise details: log errors
+        @return: None
+        '''
         try:
             remote_file.close()
         except Exception,details:
@@ -106,9 +136,16 @@ class ssh():
                 sys.exit(1)
         self.logger.info("A log file %s is closed" % remote_file.FILE)            
         return 
-    '''
+
     def runTHoT(self,connection):
-        try:            
+        '''
+        @summary: To run the THoT test framework on remote server
+        @status: completed
+        @param connection: the ssh connection object
+        @raise details: log errors and kill the THoT task
+        @return: None
+        '''
+        try:
             stdin, stdout, stderr=connection.exec_command("mono C:/THoT/TH_Protocol/TH_Protocol.exe")
             stdin1, stdout1, stderr1=connection.exec_command("mono c:/THoT/TH_Node/TH_Node.exe")
             stdin2, stdout2, stderr2=connection.exec_command("mono c:/THoT/TH_CLI/TH_CLI.exe")
@@ -141,6 +178,15 @@ class ssh():
     
     #run a generic command
     def runCMD(self,connection,cmd):
+        '''
+        @summary: To run a generic command through ssh
+        @status: completed
+        @param connection: the ssh connection object
+        @type cmd: string
+        @param cmd: the content of the command
+        @raise details: log errors
+        @return: return stdin: standard input handler, stdout: the standard output handler, stderr: the standard error handler
+        '''
         try:
             stdin, stdout, stderr=connection.exec_command(cmd)
         except Exception,details:

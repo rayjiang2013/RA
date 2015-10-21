@@ -1,6 +1,4 @@
 '''
-Created on Sep 30, 2015
-
 To handle reporting
 
 @author: ljiang
@@ -9,28 +7,36 @@ import sys
 import os.path
 sys.path.append(os.path.dirname(__file__))
 import logging
-from helper import helper
 import datetime
 import inspect
 
 class Reporting(object):
     '''
-    Include functions to send notification
+    Include functions to generate reports
+    @summary: This class is used to generate reports
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, rally, data):
-        '''
-        Constructor of testObject
-        '''
         self.data = data
         self.rally = rally
         self.logger = logging.getLogger(__name__)
         self.logger.propagate = False
-        self.helper_obj = helper(rally, data)
 
     #Generate report
     def genReport(self,trs,from_rally_or_not):
         '''
-        To generate the report file
+        @summary: To generate the report file
+        @status: completed
+        @type trs: list
+        @param trs: list of Rally test case result objects if tests finished and are updated in Rally
+            or a list report lines if the report comes from the exception raised by sanity check
+        @type from_rally_or_not: integer
+        @param from_rally_or_not: 1 menas Rally test case results, 0 means raised from sanity check
+        @raise details: log errors
+        @return: return name of the report file
         '''
         filename="Report-%s.log" % datetime.datetime.now()
         try:

@@ -1,33 +1,37 @@
 '''
-Created on Nov 5, 2014
+To interact with Rally test case steps
 
 @author: ljiang
 '''
 
 import sys
-#from pprint import pprint
-#from testCase import *
 from testCase import testCase
 import logging
-#from logging import config
 import inspect
-
 
 class testCaseStep:
     '''
-    This is the class module for test case    
+    This is the class module for test case step
+    @summary: This class is used to provide Rally test case step related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject  
     '''
     def __init__(self, rally,data):
-        '''
-        Constructor
-        '''
         self.data=data
         self.rally=rally
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
     
-    #Show a TestCase identified by the FormattedID value
+    #Show a TestCase step identified by the FormattedID value
     def getTCStepByID(self):
+        '''
+        @summary: get a test case step identified by the formattedid
+        @status: completed
+        @raise details: log errors
+        @return: return Rally test case step object
+        '''
         try:
             tc_obj=testCase(self.rally,self.data)
             tc=tc_obj.getTCByID()
@@ -56,10 +60,15 @@ class testCaseStep:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-         
-    
+
     #Create test case step
     def createTCStep(self):
+        '''
+        @summary: create a test case step
+        @status: completed
+        @raise details: log errors
+        @return: return None
+        '''
         #tc_data = {key: value for key, value in self.data['tc'].items() if key is not 'FormattedID'} #Create a test case with all fields of data['tc'] except the key value pair of 'FormattedID'
         try:
             tc_obj=testCase(self.rally,self.data)
@@ -80,28 +89,3 @@ class testCaseStep:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-'''       
-    #Update test case step
-    def updateTCStep(self):
-        tc_data = self.data['tc']
-        try: 
-            tc = self.rally.post('TestCase', tc_data)          
-        except Exception, details:
-            sys.stderr.write('ERROR: %s \n' % details)
-            sys.exit(1)
-        print "Test Case %s updated" % tc.FormattedID
-        return tc
-   
-    #Delete test case
-    def delTCStep(self):
-        try: 
-            delete_success=self.rally.delete('TestCase', self.data['tc']['FormattedID'])
-        except Exception, details:
-            sys.stderr.write('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['tc']['FormattedID']))
-            sys.exit(1)
-        if delete_success == True:
-            print "Test case deleted, FormattedID: %s" % self.data['tc']['FormattedID']
-'''            
-
-    
-        

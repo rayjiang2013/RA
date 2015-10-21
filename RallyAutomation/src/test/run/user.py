@@ -1,30 +1,34 @@
 '''
-Created on Nov 11, 2014
+To interact with Rally users
 
 @author: ljiang
 '''
 import sys
-#from pprint import pprint
-
 import logging
-#from logging import config
 import inspect
 
 class user:
     '''
-    This is the class module for test case    
+    This is the class module for Rally user
+    @summary: This class is used to provide Rally user related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, rally,data):
-        '''
-        Constructor
-        '''
         self.data=data
         self.rally=rally
         self.logger = logging.getLogger(__name__)
         self.logger.propagate=False
-    
-    #Show a TestCase identified by the FormattedID value
+
     def getUser(self):
+        '''
+        @summary: get a Rally user of a specific username
+        @status: completed
+        @raise details: log errors
+        @return: return Rally user object
+        '''
         try:
             query_criteria = 'UserName = "%s"' % str(self.data['user']['UserName'])
             response = self.rally.get('User', fetch=True, query=query_criteria)

@@ -1,5 +1,5 @@
 '''
-Created on Oct 28, 2014
+Main function
 
 @author: ljiang
 '''

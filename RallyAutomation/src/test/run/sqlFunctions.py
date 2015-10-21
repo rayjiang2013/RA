@@ -1,5 +1,5 @@
 '''
-Created on Jul 24, 2015
+To create/test a mysql connection, create queries and send queries.
 
 @author: jwerner
 '''
@@ -8,15 +8,30 @@ from mysql.connector import errorcode
 import json
 
 class sql_functions:
-    """This class is used to create/test a mysql connection, create queries
-        and send queries."""
+    """
+    This class is used to create/test a mysql connection, create queries and send queries.
+    @summary: This class is used to create/test a mysql connection, create queries and send queries.
+    @status: under development
+    @ivar db_key: value corresponding to the key sql_key of the dictionary parsed from the mysql configuration
+    @ivar cnx: the mysql connection session object 
+    """
     def __init__(self,file_name,sql_key):
+        '''
+        @type file_name: string
+        @param file_name: mysql configuration file name
+        @type sql_key: string
+        @param sql_key: the key of the dictionary parsed from the mysql configuration
+        @raise EnvironmentError: raise environment error if JSON File Could Not Be Found/Opened or
+            Could Not Connect To Server
+        @raise ValueError: raise ValueError if Something is wrong with username or password or
+            Database does not exist
+        '''
         self.db_key = None
         try:
             with open(file_name) as json_data_file:
                 data = json.load(json_data_file)
                 self.db_key = data.get(sql_key)
-                if self.db_key == None:             #Key could not be found or was empty dict. 
+                if self.db_key == None: #Key could not be found or was empty dict. 
                     raise ValueError("Key Does Not exist in JSON")
         except EnvironmentError:
             raise EnvironmentError("JSON File Could Not Be Found/Opened")
@@ -32,10 +47,22 @@ class sql_functions:
                 raise EnvironmentError("Could Not Connect To Server") #bad host,port or server closed
 
     def create_select(self,table,columns, **wheres):
-        """ This function generates sql select queries with specific 
+        """
+        @summary: This function generates sql select queries with specific 
             columns and clauses created from wheres dictionary.
             Can do multiple table queries as well if tables passed as list/tuple
-            and the where clauses and columns are updated to include "table.column". """
+            and the where clauses and columns are updated to include "table.column".
+        @status: completed
+        @type table: string or tuple or list
+        @param table: the name the table(s)
+        @type columns: string or tuple or list
+        @param columns: the name of the column(s) to be selected
+        @type wheres: dictionary
+        @param wheres: where criteria
+        @raise TypeError: raise TypeError if column(s) is no a string or list/tuple of strings,
+            of if table is not a string or list of strings
+        @return: a list with query string, rows returned from the query, number of rows 
+        """
         query = list()
         if isinstance(columns,(list,tuple)):
             for checker in columns:
@@ -101,9 +128,22 @@ class sql_functions:
         else:
             raise TypeError("Table must be a string or list of strings")
     def upsert(self,update,table,values,*columns):
-        """ Inserts row values into given table with option to only insert
+        """
+        @summary: Inserts row values into given table with option to only insert
             into specific columns.Update option allows you to change values
-            in unique/primary key rows without causing error """
+            in unique/primary key rows without causing error
+        @status: completed
+        @type table: string or tuple or list
+        @param table: the name the table(s)
+        @type values: list
+        @param values: a list of values to be inserted or updated
+        @type columns: list
+        @param columns: list of columns needed to update or insert
+        @raise ValueError: raise ValueError if there is more than one table name or
+            the table name is not a string or values are empty or
+            the type of Values is not a list or tuple or string
+        @return: a list with query string, rows returned from the query, number of rows 
+        """
         query = list()
         if type(table) is str:  #Can only insert into one table at a time
             query.append("INSERT INTO %s" % table)
@@ -173,6 +213,18 @@ class sql_functions:
         return(data)
 
     def delete_rows(self,table,wheres):
+        '''
+        @summary: delete rows
+        @status: completed
+        @type table: string or tuple or list
+        @param table: the name the table(s)
+        @type wheres: dictionary
+        @param wheres: where criteria
+        @raise ValueError: raise ValueError if there is more than one table name or
+            the table name is not a string or values are empty or
+            the where clauses is empty dictionary
+        @return: a list with query string, rows returned from the query, number of rows
+        '''
         query = ["DELETE FROM"]
         if type(table) is str:  #Can only insert into one table at a time
             query.append(" %s " % table)
@@ -201,7 +253,15 @@ class sql_functions:
         return(data)
 
     def send_query(self,query): 
-        """Sends Query and Raises Error on Failure"""
+        """
+        @summary: Sends Query and Raises Error on Failure
+        @status: completed
+        @type query: string
+        @param query: the query string
+        @raise EnvironmentError: raise EnvironmentError if there is any issue with
+            sending the mysql queries
+        @return: a list with query string, rows returned from the query, number of rows
+        """
         try:
             self.cursor = self.cnx.cursor()
             self.cursor.execute(query)
@@ -219,4 +279,9 @@ class sql_functions:
             self.cursor.close()
             return (results)
     def end_connection(self):
+        '''
+        @summary: close the connection
+        @status: completed
+        @return: None
+        '''    
         self.cnx.close()

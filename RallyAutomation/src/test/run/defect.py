@@ -1,28 +1,25 @@
 '''
-Created on Dec 3, 2014
+To interact with Rally defect
 
 @author: ljiang
 '''
-'''
-Created on Nov 5, 2014
 
-@author: ljiang
-'''
 import sys
-#from pprint import pprint
-
 import logging
-#from logging import config
-
 import inspect
 
 class defect:
     '''
     This is the class module for test case    
+    @summary: This class is used to provide Rally defect related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, rally,data):
         '''
-        Constructor
+        pass data to defect object
         '''
         self.data=data
         self.rally=rally
@@ -31,18 +28,15 @@ class defect:
 
     #Create defect
     def createDF(self):
+        '''
+        @summary: create a defect
+        @status: completed
+        @raise details: log errors
+        @return: return the defect created
+        '''
         try:
             df_data = {key: value for key, value in self.data['df'].items() if (key != u'FormattedID')}
-            #if ts_dic is not None:
-                #ts_data = {key: value for key, value in ts_dic.iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))}
-            #else: ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build'))} #Create a test set with all fields of data['ts'] except the key value pair of 'FormattedID' and 'Build'        
-            #ts_data['TestCases']=self.data['ts']['__collection_ref_for_TestCases']
-            #for key in ts_data.iterkeys():
-                #if ((type(ts_data[key]) is not unicode) and (type(ts_data[key]) is not str) and (type(ts_data[key]) is not int) and (type(ts_data[key]) is not bool) and (type(ts_data[key]) is not float)):
-                    #ts_data[key]=ts_data[key]._ref
             df = self.rally.put('Defect', df_data)
-            #self.data['ts'].update(ts_data)
-            #self.data['ts']=ts_data
             self.logger.debug("Defect created, ObjectID: %s  FormattedID: %s" % (df.oid, df.FormattedID))      
         except Exception, details:
             #x=inspect.stack()
@@ -52,11 +46,16 @@ class defect:
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-        
         return df  
 
-    #Show a TestSet identified by the FormattedID value
+    #Get a defect identified by the FormattedID value
     def getDFByID(self):
+        '''
+        @summary: get a defect identified by the formattedid
+        @status: completed
+        @raise details: log errors
+        @return: return Rally defect object and a dictionary of the defect data
+        '''
         try:            
             query_criteria = 'FormattedID = "%s"' % str(self.data['df']['FormattedID'])
             response = self.rally.get('Defect', fetch=True, query=query_criteria)
@@ -66,10 +65,7 @@ class defect:
                     if not key.endswith("__"):
                         dic[key]=getattr(df,key)
                     #print key,getattr(ts,key)
-                break        
-            #print "Test set obtained, ObjectID: %s  FormattedID: %s " % (ts.oid,ts.FormattedID)
-            #print "--------------------------------------------------------------------"
-            #pprint(dic)
+                break
             self.logger.debug("Defect obtained, ObjectID: %s, FormattedID: %s, Content: %s" % (df.oid,df.FormattedID,dic))
             return (df,dic)
         except Exception, details:
@@ -84,19 +80,22 @@ class defect:
 
     #Fetch all the defects of specific test case            
     def allDFofTC(self,tc):
+        '''
+        @summary: get all the defects under a test case in Rally
+        @status: completed
+        @raise details: log errors
+        @return: return a list of Rally defects
+        '''
         try:
             lst=[]
             #ts_obj=testSet(self.rally,self.data)
-            #ts=ts_obj.getTSByID()       
+            #ts=ts_obj.getTSByID()
             query_criteria = 'TestCase = "%s"' % str(tc._ref)
             response = self.rally.get('Defect', fetch=True, query=query_criteria)
             for df in response:
                 lst.append(df)
                 #print "Test case obtained, ObjectID: %s  FormattedID: %s" % (tc.oid,tc.FormattedID)
                 self.logger.debug("Defect obtained, ObjectID: %s, Formatted ID: %s, test case id: %s" % (df.oid,df.FormattedID,tc.FormattedID))
-            #self.logger.debug("The content of all test cases of test set %s is: %s" % (ts.FormattedID,lst))
-            #pprint(lst)
-            #print "--------------------------------------------------------------------"
             return lst
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
@@ -110,6 +109,12 @@ class defect:
             
     #Update defect
     def updateDF(self):
+        '''
+        @summary: update a defect
+        @status: completed
+        @raise details: log errors
+        @return: return the defect updated
+        '''
         df_data = self.data['df']
         try: 
             df = self.rally.post('Defect', df_data)
@@ -128,6 +133,12 @@ class defect:
     
     #Delete defect
     def delDF(self):
+        '''
+        @summary: delete a defect
+        @status: completed
+        @raise details: log errors
+        @return: return True if the defect is deleted successful or False if failed
+        '''
         df_id = self.data['df']['FormattedID']
         try: 
             delete_success_or_not = self.rally.delete('Defect', df_id)

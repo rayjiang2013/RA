@@ -1,5 +1,5 @@
 '''
-Created on Nov 10, 2014
+To interact with Rally test set
 
 @author: ljiang
 '''
@@ -8,26 +8,33 @@ import logging
 from types import *
 import inspect
 
-
 class testSet(object):
     '''
-    classdocs
+    This is the class module for Rally test set
+    @summary: This class is used to provide Rally test set related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, rally,data):
-        '''
-        Constructor
-        '''
         self.data=data
         self.rally=rally
         #rallyLogger.setup("logging.json")
         self.logger = logging.getLogger(__name__)
         self.logger.propagate = False
-    
-           
+
     #Show a TestSet identified by the FormattedID value
     def getTSByID(self,fid):
+        '''
+        @summary: get a test set identified by the formattedid
+        @type fid: string
+        @param fid: the formattedid of the test folder
+        @status: completed
+        @raise details: log errors
+        @return: return Rally test set object and dictionary parsed from the test set object
+        '''
         try:
-            
             query_criteria = 'FormattedID = "%s"' % fid
             response = self.rally.get('TestSet', fetch=True, query=query_criteria)
             dic={}
@@ -53,8 +60,15 @@ class testSet(object):
 
     #Get all test sets under some criteria
     def getAllTSs(self,query_criteria):
+        '''
+        @summary: get all the test sets under certain criteria in Rally
+        @type query_criteria: string or list
+        @param query_criteria: the query(s)
+        @status: completed
+        @raise details: log errors
+        @return: return a list of test sets
+        '''
         try:
-            
             #query_criteria = 'FormattedID = "%s"' % str(self.data['ts']['FormattedID'])
             response = self.rally.get('TestSet', fetch=True, query=query_criteria)
             tss=[]
@@ -72,9 +86,15 @@ class testSet(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
 
-
     #Fetch all the test cases of specific test set
     def allTCofTS(self,ts):
+        '''
+        @summary: get all the test cases under a test set in Rally
+        @param ts: the test set object
+        @status: completed
+        @raise details: log errors
+        @return: return a list of test sets
+        '''
         try:
             lst=[]
             #ts_obj=testSet(self.rally,self.data)
@@ -99,10 +119,15 @@ class testSet(object):
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
 
-    
     #Update test set
     def updateTS(self):
-        try: 
+        '''
+        @summary: update a test set
+        @status: completed
+        @raise details: log errors
+        @return: return the test set object updated
+        '''
+        try:
             ts_data = {key: value for key, value in self.data['ts'].iteritems() if ((key == u'Name') or (key == u'ScheduleState') or (key == u'Project') or (key == u'Description') or (key == u'Owner') or (key == u'Ready') or (key == u'Release') or (key == u'PlanEstimate') or (key == u'Blocked') or (key == u'BlockedReason') or (key == u'Iteration') or (key == u'Expedite') or (key == u'Build') or (key == u'FormattedID'))}
             #ts_data = self.data['ts']
             for key in ts_data.iterkeys():
@@ -122,17 +147,20 @@ class testSet(object):
         #print "Test Set %s updated" % ts.FormattedID
         #print "--------------------------------------------------------------------"
         return ts    
-    
+
     #Update ScheduleState of Test Set 
     def updateSS(self,state):
+        '''
+        @summary: Update ScheduleState of Test Set 
+        @status: completed
+        @type state: integer
+        @param state: 0 means in progress, 1 means accepted, 2 means completed
+        @raise details: log errors
+        @return: return the test case updated
+        '''
         try:
             dic={}
             dic['ts']={key: value for key, value in self.data['ts'].iteritems() if ((key == u'ScheduleState') or (key == u'FormattedID'))}
-            '''
-            dic['ts']=self.data['ts'].copy()
-            dic['ts'].pop('Build',None)
-            dic['ts'].pop('Blocked',None)
-            '''
             if state == 0:
                 dic['ts']['ScheduleState']="In-Progress"
             if state == 1:        
@@ -153,9 +181,17 @@ class testSet(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-    
+
     #Create test set
     def createTS(self,ts_dic):
+        '''
+        @summary: create a test set
+        @status: completed
+        @type ts_dic: dictionary
+        @param ts_dic: the test set data that will be used for updating
+        @raise details: log errors
+        @return: return the test set object created
+        '''
         ts_data={}
         #ts_data['Name'] = self.data['ts']['Name'] #Create a test set with the test set name defined in extra.json
         try:
@@ -184,14 +220,21 @@ class testSet(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-        
         return ts  
-    
+
     #Add test cases from original test set to destination test set; remember to use _ref (ref is like abc/12345 and will result in some issue in debug mode
     #. _ref is like http://xyc/abc/12345) as reference to an object when needed. 
     #Ex: http://stackoverflow.com/questions/21718491/how-to-add-new-testcases-to-an-existing-rally-folder
     def addTCs(self,ts_origin,ts_dst):
-        try: 
+        '''
+        @summary: Add test cases from original test set to destination test set
+        @status: completed
+        @param ts_origin: the original test set object to be copied
+        @param ts_dst: the destination test set object to be copied to
+        @raise details: log errors
+        @return: return the new test set with test cases added
+        '''
+        try:
             tcs=self.allTCofTS(ts_origin)
             dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[] }    
             #rank=[]
@@ -201,13 +244,6 @@ class testSet(object):
                 self.logger.debug("Test case %s is added to Test set %s" % (tc.FormattedID,ts_dst.FormattedID))  
             new_ts=self.rally.post('TestSet', dic) 
             self.logger.debug("All test cases have been added to Test set %s" % ts_dst.FormattedID)
-            #Rank it 
-            #new_tcs=self.allTCofTS(new_ts)
-            #i=0
-            #for new_tc in new_tcs:            
-                #tc_rank_dic={'FormattedID':new_tc.FormattedID,'DragAndDropRank':rank[i]}
-                #tc_rank=self.rally.post('TestCase', tc_rank_dic)
-                #i+=1
             return new_ts
         except Exception, details:
             #sys.stderr.write('ERROR: %s \n' % details)
@@ -221,7 +257,15 @@ class testSet(object):
 
     #Add specific test cases to destination test set
     def addSpecificTCs(self,tcs,ts_dst):
-        try: 
+        '''
+        @summary: Add specific test cases to destination test set
+        @status: completed
+        @param tcs: a list of test case objects
+        @param ts_dst: the destination test set object to be copied to
+        @raise details: log errors
+        @return: return the new test set with test cases added
+        '''
+        try:
             dic = {'FormattedID': ts_dst.FormattedID,'TestCases':[] }    
             #rank=[]
             for tc in tcs:
@@ -240,9 +284,15 @@ class testSet(object):
                 #print Exception,details
                 self.logger.error('ERROR: %s \n' % details,exc_info=True)
                 sys.exit(1)
-    
+
     #Delete test case
     def delTS(self):
+        '''
+        @summary: delete a test set
+        @status: completed
+        @raise details: log errors
+        @return: return None
+        '''
         try: 
             delete_success=self.rally.delete('TestSet', self.data['ts']['FormattedID'])
         except Exception, details:
@@ -252,8 +302,6 @@ class testSet(object):
             else:
                 #print Exception,details
                 self.logger.error('ERROR: %s %s %s does not exist\n' % (Exception,details,self.data['ts']['FormattedID']), exc_info=True)
-                sys.exit(1)            
-
+                sys.exit(1)
         if delete_success == True:
             self.logger.debug("Test set deleted, FormattedID: %s" % self.data['ts']['FormattedID'], exc_info=True)
-    

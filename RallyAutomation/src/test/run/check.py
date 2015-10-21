@@ -1,8 +1,7 @@
 '''
 This module is to provide useful functions for sanity or env check
 
-By Lei J
-
+@author: ljiang
 '''
 # pylint: disable=fixme, relative-import
 # pylint: disable=fixme, broad-except
@@ -25,6 +24,11 @@ from reporting import Reporting
 class check:
     '''
     To provide funcs for sanity or env check
+    @summary: This class is used to provide high level actions the framework can perform
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, data, rally):
         '''
@@ -39,7 +43,18 @@ class check:
 
     def checkLic(self, ts_id):
         '''
-        To check if the license/license server is working properly
+        @summary: To check if the license/license server is working properly
+        @status: under development
+        @type ts_id: string
+        @param ts_id: id of test set
+        @raise details: handle license related exceptions - 'License check failed: unexpected response code',
+            'License check failed: the response is not ok',
+            'License check failed: license expired',
+            'License server check failed: unexpected response code',
+            'License server check failed: the response is not ok',
+            'License server check failed: license server expired',
+            and send reports if certain exception is caught
+        @return: return True if all the steps pass
         '''
         try:
             s = requests.session()
@@ -104,6 +119,16 @@ class check:
                 sys.exit(1)
 
     def ping(self, ts_id, *args):
+        '''
+        @summary: To ping all CHECK_IP defined in constants.py
+        @status: under development
+        @type ts_id: string
+        @param ts_id: id of test set
+        @param args: a list of ip/hosts to check against
+        @raise details: handle ping related exceptions - "ping: cannot resolve nonexist: Unknown host",
+            "Request timeout", and send reports if certain exception is caught
+        @return: return error message if there is any otherwise return empty string
+        '''
         try:
             plat_ident = platform.system()
             if plat_ident.startswith('CYGWIN'):

@@ -1,8 +1,33 @@
 '''
-Created on Apr 15, 2015
+To define constant variables
 
 @author: ljiang
+@summary: This module provides constant variable definitions
+@status: under development
+@var STEPS_SUP_EXE_FLC_VER: steps sequence of setup->execution->first level check->verification
+@var STEPS_SUP_EXE_FLC_VER_CLU: steps sequence of setup->execution->first level check->verification->clean up
+@var STEPS_EXE_FLC_VER: steps sequence of execution->first level check->verification
+@var INDEXES_SUP: indexes associated with test case setup step obtained from custom field in Rally
+@var INDEXES_EXE: indexes associated with test case execution step obtained from custom field in Rally
+@var INDEXES_FLC: indexes associated with test case first level check step obtained from custom field in Rally
+@var INDEXES_VER: indexes associated with test case verification step obtained from custom field in Rally
+@var INDEXES_CLU: indexes associated with test case clean up step obtained from custom field in Rally
+@var FAILED: status number associated with failed test case
+@var SUCCESS: status number associated with successful test case
+@var BLOCKED: status number associated with blocked test case
+@var MAX_NOTE_LENGTH: max length of text for notes field in Rally
+@var INPROGRESS: scheduled state in progress for a Rally test set
+@var ACCEPTED: scheduled state accepted for a Rally test set
+@var COMPLETED: scheduled state completed for a Rally test set
+@var FUNC_LVL_TC: identify functional level test case
+@var API_LVL_TC: identify api level test case
+@var FROM_TR: generate the report from Rally test result
+@var FROM_EXCEPTION: generate the report from caught exception
+@var NO_TC_FIELDS: total number of fields in the test case data list
+@var PING_COMMAND: a dictionary of operating system associated with the ping commands
+@var CHECK_IP: ip address to check for sanity check
 '''
+
 #test case execution steps
 STEPS_SUP_EXE_FLC_VER=0
 STEPS_SUP_EXE_FLC_VER_CLU=1

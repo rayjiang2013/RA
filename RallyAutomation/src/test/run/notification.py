@@ -1,7 +1,5 @@
 '''
-Created on Sep 30, 2015
-
-To send notification
+To send email notification
 
 @author: ljiang
 '''
@@ -9,7 +7,6 @@ import sys
 import os.path
 sys.path.append(os.path.dirname(__file__))
 import logging
-from helper import helper
 from smtplib import SMTP, SMTPException
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -17,17 +14,18 @@ import inspect
 
 class Notification(object):
     '''
-    Include functions to send notification
+    Include functions to send email notification
+    @summary: This class is used to handle jenkins related functionalities
+    @status: under development
+    @ivar data: dictionary parsed from extra.json
+    @ivar rally: Rally session object
+    @ivar logger: the logger for testObject
     '''
     def __init__(self, rally, data):
-        '''
-        Constructor of testObject
-        '''
         self.data = data
         self.rally = rally
         self.logger = logging.getLogger(__name__)
         self.logger.propagate = False
-        self.helper_obj = helper(rally, data)
 
     #Send email notification; two ways -
     #1.http://z3ugma.github.io/blog/2014/01/26/getting-python-working-on-microsoft-exchange/
@@ -37,7 +35,12 @@ class Notification(object):
     # does not allow sending email to email address outside the spirent domain.
     def sendNotification(self,fname):
         '''
-        To send notification
+        @summary: To send notification
+        @status: completed
+        @type fname: string
+        @param fname: the name of the report file
+        @raise details: log errors
+        @return: return None
         '''
         try:
             #Create the email.
@@ -79,5 +82,3 @@ class Notification(object):
                 #print Exception,details
                 self.logger.error("Error: unable to send email :  {err}".format(err=error), exc_info=True)
                 sys.exit(1)
-            #print "Error: unable to send email :  {err}".format(err=error)
-
