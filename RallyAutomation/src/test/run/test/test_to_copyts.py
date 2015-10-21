@@ -4,12 +4,13 @@ Created on Jan 20, 2015
 @author: ljiang
 '''
 import pytest
-from src.test.run.testSet import testSet
-from src.test.run.testObject import testObject
-from copy import deepcopy
 import sys
-import inspect
-
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from testSet import testSet
+from testObject import testObject
+from copy import deepcopy
 from test_fixture_base import test_config_module
 
 #Test testObject/copyTS

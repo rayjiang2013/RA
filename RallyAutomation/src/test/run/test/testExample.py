@@ -1,5 +1,14 @@
-from src.test.run.testObject import testObject
-from src.test.run.testSet import testSet
+'''
+Obsoleted
+
+@author: ljiang
+'''
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from testObject import testObject
+from testSet import testSet
 from copy import deepcopy
 #import src.test.run.mainFuncs
 #import pytest

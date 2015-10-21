@@ -3,15 +3,15 @@ Created on Feb 9, 2015
 
 @author: ljiang
 '''
-import paramiko
-
-from src.test.run.ssh import ssh
 import pytest
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from test_fixture_base import test_config_module
+from ssh import ssh
 import inspect
 from copy import deepcopy
-import os
 import json
 
 class TestSSH:

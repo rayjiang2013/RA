@@ -4,8 +4,11 @@ Created on Jun 9, 2015
 @author: ljiang
 '''
 import pytest
-from src.test.run.helper import helper
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from helper import helper
 from test_fixture_base import test_config_module    
 
 class TestHelper:

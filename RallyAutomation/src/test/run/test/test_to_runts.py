@@ -5,15 +5,13 @@ Created on Jan 20, 2015
 '''
 
 import pytest
-from src.test.run.testSet import testSet
-from copy import deepcopy
 import sys
-#import inspect
-#from src.test.run.testCaseResult import testCaseResult
-from src.test.run.testObject import testObject
-#import datetime
-
-
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from testSet import testSet
+from copy import deepcopy
+from testObject import testObject
 from test_fixture_base import test_config_module    
         
 #Test testObject/runTO

@@ -5,21 +5,22 @@ Created on Jan 20, 2015
 '''
 
 import pytest
-from src.test.run.testSet import testSet
-from copy import deepcopy
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from testSet import testSet
+from copy import deepcopy
 import inspect
-from src.test.run.testCaseResult import testCaseResult
+from testCaseResult import testCaseResult
 import datetime
-
 from test_fixture_base import test_config_module    
-from src.test.run.testObject import testObject
-from src.test.run.testCase import testCase       
-import src.test.run.constants as constants
+from testObject import testObject
+from testCase import testCase
+import constants as constants
 import requests
- 
 import re
-from src.test.run.helper import helper
+from helper import helper
 
 #import logging
 #from src.test.run.rallyLogger import *

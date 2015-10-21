@@ -2,13 +2,15 @@
 To test class sqlConnector
 '''
 import pytest
-import os
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import json
 import inspect
-from src.test.run.ssh import ssh
-from src.test.run.sqlConnector import sqlConnector
-from src.test.run.sqlFunctions import sql_functions
+from ssh import ssh
+from sqlConnector import sqlConnector
+from sqlFunctions import sql_functions
 
 class TestSqlConnector:
     @pytest.fixture(scope="class",params=[('mysql.json','ssh.json')])

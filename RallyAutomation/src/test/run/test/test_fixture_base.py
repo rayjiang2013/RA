@@ -1,11 +1,16 @@
-from src.test.run.testObject import testObject
-import pytest
+'''
+Created on May 8, 2015
+
+@author: ljiang
+'''
 import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+import pytest
 from pyral import Rally,rallyWorkset #The bugs  https://github.com/RallyTools/RallyRestToolkitForPython/issues/37 and https://github.com/RallyTools/RallyRestToolkitForPython/issues/40 should be fixed according comments from the po. Switch back to Pyral from now on.
 #from pyrallei import Rally, rallyWorkset #By using custom package pyrallei as a workaround for the bug: bug: https://github.com/RallyTools/RallyRestToolkitForPython/issues/37
 import json
-import os
-from copy import deepcopy
 
 #pytest fixture mainFuncs
 @pytest.fixture(scope="module")

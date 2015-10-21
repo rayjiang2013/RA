@@ -4,10 +4,13 @@ Created on May 8, 2015
 @author: ljiang
 '''
 import pytest
-from copy import deepcopy
-from src.test.run.defect import defect
-from test_fixture_base import test_config_module
 import sys
+import os.path
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from copy import deepcopy
+from defect import defect
+from test_fixture_base import test_config_module
 
 class TestDefect:
     @pytest.fixture(scope="class")

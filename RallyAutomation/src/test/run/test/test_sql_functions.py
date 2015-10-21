@@ -5,8 +5,11 @@ Created on Aug 5, 2015
 '''
 import pytest
 import json
+import sys
 import os
-from src.test.run.sqlFunctions import sql_functions
+sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from sqlFunctions import sql_functions
 import mysql.connector
 import datetime
 
